@@ -1,24 +1,24 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Environment
 
-Things you may want to cover:
+* Ruby 2.4.2p198
 
-* Ruby version
+* Rails 5.1.4
 
-* System dependencies
+* Postgres 10.0.1
 
-* Configuration
+# Installing Rails
 
-* Database creation
+Follow this tutorial: https://medium.com/ruby-on-rails-web-application-development/how-to-install-rubyonrails-on-windows-7-8-10-complete-tutorial-2017-fc95720ee059
 
-* Database initialization
+# Disable “LF will be replaced by CLRF” warning in Git on Windows
 
-* How to run the test suite
+```
+git config --global core.safecrlf false
+```
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
+# How can I ignore a file that is already committed to the repo?
 
-* ...
+See this: https://gist.github.com/tsrivishnu/a2f3adbbca9fcad5f3597af301ad1abb
