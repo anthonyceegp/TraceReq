@@ -1,0 +1,37 @@
+<%= form_with(model: relationship, local: true) do |form| %>
+  <% if relationship.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(relationship.errors.count, "error") %> prohibited this relationship from being saved:</h2>
+
+      <ul>
+      <% relationship.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :origin_artifact_id %>
+    <%= form.collection_select(:origin_artifact_id, @artifacts, :id, :code_with_name, :prompt => 'Select') %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_artifact_id %>
+    <%= form.collection_select(:end_artifact_id, @artifacts, :id, :code_with_name, :prompt => 'Select') %>
+  </div>
+
+  <div class="field">
+    <%= form.label :relationship_type_id %>
+    <%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, :prompt => 'Select') %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :relationship_description %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

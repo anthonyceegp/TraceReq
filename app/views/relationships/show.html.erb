@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Origin artifact:</strong>
+  <%= @relationship.origin_artifact.code_with_name %>
+</p>
+
+<p>
+  <strong>End artifact:</strong>
+  <%= @relationship.end_artifact.code_with_name %>
+</p>
+
+<p>
+  <strong>Relationship type:</strong>
+  <%= @relationship.relationship_type.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @relationship.description %>
+</p>
+
+<%= link_to 'Edit', edit_relationship_path(@relationship) %> |
+<%= link_to 'Back', relationships_path %>

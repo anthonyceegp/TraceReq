@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  origin_artifact: one
+  end_artifact: one
+  relationship_type: one
+  description: MyString
+
+two:
+  origin_artifact: two
+  end_artifact: two
+  relationship_type: two
+  description: MyString
