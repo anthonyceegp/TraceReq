@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20171008010844) do
   create_table "artifacts", force: :cascade do |t|
     t.string "code", null: false
     t.string "name", null: false
-    t.text "description"
+    t.string "description"
     t.string "priority"
     t.bigint "artifact_type_id", null: false
     t.datetime "created_at", null: false
@@ -41,15 +41,19 @@ ActiveRecord::Schema.define(version: 20171008010844) do
   end
 
   create_table "relationships", force: :cascade do |t|
-    t.bigint "origin_artifact_id"
-    t.bigint "end_artifact_id"
-    t.bigint "relationship_type_id"
+    t.bigint "origin_artifact_id", null: false
+    t.bigint "end_artifact_id", null: false
+    t.bigint "relationship_type_id", null: false
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["end_artifact_id"], name: "index_relationships_on_end_artifact_id"
+    t.index ["origin_artifact_id", "end_artifact_id"], name: "index_relationships_on_origin_artifact_id_and_end_artifact_id", unique: true
+    t.index ["origin_artifact_id"], name: "index_relationships_on_origin_artifact_id"
     t.index ["relationship_type_id"], name: "index_relationships_on_relationship_type_id"
   end
 
+  add_foreign_key "artifacts", "artifact_types"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
   add_foreign_key "relationships", "relationship_types"

@@ -1,14 +1,13 @@
 class CreateRelationships < ActiveRecord::Migration[5.1]
   def change
     create_table :relationships do |t|
-      t.bigint :origin_artifact_id
-      t.bigint :end_artifact_id
-      t.references :relationship_type, foreign_key: true
+      t.references :origin_artifact, foreign_key: {to_table: :artifacts}, null: false
+      t.references :end_artifact, foreign_key: {to_table: :artifacts},  null: false
+      t.references :relationship_type, foreign_key: true, null:false
       t.string :description
 
       t.timestamps
     end
-    add_foreign_key :relationships, :artifacts, column: :origin_artifact_id
-    add_foreign_key :relationships, :artifacts, column: :end_artifact_id
+    add_index :relationships, [:origin_artifact_id, :end_artifact_id], unique: true
   end
 end
