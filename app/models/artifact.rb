@@ -5,6 +5,7 @@ class Artifact < ApplicationRecord
 	validates :artifact_type_id, presence: true
 
 	belongs_to :artifact_type
+	belongs_to :user_create, foreign_key: "user_create_id", class_name: "User"
 
 	def code_with_name
 		"#{code} - #{name}"

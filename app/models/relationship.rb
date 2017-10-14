@@ -12,6 +12,7 @@ class Relationship < ApplicationRecord
   belongs_to :origin_artifact, class_name: "Artifact"
   belongs_to :end_artifact, class_name: "Artifact"
   belongs_to :relationship_type
+  belongs_to :user_create, foreign_key: "user_create_id", class_name: "User"
 
   def equalArtifacts
   	errors.add(:end_artifact_id, "must be different from origin artifact.") if origin_artifact_id == end_artifact_id

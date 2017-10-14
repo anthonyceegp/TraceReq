@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171011212538) do
+ActiveRecord::Schema.define(version: 20171014005338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,9 @@ ActiveRecord::Schema.define(version: 20171011212538) do
     t.bigint "artifact_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_create_id", null: false
     t.index ["artifact_type_id"], name: "index_artifacts_on_artifact_type_id"
+    t.index ["user_create_id"], name: "index_artifacts_on_user_create_id"
   end
 
   create_table "relationship_types", force: :cascade do |t|
@@ -47,10 +49,12 @@ ActiveRecord::Schema.define(version: 20171011212538) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_create_id", null: false
     t.index ["end_artifact_id"], name: "index_relationships_on_end_artifact_id"
     t.index ["origin_artifact_id", "end_artifact_id"], name: "index_relationships_on_origin_artifact_id_and_end_artifact_id", unique: true
     t.index ["origin_artifact_id"], name: "index_relationships_on_origin_artifact_id"
     t.index ["relationship_type_id"], name: "index_relationships_on_relationship_type_id"
+    t.index ["user_create_id"], name: "index_relationships_on_user_create_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -80,7 +84,9 @@ ActiveRecord::Schema.define(version: 20171011212538) do
   end
 
   add_foreign_key "artifacts", "artifact_types"
+  add_foreign_key "artifacts", "users", column: "user_create_id"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
   add_foreign_key "relationships", "relationship_types"
+  add_foreign_key "relationships", "users", column: "user_create_id"
 end

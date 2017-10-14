@@ -26,6 +26,7 @@ class ArtifactsController < ApplicationController
   # POST /artifacts.json
   def create
     @artifact = Artifact.new(artifact_params)
+    @artifact.user_create_id = current_user.id
 
     respond_to do |format|
       if @artifact.save

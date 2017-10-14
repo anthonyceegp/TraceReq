@@ -26,6 +26,7 @@ class RelationshipsController < ApplicationController
   # POST /relationships.json
   def create
     @relationship = Relationship.new(relationship_params)
+    @relationship.user_create_id = current_user.id
 
     respond_to do |format|
       if @relationship.save
