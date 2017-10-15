@@ -1,7 +1,5 @@
 class HomeController < ApplicationController
-	skip_before_action :authenticate_user!
-
 	def index
-
+		@user_projects = current_user.projects
 	end
 end

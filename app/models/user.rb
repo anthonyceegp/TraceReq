@@ -7,6 +7,11 @@ class User < ApplicationRecord
 
 	has_many :created_artifacts, foreign_key: "user_create_id", class_name: "Artifact"
 	has_many :created_relationships, foreign_key: "user_create_id", class_name: "Relationship"
+	has_many :created_projects, foreign_key: "user_create_id", class_name: "Project"
+	has_many :created_demands, foreign_key: "user_create_id", class_name: "Demand"
+	
+	has_and_belongs_to_many :projects
+	has_and_belongs_to_many :demands
 
 	def password_required?
 		super if confirmed?

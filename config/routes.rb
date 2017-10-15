@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-   devise_for :users, controllers: {confirmations: "confirmations"}
+  resources :projects do
+    resources :demands
+  end
+  
+  devise_for :users, controllers: {confirmations: "confirmations"}
 
   as :user do
     patch "/confirm" => "confirmations#confirm"

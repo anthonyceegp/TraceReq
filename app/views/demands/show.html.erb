@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @demand.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @demand.description %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @demand.status %>
+</p>
+
+<p>
+  <strong>Release:</strong>
+  <%= @demand.release %>
+</p>
+
+<p>
+  <strong>String:</strong>
+  <%= @demand.string %>
+</p>
+
+<%= link_to 'Edit', edit_project_demand_path(@project, @demand) %> |
+<%= link_to 'Back', project_demands_path(@project) %>
