@@ -1,6 +1,10 @@
-<h1>Editing Demand</h1>
-
-<%= render 'form', demand: @demand %>
-
-<%= link_to 'Show', project_demand_path(@project, @demand) %> |
-<%= link_to 'Back', project_demands_path(@project) %>
+<div class="container-fluid">
+	<div class="row">
+		<h2>Editing Demand</h2>
+	</div>
+	<%= render 'form', demand: @demand %>
+	<div class="row">
+		<%= link_to 'Show', project_demand_path(@project, @demand) %> |
+		<%= link_to 'Back', project_demands_path(@project) %>
+	</div>
+</div>

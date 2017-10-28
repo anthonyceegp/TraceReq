@@ -6,13 +6,16 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-at1 = ArtifactType.create(name: 'Use Case')
-at2 = ArtifactType.create(name: 'Test Case')
-at3 = ArtifactType.create(name: 'Prototype Espec')
+artifact_types =[]
+artifact_types = ArtifactType.create(name: 'Caso de Uso')
+artifact_types = ArtifactType.create(name: 'Caso de Teste')
+artifact_types = ArtifactType.create(name: 'Especificação de Tela')
+artifact_types = ArtifactType.create(name: 'Especificação de Requisitos')
+artifact_types = ArtifactType.create(name: 'Documento de Visão')
 
-Artifact.create(code: 'UC0001', name: 'Delete Post', artifact_type_id: at1.id)
-Artifact.create(code: 'PE0001', name: 'Delete Post View', artifact_type_id: at3.id)
-Artifact.create(code: 'TC0001', name: 'Delete Post', artifact_type_id: at2.id)
+# Artifact.create(code: 'UC0001', name: 'Delete Post', artifact_type_id: at1.id)
+# Artifact.create(code: 'PE0001', name: 'Delete Post View', artifact_type_id: at3.id)
+# Artifact.create(code: 'TC0001', name: 'Delete Post', artifact_type_id: at2.id)
 
 r1 = RelationshipType.create(name: 'Implementes')
 r2 = RelationshipType.create(name: 'Implmented by')

@@ -13,8 +13,23 @@ class Relationship < ApplicationRecord
   belongs_to :end_artifact, class_name: "Artifact"
   belongs_to :relationship_type
   belongs_to :user_create, foreign_key: "user_create_id", class_name: "User"
+  
+  has_many :relationship_demands, dependent: :destroy
+  has_many :demands, through: :relationship_demands
 
   def equalArtifacts
   	errors.add(:end_artifact_id, "must be different from origin artifact.") if origin_artifact_id == end_artifact_id
+  end
+
+  def self.getCodes
+    return [self.getOrigin.code, self.getEnd.code]
+  end
+
+  def self.getOrigin
+    return origin_artifact
+  end
+
+  def self.getEnd
+    return end_artifact
   end
 end

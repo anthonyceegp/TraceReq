@@ -22,9 +22,9 @@
         <td><%= artifact.description %></td>
         <td><%= artifact.priority %></td>
         <td><%= artifact.artifact_type.name %></td>
-        <td><%= link_to 'Show', artifact %></td>
-        <td><%= link_to 'Edit', edit_artifact_path(artifact) %></td>
-        <td><%= link_to 'Destroy', artifact, method: :delete, data: { confirm: 'All related artifacts will be destoyed. Are you sure?' } %></td>
+        <td><%= link_to 'Show', [@project, @demand, artifact] %></td>
+        <td><%= link_to 'Edit', edit_project_demand_artifact_path(@project, @demand, artifact) %></td>
+        <td><%= link_to 'Destroy', [@project, @demand, artifact], method: :delete, data: { confirm: 'All related artifacts will be destoyed. Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -32,4 +32,4 @@
 
 <br>
 
-<%= link_to 'New Artifact', new_artifact_path %>
+<%= link_to 'New Artifact', new_project_demand_artifact_path %>

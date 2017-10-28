@@ -1,33 +1,93 @@
-<p id="notice"><%= notice %></p>
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <%= link_to "New Relationship", new_project_demand_relationship_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Edit Relationships", matrix_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Back to Project", @project, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Back to Demand", [@project,@demand], class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <h2>Relationships</h2>
+      <div class="table-responsive dragscroll">
+        <table class="table table-bordered fixed-column">
+          <thead>
+            <tr>
+              <th scope="col" style="height: 50px"></th>
+            </tr>
+          </thead>
+          <tbody>
+              <% @artifacts.each do |artifact| %>
+                <tr>
+                  <th scope="row" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
+                </tr>
+              <% end %>
+          </tbody>      
+        </table>
+        <table class="table table-bordered" id="editableTable">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <% @artifacts.each do |artifact| %>
+                <th scope="col" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @artifacts.each do |artifact| %>
+              <tr>
+                <% i = 0; num = @artifacts.count + 1 %>
+                <% while (i < num) do %>
+                  <% if(i == 0) %>
+                    <th scope="row" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
+                  <% else %>
+                    <td></td>
+                  <% end %>
+                  <% i += 1 %>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </main>    
+  </div>
+</div>
 
-<h1>Relationships</h1>
+<script>
+  $(document).ready(function(){
+    var relationships = <%= raw @relationships.to_json %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Origin artifact</th>
-      <th>Type</th>
-      <th>End artifact</th>
-      <th>Description</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+    for (var i = 0; i < relationships.length; i++) {
+      var row = $("#editableTable tbody th[data-id=" + relationships[i][0] + "]").parent();
+      var column = $("#editableTable thead th[data-id=" + relationships[i][1] + "]").index() - 1;
 
-  <tbody>
-    <% @relationships.each do |relationship| %>
-      <tr>
-        <td><%= relationship.origin_artifact.code_with_name %></td>
-        <td><%= relationship.relationship_type.name %></td>
-        <td><%= relationship.end_artifact.code_with_name %></td>
-        <td><%= relationship.description %></td>
-        <td><%= link_to 'Show', relationship %></td>
-        <td><%= link_to 'Edit', edit_relationship_path(relationship) %></td>
-        <td><%= link_to 'Destroy', relationship, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+      var cell = row.find('td').eq(column)
+      cell.css('background', 'orange');
+    }
+  });
+</script>
 
-<br>
+<style type="text/css">
+.table-responsive>.fixed-column {
+    position: absolute;
+    width: auto;
+    border-right: 1px solid #ddd;
+    background-color: white;
+}
 
-<%= link_to 'New Relationship', new_relationship_path %>
+@media(min-width:991px) {
+    .table-responsive>.fixed-column {
+        display: none;
+    }
+}
+</style>

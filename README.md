@@ -12,6 +12,14 @@
 
 Follow this tutorial: https://medium.com/ruby-on-rails-web-application-development/how-to-install-rubyonrails-on-windows-7-8-10-complete-tutorial-2017-fc95720ee059
 
+When installing MSYS2, make sure to follow the company website steps first. If you don't, pacman won't work properly.
+
+## Dependencies
+
+* Devise 4.3.0 (Lower version won't work) for authentication;
+
+* Bootstrap 4 beta (require popper_js and node.js)
+
 ## Disable “LF will be replaced by CLRF” warning in Git on Windows
 
 ```

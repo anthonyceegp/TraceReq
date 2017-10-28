@@ -1,29 +1,63 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Name:</strong>
-  <%= @demand.name %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @demand.description %>
-</p>
-
-<p>
-  <strong>Status:</strong>
-  <%= @demand.status %>
-</p>
-
-<p>
-  <strong>Release:</strong>
-  <%= @demand.release %>
-</p>
-
-<p>
-  <strong>String:</strong>
-  <%= @demand.string %>
-</p>
-
-<%= link_to 'Edit', edit_project_demand_path(@project, @demand) %> |
-<%= link_to 'Back', project_demands_path(@project) %>
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <%= link_to "Import Artifacts", import_artifacts_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Artifact", new_project_demand_artifact_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Relationship", new_project_demand_relationship_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Edit Demand", edit_project_demand_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Delete Demand", [@project, @demand], method: :delete, data: { confirm: 'Are you sure?' }, class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <p id="notice"><%= notice %></p>
+      <h2>Artifacts</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Priority</th>
+              <th>Created by</th>
+              <th>Created at</th>
+              <th>Updated at</th>
+              <th colspan="3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @demand.artifacts.each do |artifact| %>
+              <tr>
+                <td><%= artifact.code %></td>
+                <td><%= artifact.name %></td>
+                <td><%= artifact.description %></td>
+                <td><%= artifact.priority %></td>
+                <td><%= artifact.user_create.email.split('@').first %></td>
+                <td><%= artifact.created_at.to_date %></td>
+                <td><%= artifact.updated_at.to_date %></td>
+                <td><%= link_to [@project, @demand, artifact] do %><%= fa_icon "folder-open" %><% end %></td>
+                <td><%= link_to edit_project_demand_artifact_path(@project, @demand, artifact) do %><%= fa_icon "pencil" %><% end %></td>
+                <td>
+                  <%= link_to remove_artifact_path(@project, @demand, artifact), method: :post, data: { confirm: 'Are you sure?' } do %>
+                    <%= fa_icon "trash" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>

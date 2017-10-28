@@ -20,5 +20,5 @@
   <%= @relationship.description %>
 </p>
 
-<%= link_to 'Edit', edit_relationship_path(@relationship) %> |
-<%= link_to 'Back', relationships_path %>
+<%= link_to 'Edit', edit_project_demand_relationship_path(@project, @demand, @relationship) %> |
+<%= link_to 'Back', project_demand_relationships_path(@project, @demand) %>

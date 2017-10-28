@@ -6,6 +6,10 @@ class Artifact < ApplicationRecord
 
 	belongs_to :artifact_type
 	belongs_to :user_create, foreign_key: "user_create_id", class_name: "User"
+	has_many :artifact_demands, dependent: :destroy
+	has_many :demands, through: :artifact_demands
+
+	has_many :relationship, foreign_key: "origin_artifact_id"
 
 	def code_with_name
 		"#{code} - #{name}"

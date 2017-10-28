@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171014132705) do
+ActiveRecord::Schema.define(version: 20171021174419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "artifact_demands", force: :cascade do |t|
+    t.bigint "artifact_id", null: false
+    t.bigint "demand_id", null: false
+    t.bigint "user_included_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artifact_id", "demand_id"], name: "index_artifact_demands_on_artifact_id_and_demand_id", unique: true
+    t.index ["artifact_id"], name: "index_artifact_demands_on_artifact_id"
+    t.index ["demand_id"], name: "index_artifact_demands_on_demand_id"
+    t.index ["user_included_id"], name: "index_artifact_demands_on_user_included_id"
+  end
 
   create_table "artifact_types", force: :cascade do |t|
     t.string "name", null: false
@@ -41,20 +53,13 @@ ActiveRecord::Schema.define(version: 20171014132705) do
     t.string "description"
     t.integer "status", default: 0, null: false
     t.string "release"
-    t.string "string"
     t.bigint "user_create_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_demands_on_name", unique: true
+    t.index ["project_id"], name: "index_demands_on_project_id"
     t.index ["user_create_id"], name: "index_demands_on_user_create_id"
-  end
-
-  create_table "demands_projects", force: :cascade do |t|
-    t.bigint "demand_id", null: false
-    t.bigint "project_id", null: false
-    t.index ["demand_id", "project_id"], name: "index_demands_projects_on_demand_id_and_project_id", unique: true
-    t.index ["demand_id"], name: "index_demands_projects_on_demand_id"
-    t.index ["project_id"], name: "index_demands_projects_on_project_id"
   end
 
   create_table "demands_users", force: :cascade do |t|
@@ -81,6 +86,18 @@ ActiveRecord::Schema.define(version: 20171014132705) do
     t.index ["project_id", "user_id"], name: "index_projects_users_on_project_id_and_user_id", unique: true
     t.index ["project_id"], name: "index_projects_users_on_project_id"
     t.index ["user_id"], name: "index_projects_users_on_user_id"
+  end
+
+  create_table "relationship_demands", force: :cascade do |t|
+    t.bigint "relationship_id", null: false
+    t.bigint "demand_id", null: false
+    t.bigint "user_included_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["demand_id"], name: "index_relationship_demands_on_demand_id"
+    t.index ["relationship_id", "demand_id"], name: "index_relationship_demands_on_relationship_id_and_demand_id", unique: true
+    t.index ["relationship_id"], name: "index_relationship_demands_on_relationship_id"
+    t.index ["user_included_id"], name: "index_relationship_demands_on_user_included_id"
   end
 
   create_table "relationship_types", force: :cascade do |t|
@@ -131,16 +148,21 @@ ActiveRecord::Schema.define(version: 20171014132705) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "artifact_demands", "artifacts"
+  add_foreign_key "artifact_demands", "demands"
+  add_foreign_key "artifact_demands", "users", column: "user_included_id"
   add_foreign_key "artifacts", "artifact_types"
   add_foreign_key "artifacts", "users", column: "user_create_id"
+  add_foreign_key "demands", "projects"
   add_foreign_key "demands", "users", column: "user_create_id"
-  add_foreign_key "demands_projects", "demands"
-  add_foreign_key "demands_projects", "projects"
   add_foreign_key "demands_users", "demands"
   add_foreign_key "demands_users", "users"
   add_foreign_key "projects", "users", column: "user_create_id"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
+  add_foreign_key "relationship_demands", "demands"
+  add_foreign_key "relationship_demands", "relationships"
+  add_foreign_key "relationship_demands", "users", column: "user_included_id"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
   add_foreign_key "relationships", "relationship_types"

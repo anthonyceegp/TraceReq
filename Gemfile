@@ -34,15 +34,19 @@ gem 'bcrypt', '~> 3.1.11'
 # Use devise for athentication
 gem 'devise', '~> 4.3.0'
 # Use bootstrap for GUI
-gem 'bootstrap'
+gem 'bootstrap', '~> 4.0.0.beta'
 # Required for bootstrap
-gem 'popper_js', '~> 1.12.3'
+gem 'popper_js', '~> 1.11', '>= 1.11.1'
 # Required for bootstrap
-gem 'tether-rails'
-
 gem 'jquery-rails'
+# Use Font Awsome for icon
+gem "font-awesome-rails"
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+# Use bundler to bundle install all gems
+gem 'bundler', '~> 1.16.0.pre.3'
+# Use Kaminari for pagination
+gem 'kaminari'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -1,6 +1,7 @@
 class ArtifactsController < ApplicationController
   before_action :set_artifact, only: [:show, :edit, :update, :destroy]
   before_action :set_select_collections, only: [:edit, :update, :new, :create]
+  before_action :set_project_demand
 
   # GET /artifacts
   # GET /artifacts.json
@@ -11,6 +12,7 @@ class ArtifactsController < ApplicationController
   # GET /artifacts/1
   # GET /artifacts/1.json
   def show
+    @artifact = @demand.artifacts.find(params[:id])
   end
 
   # GET /artifacts/new
@@ -20,18 +22,20 @@ class ArtifactsController < ApplicationController
 
   # GET /artifacts/1/edit
   def edit
+    @artifact = @demand.artifacts.find(params[:id])
   end
 
   # POST /artifacts
   # POST /artifacts.json
   def create
-    @artifact = Artifact.new(artifact_params)
-    @artifact.user_create_id = current_user.id
+    @artifact = @demand.artifacts.build(artifact_params)
+    @artifact.user_create = current_user
 
     respond_to do |format|
       if @artifact.save
-        format.html { redirect_to @artifact, notice: 'Artifact was successfully created.' }
-        format.json { render :show, status: :created, location: @artifact }
+        @artifact.artifact_demands.create(demand: @demand, user_included_id: current_user.id)
+        format.html { redirect_to [@project, @demand, @artifact], notice: 'Artifact was successfully created.' }
+        format.json { render :show, status: :created, location: [@project, @demand, @artifact] }
       else
         format.html { render :new }
         format.json { render json: @artifact.errors, status: :unprocessable_entity }
@@ -44,8 +48,8 @@ class ArtifactsController < ApplicationController
   def update
     respond_to do |format|
       if @artifact.update(artifact_params)
-        format.html { redirect_to @artifact, notice: 'Artifact was successfully updated.' }
-        format.json { render :show, status: :ok, location: @artifact }
+        format.html { redirect_to [@project, @demand, @artifact], notice: 'Artifact was successfully updated.' }
+        format.json { render :show, status: :ok, location: [@project, @demand, @artifact] }
       else
         format.html { render :edit }
         format.json { render json: @artifact.errors, status: :unprocessable_entity }
@@ -58,7 +62,7 @@ class ArtifactsController < ApplicationController
   def destroy
     @artifact.destroy
     respond_to do |format|
-      format.html { redirect_to artifacts_url, notice: 'Artifact was successfully destroyed.' }
+      format.html { redirect_to project_demand_artifacts_url, notice: 'Artifact was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -70,7 +74,12 @@ class ArtifactsController < ApplicationController
     end
 
     def set_select_collections
-      @artifact_type = ArtifactType.all
+      @artifact_types = ArtifactType.all
+    end
+
+    def set_project_demand
+      @project = Project.find(params[:project_id])
+      @demand = @project.demands.find(params[:demand_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
