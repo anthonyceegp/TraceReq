@@ -21,7 +21,7 @@
 		</nav>
 		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
 			<h2>Import Artifacts</h2>
-			<%= form_with(url: import_artifacts_path(@project, @demand), local: true) do |f| %>
+			<%= form_with(url: import_artifacts_path(@project, @demand), local: true) do |form| %>
 				<div class="table-responsive">
 					<table class="table table-striped">
 						<thead>
@@ -38,7 +38,7 @@
 						<tbody>
 							<% @artifacts.each do |artifact| %>
 							<tr>
-								<td><%= f.check_box  :artifact_ids, {multiple: true}, artifact.id, nil %></td>
+								<td><%= form.check_box  :artifact_ids, {multiple: true}, artifact.id, nil %></td>
 								<td><%= artifact.code %></td>
 								<td><%= artifact.name %></td>
 								<td><%= artifact.description %></td>
@@ -51,7 +51,7 @@
 					<%= paginate(@artifacts) %>
 
 					<div class="actions">
-						<%= f.submit "Import", class: "btn btn-primary" %>
+						<%= form.submit "Import", class: "btn btn-primary" %>
 					</div>
 				</div>
 			<% end %>
