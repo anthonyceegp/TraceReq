@@ -23,6 +23,11 @@ Rails.application.routes.draw do
   post '/projects/:id/add_users', to: 'projects#save_add_users'
   post '/projects/:id/users/:user_id', to:'projects#remove_user', as: :project_remove_user
 
+  get '/projects/:project_id/demands/:id/users', to: 'demands#users', as: :demand_users
+  get '/projects/:project_id/demands/:id/add_users', to: 'demands#add_users', as: :demand_add_users
+  post '/projects/:project_id/demands/:id/add_users', to: 'demands#save_add_users'
+  post '/projects/:project_id/demands/:id/users/:user_id', to:'demands#remove_user', as: :demand_remove_user
+  
   get '/projects/:project_id/demands/:id/import', to: 'demands#import', as: :import_artifacts
   post '/projects/:project_id/demands/:id/import', to: 'demands#save_import'
 

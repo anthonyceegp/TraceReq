@@ -1,6 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :users, :add_users,
-                                     :save_add_users, :remove_user]
+  before_action :set_project, except: [:index, :new, :create]
 
   # GET /projects
   # GET /projects.json

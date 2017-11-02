@@ -12,6 +12,12 @@
           <%= link_to "New Relationship", new_project_demand_relationship_path(@project, @demand), class: "nav-link" %>
         </li>
         <li class="nav-item">
+          <%= link_to "Add Users", demand_add_users_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Users", demand_users_path(@project, @demand), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
           <%= link_to "Edit Demand", edit_project_demand_path(@project, @demand), class: "nav-link" %>
         </li>
         <li class="nav-item">

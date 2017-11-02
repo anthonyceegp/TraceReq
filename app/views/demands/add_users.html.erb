@@ -1,0 +1,42 @@
+<div class="container-fluid">
+	<div class="row">
+		<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+		</nav>
+		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+			<h2>Add Users</h2>
+			<%= form_with url: demand_add_users_path(@project, @demand), local: true do |form|%>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><%= check_box_tag "check_all" %></th>
+								<th>E-mail</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% @users.each do |user| %>
+								<tr>
+									<td><%= form.check_box  :user_ids, {multiple: true}, user.id, nil %></td>
+									<td><%= user.email %></td>
+								</tr>
+							<% end %>
+						</tbody>
+					</table>
+					<%= paginate(@users) %>
+
+					<div class="actions">
+						<%= form.submit "Add", class: "btn btn-primary" %>
+					</div>	
+				</div>
+			<% end %>	
+		</main>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#check_all').on("click", function(){
+		var cbxs = $('input[type="checkbox"]');
+		var status = cbxs.slice(0,1).is(':checked'); 
+		cbxs.prop("checked", status);
+	});
+</script>

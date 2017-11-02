@@ -92,6 +92,36 @@ class DemandsController < ApplicationController
     end
   end
 
+  def users
+    @users = @demand.users.page(params[:page]).per(7)
+  end
+
+  def add_users
+    @users = @project.users.where.not(id: @demand.users.ids).
+              select(:id, :email).page(params[:page]).per(7)
+  end
+
+  def save_add_users
+    users = @project.users.find(add_users_params[:user_ids])
+    users.each do |user|
+      user.demands << @demand
+    end
+
+    respond_to do |format|
+      format.html { redirect_to demand_add_users_url(@project, @demand), notice: 'Users was successfully added.' }
+      format.json { render :add_users, status: :ok, location: demand_add_users_url(@project, @demand)}
+    end
+  end
+
+  def remove_user
+    user = @demand.users.find(params[:user_id])
+    @demand.users.delete(user)
+    respond_to do |format|
+      format.html { redirect_to demand_users_url(@project, @demand), notice: 'User was successfully removed.' }
+      format.json { render :users, status: :ok, location: demand_users_url(@project, @demand) }
+    end
+  end
+
   private
     def set_project
       @project = Project.find(params[:project_id])
@@ -114,5 +144,9 @@ class DemandsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def import_params
       params.permit(artifact_ids: [])
+    end
+
+    def add_users_params
+      params.permit(user_ids: [])
     end
 end
