@@ -19,5 +19,12 @@
   <%= @artifact.artifact_type.name %>
 </p>
 
+<% if @artifact.file? %>
+	<p>
+		<strong>File:</strong>
+		<%= link_to @artifact.file_file_name, @artifact.file.url %>
+	</p>
+<% end %>
+
 <%= link_to 'Edit', edit_project_demand_artifact_path(@project, @demand, @artifact) %> |
 <%= link_to 'Back', project_demand_artifacts_path %>

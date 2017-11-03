@@ -1,5 +1,16 @@
-<h1>New Artifact</h1>
-
-<%= render 'form', artifact: @artifact %>
-
-<%= link_to 'Back', [@project, @demand] %>
+<div class="container-fluid">
+	<div class="row">
+		<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <%= link_to 'Back', [@project, @demand], class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+			<%= render 'form', artifact: @artifact %>
+		</main>
+	</div>
+	
+</div>
+<h2>New Artifact</h2>

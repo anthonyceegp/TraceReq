@@ -1,4 +1,8 @@
 class Artifact < ApplicationRecord
+	has_attached_file :file
+	validates_attachment :file, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png",
+															"application/pdf", "application/doc", "application/msword"] }
+
 	validates :code, presence: true, uniqueness: true, length: { maximum: 6}
 	validates :name, presence: true
 	validates :description, length: { maximum: 255}
@@ -9,7 +13,7 @@ class Artifact < ApplicationRecord
 	has_many :artifact_demands, dependent: :destroy
 	has_many :demands, through: :artifact_demands
 
-	has_many :relationship, foreign_key: "origin_artifact_id"
+	has_many :relationship, foreign_key: "origin_artifact_id" 
 
 	def code_with_name
 		"#{code} - #{name}"

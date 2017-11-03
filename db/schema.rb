@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171021174419) do
+ActiveRecord::Schema.define(version: 20171102143252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,10 @@ ActiveRecord::Schema.define(version: 20171021174419) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_create_id", null: false
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
     t.index ["artifact_type_id"], name: "index_artifacts_on_artifact_type_id"
     t.index ["code"], name: "index_artifacts_on_code", unique: true
     t.index ["user_create_id"], name: "index_artifacts_on_user_create_id"
