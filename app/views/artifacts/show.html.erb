@@ -23,6 +23,7 @@
 	<p>
 		<strong>File:</strong>
 		<%= link_to @artifact.file_file_name, @artifact.file.url %>
+		<%= link_to delete_file_path(@project, @demand, @artifact), method: :post do %><%= fa_icon "trash" %><% end %>
 	</p>
 <% end %>
 

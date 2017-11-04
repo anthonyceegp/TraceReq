@@ -1,7 +1,7 @@
 class ArtifactsController < ApplicationController
-  before_action :set_artifact, only: [:show, :edit, :update, :destroy]
-  before_action :set_select_collections, only: [:edit, :update, :new, :create]
+  before_action :set_artifact, except: [:index, :new, :create]
   before_action :set_project_demand
+  before_action :set_select_collections, only: [:edit, :update, :new, :create]
 
   # GET /artifacts
   # GET /artifacts.json
@@ -64,6 +64,15 @@ class ArtifactsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to project_demand_artifacts_url, notice: 'Artifact was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def delete_file
+    @artifact.file.destroy
+    @artifact.save
+    respond_to do |format|
+      format.html { redirect_to [@project, @demand, @artifact], notice: 'File was successfully destroyed.' }
+      format.json { render :show, status: :ok, location: [@project, @demand, @artifact] }
     end
   end
 
