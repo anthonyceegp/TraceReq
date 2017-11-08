@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108000717) do
+ActiveRecord::Schema.define(version: 20171108113307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,7 +32,9 @@ ActiveRecord::Schema.define(version: 20171108000717) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "project_id", null: false
     t.index ["name"], name: "index_artifact_types_on_name", unique: true
+    t.index ["project_id"], name: "index_artifact_types_on_project_id"
   end
 
   create_table "artifacts", force: :cascade do |t|
@@ -103,7 +105,9 @@ ActiveRecord::Schema.define(version: 20171108000717) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "project_id", null: false
     t.index ["name"], name: "index_relationship_types_on_name", unique: true
+    t.index ["project_id"], name: "index_relationship_types_on_project_id"
   end
 
   create_table "relationships", force: :cascade do |t|
@@ -160,6 +164,7 @@ ActiveRecord::Schema.define(version: 20171108000717) do
   add_foreign_key "artifact_demands", "artifacts"
   add_foreign_key "artifact_demands", "demands"
   add_foreign_key "artifact_demands", "users"
+  add_foreign_key "artifact_types", "projects"
   add_foreign_key "artifacts", "artifact_types"
   add_foreign_key "artifacts", "projects"
   add_foreign_key "artifacts", "users"
@@ -171,6 +176,7 @@ ActiveRecord::Schema.define(version: 20171108000717) do
   add_foreign_key "relationship_demands", "demands"
   add_foreign_key "relationship_demands", "relationships"
   add_foreign_key "relationship_demands", "users"
+  add_foreign_key "relationship_types", "projects"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
   add_foreign_key "relationships", "relationship_types"

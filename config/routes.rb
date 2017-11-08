@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
+  
   resources :projects do
+    resources :artifact_types
+    resources :relationship_types
+
     resources :demands do
       resources :artifacts
-      resources :relationships
+      resources :relationships      
     end
   end
   
@@ -12,8 +16,6 @@ Rails.application.routes.draw do
     patch "/confirm" => "confirmations#confirm"
   end
 
-  resources :relationship_types
-  resources :artifact_types
   resources :users
   
   root to: 'home#index'

@@ -3,10 +3,28 @@
     <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <%= link_to "Relationship Types", relationship_types_path, class: "nav-link active" %>
+          <%= link_to @project.name, @project, class: "nav-link" %>
         </li>
         <li class="nav-item">
-          <%= link_to "New Relationship Type", new_relationship_type_path, class: "nav-link" %>
+          <%= link_to "Demands", project_demands_path(@project), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Users", project_users_path(@project), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Projects", projects_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Artifact Types", project_artifact_types_path(@project), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Artifact Type", new_project_artifact_type_path(@project), class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Relationship Types", project_relationship_types_path(@project), class: "nav-link active" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Relationship Type", new_project_relationship_type_path(@project), class: "nav-link" %>
         </li>
       </ul>
     </nav>
@@ -26,14 +44,14 @@
             <% @relationship_types.each do |relationship_type| %>
               <tr>
                 <td><%= relationship_type.name %></td>
-                <td><%= link_to relationship_type do %><%= fa_icon "folder-open" %><% end %></td>
+                <td><%= link_to [@project, relationship_type] do %><%= fa_icon "folder-open" %><% end %></td>
                 <td>
-                  <%= link_to edit_relationship_type_path(relationship_type) do %>
+                  <%= link_to edit_project_relationship_type_path(@project, relationship_type) do %>
                     <%= fa_icon "pencil" %>
                   <% end %>
                 </td>
                 <td>
-                  <%= link_to relationship_type, method: :delete, data: { confirm: 'Are you sure?' } do %>
+                  <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' } do %>
                     <%= fa_icon "trash" %>
                   <% end %>
                 </td>

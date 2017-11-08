@@ -1,4 +1,4 @@
-<%= form_with(model: artifact_type, local: true) do |form| %>
+<%= form_with(model: [@project, artifact_type], local: true) do |form| %>
   <% if artifact_type.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(artifact_type.errors.count, "error") %> prohibited this artifact_type from being saved:</h2>
