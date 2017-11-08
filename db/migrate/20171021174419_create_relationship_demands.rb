@@ -3,7 +3,7 @@ class CreateRelationshipDemands < ActiveRecord::Migration[5.1]
 		create_table :relationship_demands do |t|
 			t.references :relationship, foreign_key: true, null: false
 			t.references :demand, foreign_key: true, null: false
-			t.references :user_included, foreign_key: {to_table: :users}, null: false
+			t.references :user, foreign_key: true, null: false
 
 			t.timestamps
 		end

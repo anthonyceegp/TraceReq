@@ -1,6 +1,19 @@
-<h1>Editing Relationship Type</h1>
-
-<%= render 'form', relationship_type: @relationship_type %>
-
-<%= link_to 'Show', @relationship_type %> |
-<%= link_to 'Back', relationship_types_path %>
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <%= link_to "Relationship Types", relationship_types_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Relationship Type", new_relationship_type_path, class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <%= render 'layouts/alerts' %>
+			<h2>Editing Relationship Type</h2>
+			<%= render 'form', relationship_type: @relationship_type %>
+		</main>
+	</div>
+</div>

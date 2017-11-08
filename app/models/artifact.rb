@@ -1,4 +1,10 @@
 class Artifact < ApplicationRecord
+	has_paper_trail on: [:create, :update]
+
+	before_destroy do 
+		self.versions.destroy_all
+	end
+
 	has_attached_file :file
 	validates_attachment :file, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png",
 															"application/pdf", "application/doc", "application/msword"] }
@@ -9,13 +15,23 @@ class Artifact < ApplicationRecord
 	validates :artifact_type_id, presence: true
 
 	belongs_to :artifact_type
-	belongs_to :user_create, foreign_key: "user_create_id", class_name: "User"
+	belongs_to :user
+	belongs_to :project
+
 	has_many :artifact_demands, dependent: :destroy
 	has_many :demands, through: :artifact_demands
 
-	has_many :relationship, foreign_key: "origin_artifact_id" 
+	has_many :forward_relationships, 	foreign_key: "origin_artifact_id", 
+																		class_name: "Relationship",
+																		dependent: :destroy
+
+	has_many :backward_relationships,	foreign_key: "end_artifact_id",
+																		class_name: "Relationship",
+																		dependent: :destroy
 
 	def code_with_name
 		"#{code} - #{name}"
 	end
+
+
 end

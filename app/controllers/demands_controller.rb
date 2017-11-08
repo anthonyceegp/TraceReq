@@ -6,7 +6,7 @@ class DemandsController < ApplicationController
   # GET /demands
   # GET /demands.json
   def index
-    @demands = Demand.all
+    @demands = Demand.where(project: @project).page(params[:page]).per(8)
   end
 
   # GET /demands/1
@@ -27,11 +27,10 @@ class DemandsController < ApplicationController
   # POST /demands.json
   def create
     @demand = @project.demands.build(demand_params)
-    @demand.user_create = current_user
+    @demand.user = current_user
 
     respond_to do |format|
       if @demand.save
-        @demand.users << current_user
         format.html { redirect_to [@project, @demand], notice: 'Demand was successfully created.' }
         format.json { render :show, status: :created, location: [@project, @demand] }
       else
@@ -83,42 +82,13 @@ class DemandsController < ApplicationController
   def save_import
     artifacts = Artifact.find(import_params[:artifact_ids])
     artifacts.each do |artifact|
-      artifact.artifact_demands.create(demand: @demand, user_included_id: current_user.id)
+      verison = artifact.versions.last.index
+      artifact.artifact_demands.create(demand: @demand, user: current_user, artifact_version: verison)
     end
 
     respond_to do |format|
       format.html { redirect_to import_artifacts_url(@project, @demand), notice: 'Artifacts was successfully imported.' }
       format.json { render :import, status: :ok, location: import_artifacts_url(@project, @demand)}
-    end
-  end
-
-  def users
-    @users = @demand.users.page(params[:page]).per(7)
-  end
-
-  def add_users
-    @users = @project.users.where.not(id: @demand.users.ids).
-              select(:id, :email).page(params[:page]).per(7)
-  end
-
-  def save_add_users
-    users = @project.users.find(add_users_params[:user_ids])
-    users.each do |user|
-      user.demands << @demand
-    end
-
-    respond_to do |format|
-      format.html { redirect_to demand_add_users_url(@project, @demand), notice: 'Users was successfully added.' }
-      format.json { render :add_users, status: :ok, location: demand_add_users_url(@project, @demand)}
-    end
-  end
-
-  def remove_user
-    user = @demand.users.find(params[:user_id])
-    @demand.users.delete(user)
-    respond_to do |format|
-      format.html { redirect_to demand_users_url(@project, @demand), notice: 'User was successfully removed.' }
-      format.json { render :users, status: :ok, location: demand_users_url(@project, @demand) }
     end
   end
 

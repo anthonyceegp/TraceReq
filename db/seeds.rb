@@ -17,5 +17,5 @@ artifact_types = ArtifactType.create(name: 'Documento de Visão')
 # Artifact.create(code: 'PE0001', name: 'Delete Post View', artifact_type_id: at3.id)
 # Artifact.create(code: 'TC0001', name: 'Delete Post', artifact_type_id: at2.id)
 
-r1 = RelationshipType.create(name: 'Implementes')
-r2 = RelationshipType.create(name: 'Implmented by')
+r1 = RelationshipType.create(name: 'Depende de')
+r2 = RelationshipType.create(name: 'Implica em')

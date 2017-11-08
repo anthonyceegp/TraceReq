@@ -1,31 +1,95 @@
-<p id="notice"><%= notice %></p>
-
-<h2>
-  <%= @artifact.code + " - " + @artifact.name %>
-</h2>
-
-<p>
-  <strong>Description:</strong>
-  <%= @artifact.description %>
-</p>
-
-<p>
-  <strong>Priority:</strong>
-  <%= @artifact.priority %>
-</p>
-
-<p>
-  <strong>Type:</strong>
-  <%= @artifact.artifact_type.name %>
-</p>
-
-<% if @artifact.file? %>
-	<p>
-		<strong>File:</strong>
-		<%= link_to @artifact.file_file_name, @artifact.file.url %>
-		<%= link_to delete_file_path(@project, @demand, @artifact), method: :post do %><%= fa_icon "trash" %><% end %>
-	</p>
-<% end %>
-
-<%= link_to 'Edit', edit_project_demand_artifact_path(@project, @demand, @artifact) %> |
-<%= link_to 'Back', project_demand_artifacts_path %>
+<div class="container-fluid">
+	<div class="row">
+		<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+        	<%= link_to 'Back to Demand', [@project, @demand], class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+			<%= render "layouts/alerts" %>
+			<h2><%= @artifact.code_with_name %>
+				<% if @number_conflict > 1 %>
+					<span class="badge badge-warning">Warning</span>
+				<% end %>
+			</h2>
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<tbody>
+						<tr>
+							<th scope="row">Type</th>
+							<td><%= @artifact.artifact_type.name %></td>
+						</tr>
+						<tr>
+							<th scope="row">Description</th>
+							<td><%= @artifact.description %></td>
+						</tr>
+						<tr>
+							<th scope="row">Priority</th>
+							<td><%= @artifact.priority %></td>
+						</tr>
+						<% if @artifact.file? %>
+							<tr>
+								<th scope="row">Attachment</th>
+								<td>
+									<%= link_to @artifact.file_file_name, @artifact.file.url %>
+									<%= link_to delete_file_path(@project, @demand, @artifact), method: :post do %>
+										<%= fa_icon "trash" %>
+									<% end %>
+								</td>
+							</tr>
+						<% end %>
+						<tr>
+							<th>Created by</th>
+							<td><%= @artifact.user.email.split('@').first %></td>
+						</tr>
+						<tr>
+							<th>Created at</th>
+							<td><%= @artifact.created_at.to_date %></td>
+						</tr>
+						<tr>
+							<th>Updated at</th>
+							<td><%= @artifact.updated_at.to_date %></td>
+						</tr>
+					</tbody>
+				</table>
+				<% if @show_import_button %>
+					<%= link_to "Import Artifact", import_path(@project, @demand, @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+				<% else %>
+					<%= link_to "Edit Artifact", edit_project_demand_artifact_path(@project, @demand, @artifact), {class: "btn btn-primary", role: "button"} %>
+					<%= link_to "Delete Artifact", [@project, @demand, @artifact], {method: :delete, class: "btn btn-danger", role: "button"} %>
+				<% end %>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="list-group">
+						<strong>Backward</strong>
+						<% @artifact.backward_relationships.each do |r| %>
+							<%= link_to [@project, @demand, r.origin_artifact], class: "list-group-item" do%>
+								<div class="d-flex justify-content-between">
+									<%= r.origin_artifact.code_with_name %>
+									<small><%= r.relationship_type.name %></small>
+								</div>
+							<% end %>
+						<% end %>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="list-group">
+						<strong>Forward</strong>
+						<% @artifact.forward_relationships.each do |r| %>
+							<%= link_to [@project, @demand, r.end_artifact], class: "list-group-item" do%>
+								<div class="d-flex justify-content-between">
+									<small><%= r.relationship_type.name %></small>
+									<%= r.end_artifact.code_with_name %>
+								</div>
+							<% end %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+</div>

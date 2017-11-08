@@ -3,24 +3,16 @@
     <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <%= link_to "New Project", new_project_path, class: "nav-link active" %>
+          <%= link_to "Projects", projects_path, class: "nav-link active" %>
         </li>
-        <% @projects.each do |project| %>
-          <li class="nav-item">
-            <%= link_to project.name, project, class: "nav-link" %>
-          </li>
-          
-          <% project.demands.each do |demand| %>
-            <li class="nav-item">
-              <%= link_to "- #{demand.name}", [project, demand], class: "nav-link" %>
-            </li>
-          <% end %>
-        <% end %>
+        <li class="nav-item">
+          <%= link_to "New Project", new_project_path, class: "nav-link" %>
+        </li>
       </ul>
     </nav>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
       <h2>Projects</h2>
-      <div class="table-responsive">
+      <div class="table-responsive table-hover">
         <table class="table table-striped">
           <thead>
             <tr>
@@ -37,7 +29,7 @@
               <tr>
                 <td><%= project.name %></td>
                 <td><%= project.description %></td>
-                <td><%= project.user_create.email %></td>
+                <td><%= project.user.username %></td>
                 <td><%= project.created_at.to_date %></td>
                 <td><%= project.updated_at.to_date %></td>
                 <td><%= link_to project do %><%= fa_icon "folder-open" %><% end %></td>

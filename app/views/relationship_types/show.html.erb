@@ -1,9 +1,33 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Name:</strong>
-  <%= @relationship_type.name %>
-</p>
-
-<%= link_to 'Edit', edit_relationship_type_path(@relationship_type) %> |
-<%= link_to 'Back', relationship_types_path %>
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <%= link_to "Relationship Types", relationship_types_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "New Relationship Type", new_relationship_type_path, class: "nav-link" %>
+        </li>
+      </ul>
+    </nav>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <%= render 'layouts/alerts' %>
+      <h2><%= @relationship_type.name %></h2>
+  		<div class="table-responsive">
+				<table class="table table-bordered">
+					<tbody>
+							<th>Created at</th>
+							<td><%= @relationship_type.created_at.to_date %></td>
+						</tr>
+						<tr>
+							<th>Updated at</th>
+							<td><%= @relationship_type.updated_at.to_date %></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<%= link_to "Edit Relationship Type", edit_relationship_type_path(@relationship_type), {class: "btn btn-primary", role: "button"} %>
+			<%= link_to "Delete Relationship Type", @relationship_type, {method: :delete, class: "btn btn-danger", role: "button"} %>
+		</main>
+	</div>
+</div>

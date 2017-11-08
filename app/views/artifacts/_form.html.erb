@@ -13,49 +13,44 @@
 
   <div class="form-group row">
     <%= form.label :code, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.text_field :code, id: :artifact_code, class: "form-control" %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :name, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.text_field :name, id: :artifact_name, class: "form-control" %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :description, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.text_area :description, id: :artifact_description, class: "form-control" %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :priority, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.text_field :priority, id: :artifact_priority, class: "form-control" %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :artifact_type_id, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :file, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <%= form.file_field :file, class: "form-control" %>
     </div>
   </div>
-
-  <div class="form-group row">
-    <div class="col-sm-10">
-      <%= form.submit(class: "btn btn-primary") %>
-    </div>
-  </div>
+  <%= form.submit(class: "btn btn-primary") %>
 <% end %>

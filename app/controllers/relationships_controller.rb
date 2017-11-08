@@ -30,16 +30,22 @@ class RelationshipsController < ApplicationController
   # POST /relationships.json
   def create
     @relationship = @demand.relationships.build(relationship_params)
-    @relationship.user_create = current_user
+    @relationship.user = current_user
 
     respond_to do |format|
       if @relationship.save
-        @relationship.relationship_demands.create(demand: @demand, user_included_id: current_user.id)
-        # format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully created.' }
-        format.json { render json: @relationship.id, status: :created }
+        @relationship.relationship_demands.create(demand: @demand, user: current_user)
+        if request.format.html?
+          format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully created.' }
+        else
+          format.json { render json: @relationship.id, status: :created }
+        end
       else
-        # format.html { render :new }
-        format.json { render json: @relationship.errors, status: :unprocessable_entity }
+        if request.format.html?
+          format.html { render :new }
+        else
+          format.json { render json: @relationship.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

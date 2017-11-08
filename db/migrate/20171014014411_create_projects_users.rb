@@ -1,4 +1,4 @@
-class ProjectsUsers < ActiveRecord::Migration[5.1]
+class CreateProjectsUsers < ActiveRecord::Migration[5.1]
   def change
   	create_table :projects_users do |t|
   		t.references :project, foreign_key: true, null: false

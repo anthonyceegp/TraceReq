@@ -23,11 +23,6 @@ Rails.application.routes.draw do
   post '/projects/:id/add_users', to: 'projects#save_add_users'
   post '/projects/:id/users/:user_id', to:'projects#remove_user', as: :project_remove_user
 
-  get '/projects/:project_id/demands/:id/users', to: 'demands#users', as: :demand_users
-  get '/projects/:project_id/demands/:id/add_users', to: 'demands#add_users', as: :demand_add_users
-  post '/projects/:project_id/demands/:id/add_users', to: 'demands#save_add_users'
-  post '/projects/:project_id/demands/:id/users/:user_id', to:'demands#remove_user', as: :demand_remove_user
-  
   get '/projects/:project_id/demands/:id/import', to: 'demands#import', as: :import_artifacts
   post '/projects/:project_id/demands/:id/import', to: 'demands#save_import'
 
@@ -35,4 +30,7 @@ Rails.application.routes.draw do
   get '/projects/:project_id/demands/:demand_id/matrix', to: 'relationships#matrix', as: :matrix
 
   post '/projects/:project_id/demands/:demand_id/artifacts/:id/delete_file', to: 'artifacts#delete_file', as: :delete_file
+  post '/projects/:project_id/demands/:demand_id/artifacts/:id/import', to: 'artifacts#import', as: :import
+  get '/projects/:project_id/demands/:demand_id/artifacts/:id/versions', to: 'artifacts#versions', as: :artifact_versions
+  post '/projects/:project_id/demands/:demand_id/artifacts/:id/reify', to: 'artifacts#reify', as: :artifact_reify
 end

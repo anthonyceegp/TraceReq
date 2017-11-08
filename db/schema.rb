@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102143252) do
+ActiveRecord::Schema.define(version: 20171108000717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,13 +18,14 @@ ActiveRecord::Schema.define(version: 20171102143252) do
   create_table "artifact_demands", force: :cascade do |t|
     t.bigint "artifact_id", null: false
     t.bigint "demand_id", null: false
-    t.bigint "user_included_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "artifact_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artifact_id", "demand_id"], name: "index_artifact_demands_on_artifact_id_and_demand_id", unique: true
     t.index ["artifact_id"], name: "index_artifact_demands_on_artifact_id"
     t.index ["demand_id"], name: "index_artifact_demands_on_demand_id"
-    t.index ["user_included_id"], name: "index_artifact_demands_on_user_included_id"
+    t.index ["user_id"], name: "index_artifact_demands_on_user_id"
   end
 
   create_table "artifact_types", force: :cascade do |t|
@@ -40,16 +41,18 @@ ActiveRecord::Schema.define(version: 20171102143252) do
     t.string "description"
     t.string "priority"
     t.bigint "artifact_type_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_create_id", null: false
     t.string "file_file_name"
     t.string "file_content_type"
     t.integer "file_file_size"
     t.datetime "file_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
     t.index ["artifact_type_id"], name: "index_artifacts_on_artifact_type_id"
     t.index ["code"], name: "index_artifacts_on_code", unique: true
-    t.index ["user_create_id"], name: "index_artifacts_on_user_create_id"
+    t.index ["project_id"], name: "index_artifacts_on_project_id"
+    t.index ["user_id"], name: "index_artifacts_on_user_id"
   end
 
   create_table "demands", force: :cascade do |t|
@@ -57,31 +60,23 @@ ActiveRecord::Schema.define(version: 20171102143252) do
     t.string "description"
     t.integer "status", default: 0, null: false
     t.string "release"
-    t.bigint "user_create_id", null: false
+    t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_demands_on_name", unique: true
     t.index ["project_id"], name: "index_demands_on_project_id"
-    t.index ["user_create_id"], name: "index_demands_on_user_create_id"
-  end
-
-  create_table "demands_users", force: :cascade do |t|
-    t.bigint "demand_id", null: false
-    t.bigint "user_id", null: false
-    t.index ["demand_id", "user_id"], name: "index_demands_users_on_demand_id_and_user_id", unique: true
-    t.index ["demand_id"], name: "index_demands_users_on_demand_id"
-    t.index ["user_id"], name: "index_demands_users_on_user_id"
+    t.index ["user_id"], name: "index_demands_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
-    t.bigint "user_create_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_projects_on_name", unique: true
-    t.index ["user_create_id"], name: "index_projects_on_user_create_id"
+    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
   create_table "projects_users", force: :cascade do |t|
@@ -95,13 +90,13 @@ ActiveRecord::Schema.define(version: 20171102143252) do
   create_table "relationship_demands", force: :cascade do |t|
     t.bigint "relationship_id", null: false
     t.bigint "demand_id", null: false
-    t.bigint "user_included_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["demand_id"], name: "index_relationship_demands_on_demand_id"
     t.index ["relationship_id", "demand_id"], name: "index_relationship_demands_on_relationship_id_and_demand_id", unique: true
     t.index ["relationship_id"], name: "index_relationship_demands_on_relationship_id"
-    t.index ["user_included_id"], name: "index_relationship_demands_on_user_included_id"
+    t.index ["user_id"], name: "index_relationship_demands_on_user_id"
   end
 
   create_table "relationship_types", force: :cascade do |t|
@@ -118,12 +113,12 @@ ActiveRecord::Schema.define(version: 20171102143252) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_create_id", null: false
+    t.bigint "user_id", null: false
     t.index ["end_artifact_id"], name: "index_relationships_on_end_artifact_id"
     t.index ["origin_artifact_id", "end_artifact_id"], name: "index_relationships_on_origin_artifact_id_and_end_artifact_id", unique: true
     t.index ["origin_artifact_id"], name: "index_relationships_on_origin_artifact_id"
     t.index ["relationship_type_id"], name: "index_relationships_on_relationship_type_id"
-    t.index ["user_create_id"], name: "index_relationships_on_user_create_id"
+    t.index ["user_id"], name: "index_relationships_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -152,23 +147,32 @@ ActiveRecord::Schema.define(version: 20171102143252) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  end
+
   add_foreign_key "artifact_demands", "artifacts"
   add_foreign_key "artifact_demands", "demands"
-  add_foreign_key "artifact_demands", "users", column: "user_included_id"
+  add_foreign_key "artifact_demands", "users"
   add_foreign_key "artifacts", "artifact_types"
-  add_foreign_key "artifacts", "users", column: "user_create_id"
+  add_foreign_key "artifacts", "projects"
+  add_foreign_key "artifacts", "users"
   add_foreign_key "demands", "projects"
-  add_foreign_key "demands", "users", column: "user_create_id"
-  add_foreign_key "demands_users", "demands"
-  add_foreign_key "demands_users", "users"
-  add_foreign_key "projects", "users", column: "user_create_id"
+  add_foreign_key "demands", "users"
+  add_foreign_key "projects", "users"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
   add_foreign_key "relationship_demands", "demands"
   add_foreign_key "relationship_demands", "relationships"
-  add_foreign_key "relationship_demands", "users", column: "user_included_id"
+  add_foreign_key "relationship_demands", "users"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
   add_foreign_key "relationships", "relationship_types"
-  add_foreign_key "relationships", "users", column: "user_create_id"
+  add_foreign_key "relationships", "users"
 end

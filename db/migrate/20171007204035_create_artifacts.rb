@@ -6,6 +6,7 @@ class CreateArtifacts < ActiveRecord::Migration[5.1]
       t.string :description
       t.string :priority
       t.references :artifact_type, foreign_key: true, null: false
+      t.attachment :file
 
       t.timestamps
     end
