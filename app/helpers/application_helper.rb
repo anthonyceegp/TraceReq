@@ -25,10 +25,12 @@ module ApplicationHelper
   end
 
   def active_demand?
-    controllers = ["artifacts", "relationships"]
-    paths = [project_demand_path(@project, @demand), edit_project_demand_path(@project, @demand),
-    import_artifacts_path(@project, @demand)]
+    active =  active_for(controller: "artifacts") +
+              active_for(controller: "relationships") +
+              active_for(controller: "demands", action: "show") +
+              active_for(controller: "demands", action: "edit") +
+              active_for(controller: "demands", action: "import")
 
-    paths.include?(request.path) or controllers.include?(controller_name) ? true : false
+    active == 'active' ? true : false
   end
 end

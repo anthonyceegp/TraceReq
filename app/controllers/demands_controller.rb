@@ -2,6 +2,7 @@ class DemandsController < ApplicationController
   before_action :set_project, only: [:index, :new, :create]
   before_action :set_project_demand, except: [:index, :new, :create]
   before_action :set_statuses_collection, only: [:new, :edit, :create, :update]
+  before_action :set_users_collection, only: [:new, :edit, :create, :update]
 
   # GET /demands
   # GET /demands.json
@@ -27,7 +28,6 @@ class DemandsController < ApplicationController
   # POST /demands.json
   def create
     @demand = @project.demands.build(demand_params)
-    @demand.user = current_user
 
     respond_to do |format|
       if @demand.save
@@ -106,9 +106,13 @@ class DemandsController < ApplicationController
       @statuses = Demand.statuses
     end
 
+    def set_users_collection
+      @users = Project.find(params[:project_id]).users
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def demand_params
-      params.require(:demand).permit(:name, :description, :status, :release)
+      params.require(:demand).permit(:name, :description, :status, :release, :responsible_user_id)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

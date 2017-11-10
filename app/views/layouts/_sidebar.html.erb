@@ -15,7 +15,7 @@
         <li class="nav-item <%= active_for(path: project_demands_path(@project)) + active_for(path: new_project_demand_path(@project)) %>">
           <%= link_to "Demands", project_demands_path(@project), class: "nav-link" %>
         </li>
-        <% if (controller_name == "demands" and action_name != "index" and action_name != "new") or controller_name == "artifacts" or controller_name == "relationships" %>
+        <% if active_demand? %>
           <li class="nav-item item <%= active_demand? ? 'active' : '' %>">
             <a data-toggle="collapse" data-parent="#navigation" href="#demand" aria-expanded="<%= active_demand? ? 'true' : 'false' %>" aria-controls="demand" class="nav-link <%= active_demand? ? '' : 'collapsed' %>"><%= @demand.name %><%= fa_icon "chevron-down", class: "float-right" %></a>
           </li>

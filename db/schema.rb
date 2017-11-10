@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 20171108113307) do
     t.string "description"
     t.integer "status", default: 0, null: false
     t.string "release"
-    t.bigint "user_id", null: false
+    t.bigint "responsible_user_id", null: false
     t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_demands_on_name", unique: true
     t.index ["project_id"], name: "index_demands_on_project_id"
-    t.index ["user_id"], name: "index_demands_on_user_id"
+    t.index ["responsible_user_id"], name: "index_demands_on_responsible_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(version: 20171108113307) do
   add_foreign_key "artifacts", "projects"
   add_foreign_key "artifacts", "users"
   add_foreign_key "demands", "projects"
-  add_foreign_key "demands", "users"
+  add_foreign_key "demands", "users", column: "responsible_user_id"
   add_foreign_key "projects", "users"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"

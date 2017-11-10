@@ -10,7 +10,7 @@
             <tr>
               <th>Name</th>
               <th>Description</th>
-              <th>Created by</th>
+              <th>Reponsible</th>
               <th>Created at</th>
               <th>Updated at</th>
               <th></th>
@@ -21,7 +21,7 @@
               <tr class="clickable-row" data-href="<%= project_demand_path(@project, demand) %>">
                 <td><%= demand.name %></td>
                 <td><%= demand.description %></td>
-                <td><%= demand.user.username %></td>
+                <td><%= demand.responsible_user.username %></td>
                 <td><%= demand.created_at.to_date %></td>
                 <td><%= demand.updated_at.to_date %></td>
                 <td>
