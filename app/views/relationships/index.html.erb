@@ -1,54 +1,31 @@
 <div class="container-fluid">
   <div class="row">
-    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <%= link_to "New Relationship", new_project_demand_relationship_path(@project, @demand), class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Edit Relationships", matrix_path(@project, @demand), class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Back to Project", @project, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Back to Demand", [@project,@demand], class: "nav-link" %>
-        </li>
-      </ul>
-    </nav>
+    <%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
       <h2>Relationships</h2>
-      <div class="table-responsive dragscroll">
-        <table class="table table-bordered fixed-column">
-          <thead>
-            <tr>
-              <th scope="col" style="height: 50px"></th>
-            </tr>
-          </thead>
-          <tbody>
-              <% @artifacts.each do |artifact| %>
-                <tr>
-                  <th scope="row" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
-                </tr>
-              <% end %>
-          </tbody>      
-        </table>
+      <div class="table-responsive dragscroll">        
         <table class="table table-bordered" id="editableTable">
           <thead>
             <tr>
               <th scope="col"></th>
               <% @artifacts.each do |artifact| %>
-                <th scope="col" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
+                <th scope="col" data-id=<%="#{artifact.id}"%>>
+                  <%= link_to artifact.code, [@project, @demand, artifact] %>
+                </th>
               <% end %>
             </tr>
           </thead>
           <tbody>
-            <% @artifacts.each do |artifact| %>
+            <% @artifacts.each_with_index do |artifact, index| %>
               <tr>
                 <% i = 0; num = @artifacts.count + 1 %>
                 <% while (i < num) do %>
-                  <% if(i == 0) %>
-                    <th scope="row" data-id=<%="#{artifact.id}"%>><%= artifact.code %></th>
+                  <% if (i == 0) %>
+                    <th scope="row" data-id=<%="#{artifact.id}"%>>
+                      <%= link_to artifact.code, [@project, @demand, artifact] %>
+                    </th>
+                  <% elsif (i == index+1) %>
+                    <td style="background-color: grey"></td>
                   <% else %>
                     <td></td>
                   <% end %>
@@ -59,6 +36,7 @@
           </tbody>
         </table>
       </div>
+      <%= link_to "Edit Relationships", matrix_path(@project, @demand), class: "btn btn-primary", role: "button" %>
     </main>    
   </div>
 </div>
@@ -72,7 +50,7 @@
       var column = $("#editableTable thead th[data-id=" + relationships[i][1] + "]").index() - 1;
 
       var cell = row.find('td').eq(column)
-      cell.css('background', 'orange');
+      cell.css('background', '#e6f7ff');
     }
   });
 </script>

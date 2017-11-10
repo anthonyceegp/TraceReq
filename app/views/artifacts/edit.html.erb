@@ -1,6 +1,9 @@
-<h1>Editing Artifact</h1>
-
-<%= render 'form', artifact: @artifact %>
-
-<%= link_to 'Show', [@project, @demand, @artifact] %> |
-<%= link_to 'Back', project_demand_artifacts_path %>
+<div class="container-fluid">
+	<div class="row">
+		<%= render "layouts/sidebar" %>
+    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <h2>Editing Artifact</h2>
+			<%= render 'form', artifact: @artifact %>
+		</main>
+	</div>
+</div>

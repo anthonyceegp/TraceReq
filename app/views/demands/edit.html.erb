@@ -1,18 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <%= link_to "Demands", project_demands_path(@project), class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "New Demand", new_project_demand_path(@project), class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to @project.name, @project, class: "nav-link" %>
-        </li>
-      </ul>
-    </nav>
+    <%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
       <%= render 'layouts/alerts' %>
 			<h2>Editing Demand</h2>

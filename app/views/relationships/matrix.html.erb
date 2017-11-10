@@ -1,37 +1,9 @@
 <div class="container-fluid">
 	<div class="row">
-		<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <%= link_to "New Relationship", new_project_demand_relationship_path(@project, @demand), class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Back to Project", @project, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Back to Demand", [@project,@demand], class: "nav-link" %>
-        </li>
-      </ul>
-    </nav>
+		<%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
     	<h2>Relationships</h2>
 			<div class="table-responsive dragscroll">
-				<table class="table table-bordered fixed-column">
-					<thead>
-						<tr>
-							<th scope="col" style="height: 50px"></th>
-						</tr>
-					</thead>
-					<tbody>
-							<% @artifacts.each do |artifact| %>
-								<tr>
-									<th scope="row" data-id=<%="#{artifact.id}"%>>
-										<%= link_to artifact.code, [@project, @demand, artifact] %>
-									</th>
-								</tr>
-							<% end %>
-					</tbody>			
-				</table>
 				<table class="table table-bordered" id="editableTable">
 					<thead>
 						<tr>
@@ -83,7 +55,7 @@
 		    $.ajax({
 		    	type: "POST",
 		    	url: '<%= project_demand_relationships_path(@project, @demand) %>',
-		    	data: {relationship: {origin_artifact_id: origin_artifact_id, end_artifact_id: end_artifact_id, relationship_type_id: "1", description: ""}},
+		    	data: {relationship: {origin_artifact_id: origin_artifact_id, end_artifact_id: end_artifact_id, relationship_type_id: "6", description: ""}},
 		    	success: function(data) {
 		    		checkbox.attr("id",data);
 		    		checkbox.parent().css('background-color', '#e6f7ff');

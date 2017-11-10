@@ -40,9 +40,6 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-3">
-      <%= form.submit class: "btn btn-primary" %>
-    </div>
-  </div>
+  <%= form.submit class: "btn btn-primary" %>
+  <%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 <% end %>
