@@ -12,8 +12,20 @@
               <td><%= @demand.description %></td>
             </tr>
             <tr>
+              <th scope="row">Status</th>
+              <td><%= @demand.status.humanize %></td>
+            </tr>
+            <tr>
+              <th scope="row">Release</th>
+              <td><%= @demand.release %></td>
+            </tr>
+            <tr>
               <th scope="row">Resposible</th>
               <td><%= @demand.responsible_user.username %></td>
+            </tr>
+            <tr>
+              <th scope="row">Project</th>
+              <td><%= @demand.project.name %></td>
             </tr>
             <tr>
               <th scope="row">Created at</th>
