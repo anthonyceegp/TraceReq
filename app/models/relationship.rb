@@ -1,4 +1,10 @@
 class Relationship < ApplicationRecord
+  has_paper_trail on: [:create, :update]
+
+  before_destroy do 
+    self.versions.destroy_all
+  end
+
   validates :origin_artifact_id, presence: true
   validates :end_artifact_id, presence: true
   validates :relationship_type_id, presence: true

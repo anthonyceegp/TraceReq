@@ -118,7 +118,7 @@ class ArtifactsController < ApplicationController
       if params[:index]
         indexx = params[:index].to_i 
         version = @artifact.versions[indexx]
-        artifact = version.reify
+        artifact = version.reify(has_many: true, mark_for_destruction: true)
         artifact.save
         artifact.versions.where('created_at >= ?', version.created_at).delete_all
         indexx = artifact.versions.last.index

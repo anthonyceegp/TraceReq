@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   post '/projects/:project_id/demands/:id/import', to: 'demands#save_import'
 
   post '/projects/:project_id/demands/:id/remove_artifact/:artifact_id', to: 'demands#remove_artifact', as: :remove_artifact
-  get '/projects/:project_id/demands/:demand_id/matrix', to: 'relationships#matrix', as: :matrix
+  post '/projects/:project_id/demands/:demand_id/filter', to: 'relationships#filter', as: :filter
 
   post '/projects/:project_id/demands/:demand_id/artifacts/:id/delete_file', to: 'artifacts#delete_file', as: :delete_file
   post '/projects/:project_id/demands/:demand_id/artifacts/:id/import', to: 'artifacts#import', as: :import

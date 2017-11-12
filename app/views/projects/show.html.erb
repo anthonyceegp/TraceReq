@@ -2,6 +2,7 @@
   <div class="row">
     <%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+      <%= render "layouts/alerts" %>
       <h2><%= @project.name %> <%= link_to project_artifact_types_path(@project) do %><%= fa_icon "cog" %><% end %></h2>
       <div class="table-responsive">
         <table class="table table-bordered">

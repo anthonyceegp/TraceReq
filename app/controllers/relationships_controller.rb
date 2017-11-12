@@ -1,15 +1,17 @@
 class RelationshipsController < ApplicationController
-  before_action :set_project_demand, only: [:index, :new, :create, :matrix]
+  before_action :set_project_demand, only: [:index, :new, :create, :matrix, :filter]
   before_action :set_project_demand_relationship, only: [:show, :edit, :update, :destroy]
   before_action :set_artifacts_collections, only: [:new, :edit, :create, :update]
 
   # GET /relationships
   # GET /relationships.json
   def index
-    @relationships = Relationship.joins("inner join artifacts a on relationships.origin_artifact_id = a.id").
-                                  joins("inner join artifacts b on relationships.end_artifact_id = b.id").
-                                  pluck("a.id as origin_artifact_id", "b.id as end_artifact_id")
-    @artifacts = Artifact.all
+    @origin_artifacts = @end_artifacts = @demand.artifacts.order(:code)
+    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id').
+                        pluck('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
+    
+    @artifact_types = ArtifactType.all.order(:name)
+    @relationship_types = RelationshipType.all.order(:name)
   end
 
   # GET /relationships/1
@@ -69,16 +71,36 @@ class RelationshipsController < ApplicationController
   def destroy
     @relationship.destroy
     respond_to do |format|
-      # format.html { redirect_to project_demand_relationships_url, notice: 'Relationship was successfully destroyed.' }
-      format.json { head :no_content }
+      if request.format.html?
+        format.html { redirect_to project_demand_relationships_url, notice: 'Relationship was successfully destroyed.' }
+      else
+        format.json { head :no_content }
+      end
     end
   end
 
-  def matrix
-    @relationships = Relationship.joins("inner join artifacts a on relationships.origin_artifact_id = a.id").
-                                  joins("inner join artifacts b on relationships.end_artifact_id = b.id").
-                                  pluck("a.id as origin_artifact_id", "b.id as end_artifact_id", "relationships.id")
-    @artifacts = Artifact.all
+  def filter
+    @origin_artifacts = @end_artifacts = Artifact.all unless params[:show_all] == "0"
+    @origin_artifacts = @end_artifacts = @demand.artifacts unless params[:show_all] == "1"
+
+    @origin_artifacts = @origin_artifacts.where(artifact_type_id: params[:origin_artifact_type_id]) unless params[:origin_artifact_type_id].blank?
+    @end_artifacts = @end_artifacts.where(artifact_type_id: params[:end_artifact_type_id]) unless params[:end_artifact_type_id].blank?
+
+    @origin_artifacts = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id')
+                        .where('relationships.relationship_type_id = ?',params[:relationship_type_id]) unless params[:relationship_type_id].blank?
+    
+    @origin_artifacts = @origin_artifacts.order(:code)
+    @end_artifacts = @end_artifacts.order(:code)
+    
+    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id').
+                        pluck('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
+    if @origin_artifacts.empty? or @end_artifacts.empty?
+      html_content = '<p>No relationship matches the selected filters.</p>'
+    else
+      html_content = render_to_string partial: 'matrix', layout: false
+    end
+
+    render json: {attachmentPartial: html_content }
   end
 
   private

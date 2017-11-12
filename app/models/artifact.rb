@@ -23,11 +23,13 @@ class Artifact < ApplicationRecord
 
 	has_many :forward_relationships, 	foreign_key: "origin_artifact_id", 
 																		class_name: "Relationship",
-																		dependent: :destroy
+																		dependent: :destroy,
+																		autosave: true
 
 	has_many :backward_relationships,	foreign_key: "end_artifact_id",
 																		class_name: "Relationship",
-																		dependent: :destroy
+																		dependent: :destroy,
+																		autosave: true
 
 	def code_with_name
 		"#{code} - #{name}"

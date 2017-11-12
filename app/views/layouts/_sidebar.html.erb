@@ -29,7 +29,7 @@
             <li class="<%= active_for(path: import_artifacts_path(@project, @demand)) %>">
               <%= link_to import_artifacts_path(@project, @demand), class: "nav-link" do %><%= fa_icon "angle-right", class: "mr-3" %>Import Artifacts<% end %>
             </li>
-            <li class="<%= active_for(path: project_demand_relationships_path(@project, @demand)) + active_for(path: matrix_path(@project, @demand)) %>">
+            <li class="<%= active_for(path: project_demand_relationships_path(@project, @demand)) %>">
               <%= link_to project_demand_relationships_path(@project, @demand), class: "nav-link" do %><%= fa_icon "angle-right", class: "mr-3" %>Relationships<% end %>
             </li>
             <li class="<%= active_for(path: new_project_demand_relationship_path(@project, @demand)) %>">
