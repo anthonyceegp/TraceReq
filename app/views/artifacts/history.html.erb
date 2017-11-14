@@ -38,7 +38,7 @@
 								<% @versions.each do |v| %>
 									<% a = v.reify %>
 									<tr>
-										<td><%= form.radio_button :index, v.index %></td>
+										<td><%= form.radio_button :index, v.index if !@show_import_button %></td>
 										<td><%= a.code %></td>
 										<td><%= a.name %></td>
 										<td><%= a.artifact_type.name %></td>
@@ -53,8 +53,12 @@
 							<% end %>
 						</tbody>
 					</table>
-					<%= form.submit "Remove Artifact", class: "btn btn-primary" %>
-					<%= form.submit "Delete Artifact", class: "btn btn-danger" %>
+					<% if @show_import_button %>
+						<%= link_to "Import Artifact", import_path(@project, @demand, @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+					<% else %>
+						<%= form.submit "Remove Artifact", class: "btn btn-primary" %>
+						<%= form.submit "Delete Artifact", class: "btn btn-danger" %>
+					<% end %>
 					<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 				<% end %>
 			</div>

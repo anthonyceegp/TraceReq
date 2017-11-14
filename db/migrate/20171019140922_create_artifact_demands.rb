@@ -4,7 +4,8 @@ class CreateArtifactDemands < ActiveRecord::Migration[5.1]
   		t.references :artifact, foreign_key: true, null: false
   		t.references :demand, foreign_key: true, null: false
   		t.references :user, foreign_key: true, null: false
-  		t.integer :artifact_version, null: false, default: 0
+      t.integer :version_index, null: false
+      t.integer :status, null: false
 
   		t.timestamps
   	end

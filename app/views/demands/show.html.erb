@@ -39,7 +39,15 @@
         </table>
       </div>
       <%= link_to "Edit Demand", edit_project_demand_path(@project, @demand), class: "btn btn-primary", role: "button" %>
-      <%= link_to "Delete Demand", [@project, @demand], method: :delete, class: "btn btn-danger", role: "button" %>
+      <div class="btn-group">
+        <%= link_to "Delete Demand", [@project, @demand, keep: 0], method: :delete, class: "btn btn-danger", role: "button" %>
+        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <%= link_to "Keep Changes", [@project, @demand, keep: 1], method: :delete, class: "dropdown-item" %>
+        </div>
+      </div>
     </main>
   </div>
 </div>

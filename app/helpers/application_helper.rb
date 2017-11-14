@@ -24,12 +24,21 @@ module ApplicationHelper
     active == 'active' ? true : false
   end
 
+  def active_project?
+    active = active_for(controller: "demands", action: "index") +
+             active_for(controller: "projects", action: "artifacts") +
+             active_for(controller: "projects", action: "show")
+
+    active == 'active' ? true : false
+  end
+
   def active_demand?
     active =  active_for(controller: "artifacts") +
               active_for(controller: "relationships") +
               active_for(controller: "demands", action: "show") +
               active_for(controller: "demands", action: "edit") +
-              active_for(controller: "demands", action: "import")
+              active_for(controller: "demands", action: "import") +
+              active_for(controller: "demands", action: "conflict")
 
     active == 'active' ? true : false
   end

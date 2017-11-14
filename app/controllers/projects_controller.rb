@@ -97,6 +97,10 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def artifacts
+    @artifacts = @project.artifacts.page(params[:page]).per(8)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project

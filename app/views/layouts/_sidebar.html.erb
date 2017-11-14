@@ -9,12 +9,20 @@
         <li class="nav-item <%= active_for(path: projects_path) %>">
           <%= link_to "Projects", projects_path, class: "nav-link" %>
         </li>
-        <li class="nav-item <%= active_for(path: project_path(@project)) + active_for(path: edit_project_path(@project))%>">
-            <%= link_to @project.name, @project, class: "nav-link" %>
+        <li class="nav-item item <%= active_project? ? 'active' : '' %>">
+          <a data-toggle="collapse" data-parent="#navigation" href="#project" aria-expanded="<%= active_project? ? 'true' : 'false' %>" aria-controls="project" class="nav-link <%= active_project? ? '' : 'collapsed' %>"><%= @project.name %><%= fa_icon "chevron-down", class: "float-right" %></a>
         </li>
-        <li class="nav-item <%= active_for(path: project_demands_path(@project)) + active_for(path: new_project_demand_path(@project)) %>">
-          <%= link_to "Demands", project_demands_path(@project), class: "nav-link" %>
-        </li>
+        <ul id="project" class="collapse sub-menu <%= active_project? ? 'show' : '' %>" role="tabpanel">
+          <li class="<%= active_for(path: project_path(@project)) + active_for(path: edit_project_path(@project))%>">
+              <%= link_to @project, class: "nav-link" do %><%= fa_icon "angle-right", class: "mr-3" %>Show<% end %>
+          </li>
+          <li class="<%= active_for(path: project_demands_path(@project)) + active_for(path: new_project_demand_path(@project)) %>">
+            <%= link_to project_demands_path(@project), class: "nav-link" do %><%= fa_icon "angle-right", class: "mr-3" %>Demands<% end %>
+          </li>
+          <li class="<%= active_for(path: project_artifacts_path(@project)) %>">
+            <%= link_to project_artifacts_path(@project), class: "nav-link" do %><%= fa_icon "angle-right", class: "mr-3" %>Artifacts<% end %>
+          </li>
+        </ul>
         <% if active_demand? %>
           <li class="nav-item item <%= active_demand? ? 'active' : '' %>">
             <a data-toggle="collapse" data-parent="#navigation" href="#demand" aria-expanded="<%= active_demand? ? 'true' : 'false' %>" aria-controls="demand" class="nav-link <%= active_demand? ? '' : 'collapsed' %>"><%= @demand.name %><%= fa_icon "chevron-down", class: "float-right" %></a>

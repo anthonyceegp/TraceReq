@@ -14,4 +14,12 @@ class Demand < ApplicationRecord
 
 	has_many :relationship_demands
  	has_many :relationships, through: :relationship_demands
+
+ 	def edited_artifacts
+ 		result = []
+ 		artifacts.each do |artifact|
+ 			result << artifact  if artifact.version_index > artifact_demands.where(artifact_id: artifact.id).first.version_index
+ 		end
+ 		return result
+ 	end
 end

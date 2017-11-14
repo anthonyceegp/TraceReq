@@ -10,8 +10,10 @@
 		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
 			<%= render "layouts/alerts" %>
 			<h2><%= @artifact.code_with_name %>
-				<% if @number_conflict > 1 %>
-					<span class="badge badge-warning">Warning</span>
+				<% if @artifact.demands.size > 1 %>
+					<%= link_to artifact_demands_path(@project, @demand, @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
+						<%= fa_icon "exclamation-circle" %>
+					<% end %>
 				<% end %>
 			</h2>
 			<div class="table-responsive">
@@ -60,6 +62,7 @@
 					<%= link_to "Edit Artifact", edit_project_demand_artifact_path(@project, @demand, @artifact), {class: "btn btn-primary", role: "button"} %>
 					<%= link_to "Delete Artifact", [@project, @demand, @artifact], {method: :delete, class: "btn btn-danger", role: "button"} %>
 				<% end %>
+				<%= link_to "History", artifact_history_path(@project, @demand, @artifact), class: "btn btn-primary", role: "button" %>
 			</div>
 			<br>
 			<div class="row">

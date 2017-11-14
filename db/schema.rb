@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110191421) do
+ActiveRecord::Schema.define(version: 20171113154753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,8 @@ ActiveRecord::Schema.define(version: 20171110191421) do
     t.bigint "artifact_id", null: false
     t.bigint "demand_id", null: false
     t.bigint "user_id", null: false
-    t.integer "artifact_version", default: 0, null: false
+    t.integer "version_index", null: false
+    t.integer "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artifact_id", "demand_id"], name: "index_artifact_demands_on_artifact_id_and_demand_id", unique: true
@@ -95,6 +96,8 @@ ActiveRecord::Schema.define(version: 20171110191421) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", null: false
+    t.integer "version_index", null: false
     t.index ["demand_id"], name: "index_relationship_demands_on_demand_id"
     t.index ["relationship_id", "demand_id"], name: "index_relationship_demands_on_relationship_id_and_demand_id", unique: true
     t.index ["relationship_id"], name: "index_relationship_demands_on_relationship_id"
@@ -167,6 +170,7 @@ ActiveRecord::Schema.define(version: 20171110191421) do
     t.text "object"
     t.datetime "created_at"
     t.integer "transaction_id"
+    t.integer "origin_artifact_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
     t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end

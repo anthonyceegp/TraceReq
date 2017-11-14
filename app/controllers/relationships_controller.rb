@@ -36,7 +36,7 @@ class RelationshipsController < ApplicationController
 
     respond_to do |format|
       if @relationship.save
-        @relationship.relationship_demands.create(demand: @demand, user: current_user)
+        @relationship.relationship_demands.create(demand: @demand, user: current_user, status: :created, version_index: 0)
         if request.format.html?
           format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully created.' }
         else
@@ -94,6 +94,7 @@ class RelationshipsController < ApplicationController
     
     @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id').
                         pluck('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
+    
     if @origin_artifacts.empty? or @end_artifacts.empty?
       html_content = '<p>No relationship matches the selected filters.</p>'
     else

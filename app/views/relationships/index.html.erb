@@ -3,12 +3,12 @@
 		<%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
     	<h2>Relationships <a data-toggle="collapse" href="#filters" aria-expanded="false" aria-controls="filters"><%= fa_icon "filter" %></a></h2>
-    	<div class="collapse mb-3" id="filters">
+    	<div class="collapse" id="filters">
     		<div class="card card-body">
     			<%= render 'filters' %>
     		</div>    		
     	</div>
-    	<div class="row mb-3">
+    	<div class="row mb-3 mt-3">
 	    	<label class="col-form-label col-sm-2">Relationship Type</label>
 	    	<div class="col-sm-3">
 	    		<%= select_tag(:relationship_type_id, options_from_collection_for_select(@relationship_types, :id, :name), {class: "form-control"}) %>
@@ -97,6 +97,10 @@
 	  }).on("ajax:error", function(e, xhr, status, error) {
 	    $("#matrix").append("<p>ERROR</p>");
 	  });
+	});
+
+	$("input[value='Filter']").click(function() {
+		$("#filters").collapse("hide");
 	});
 </script>
 
