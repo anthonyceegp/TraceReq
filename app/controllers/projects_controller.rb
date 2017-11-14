@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.all.page(params[:page]).per(8)
   end
 
   # GET /projects/1
@@ -86,10 +86,6 @@ class ProjectsController < ApplicationController
 
   def remove_user
     user = @project.users.find(params[:user_id])
-    demands = user.demands.includes(:project).where(project: @project)
-    if demands.any?
-      user.demands.delete(demands)
-    end
     @project.users.delete(user)
     respond_to do |format|
       format.html { redirect_to project_users_url(@project), notice: 'User was successfully removed.' }
