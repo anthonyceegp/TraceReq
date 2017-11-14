@@ -110,10 +110,20 @@ class ArtifactsController < ApplicationController
           format.html { redirect_to project_demand_artifacts_url(@project, @demand), notice: 'Artifact was successfully removed.' }
           format.json { head :no_content }
         end
-      else
+      elsif params[:commit] == "Delete Artifact"
         @artifact.destroy
         format.html { redirect_to project_demand_artifacts_url(@project, @demand), notice: 'Artifact was successfully destroyed.' }
         format.json { head :no_content }
+      elsif params[:commit] == "Revert Artifact"
+        if params[:index]
+          @artifact.revert_to(params[:index].to_i)
+          format.html { redirect_to artifact_history_url(@project, @demand, @artifact), notice: 'Artifact was successfully reverted.' }
+          format.json { head :no_content }
+        else
+          @artifact.errors[:base] << "You must select one version to revert."
+          format.html { render :history }
+          format.json { render json: @artifact.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
