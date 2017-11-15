@@ -59,26 +59,4 @@ class Artifact < ApplicationRecord
 	    artifact_demands.where("version_index > ?", previous_version.index).update_all(version_index: previous_version.index)
 	  end
 	end
-
-	def destroy?(demand)
-	artifact_demand = self.artifact_demands.where(demand: demand).first
-
-	if demands.where.not(id: demand.id).any?
-		if artifact_demand.status == "imported"
-			message = "Artifact is related to other demands and it has been changed sice it was imported to this demand. "
-		else
-			message = "Artifact is related to other demands and it has been changed sice it was created in this demand. "
-		end
-		complement = "You may want to choose a version to keep it. Case you don't select any, it will be left as it is. You may also just delete it."
-		return message + complement if self.version_index > artifact_demand.version_index
-	end
-	
-	message = "Artifact is not related to other demands and it hasn't been changed sice it was imported to this demand. "
-	complement = "You may remove or just delete it"
-	return message + complement if artifact_demand.status == "imported"
-
-	self.destroy
-		
-	return ""
-	end
 end

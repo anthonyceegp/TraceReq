@@ -17,7 +17,7 @@
             <% @relationship_types.each do |relationship_type| %>
               <tr class="clickable-row" data-href="<%= project_relationship_type_path(@project, relationship_type) %>">
                 <td><%= relationship_type.name %></td>
-                <td>
+                <td class="not-clikable">
                   <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
                     <%= fa_icon "trash" %>
                   <% end %>

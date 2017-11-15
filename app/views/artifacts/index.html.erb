@@ -3,7 +3,7 @@
     <%= render "layouts/sidebar" %>
     <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
       <%= render "layouts/alerts" %>
-      <h2>Artifacts <%= link_to new_project_demand_artifact_path(@project, @demand), title: "New Artifact" do %><%= fa_icon "plus" %><% end %></h2>
+      <h2>Artifacts <%= link_to url_for(action: :new), title: "New Artifact" do %><%= fa_icon "plus" %><% end %></h2>
       <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
@@ -13,22 +13,30 @@
               <th>Type</th>
               <th>Description</th>
               <th>Priority</th>
+              <th>Attachment</th>
               <th>Created by</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <% @artifacts.each do |artifact| %>
-              <tr class="clickable-row" data-href="<%= project_demand_artifact_path(@project, @demand, artifact) %>">
+              <tr class="clickable-row" data-href="<%= url_for(action: :show, id: artifact.id) %>">
                 <td><%= artifact.code %></td>
                 <td><%= artifact.name %></td>
                 <td><%= artifact.artifact_type.name %></td>
                 <td><%= artifact.description %></td>
                 <td><%= artifact.priority %></td>
+                <td class="not-clikable">
+                  <% if artifact.file? %>
+                    <%= link_to artifact.file.url, title: artifact.file_file_name, target: :_blank do %>
+                      <%= fa_icon "paperclip" %>
+                    <% end %>
+                  <% end %>
+                </td>
                 <td><%= artifact.user.email.split('@').first %></td>
-                <td>
+                <td class="not-clikable">
                   <% if artifact.demands.size > 1 %>
-                    <%= link_to artifact_demands_path(@project, @demand, artifact), class: "badge badge-warning float-right", title: "Artifact related to other demands" do %>
+                    <%= link_to url_for(action: :demands, id: artifact), class: "badge badge-warning float-right", title: "Artifact related to other demands" do %>
                       <%= fa_icon "exclamation-circle" %>
                     <% end %>
                   <% end %>

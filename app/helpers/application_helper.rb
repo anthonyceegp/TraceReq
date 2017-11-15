@@ -29,16 +29,23 @@ module ApplicationHelper
              active_for(controller: "projects", action: "artifacts") +
              active_for(controller: "projects", action: "show")
 
+    if active_for(controller: "artifacts") == 'active'
+      active = 'active' unless request.path.match(/\/projects\/\d+\/artifacts/).nil?
+    end
+
     active == 'active' ? true : false
   end
 
   def active_demand?
-    active =  active_for(controller: "artifacts") +
-              active_for(controller: "relationships") +
+    active =  active_for(controller: "relationships") +
               active_for(controller: "demands", action: "show") +
               active_for(controller: "demands", action: "edit") +
               active_for(controller: "demands", action: "import") +
               active_for(controller: "demands", action: "conflict")
+
+    if active_for(controller: "artifacts") == 'active'
+      active = 'active' unless request.path.match(/\/projects\/\d+\/demands\/\d+\/artifacts/).nil?
+    end
 
     active == 'active' ? true : false
   end

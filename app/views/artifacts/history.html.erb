@@ -15,8 +15,8 @@
 		      </ul>
 		    </div>
 		  <% end %>
-			<div class="table-responsive">
-				<%= form_with url: artifact_reify_path(@project, @demand, @artifact), local: true do |form| %>
+		  <%= form_with url: url_for(action: :history), local: true do |form| %>
+				<div class="table-responsive">
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -40,7 +40,13 @@
 								<td><%= @artifact.artifact_type.name %></td>
 								<td><%= @artifact.description %></td>
 								<td><%= @artifact.priority %></td>
-								<td><%= @artifact.file_file_name %></td>
+								<td>
+									<% if @artifact.file? %>
+										<%= link_to @artifact.file.url, title: @artifact.file_file_name, target: :_blank do %>
+											<%= fa_icon "paperclip" %>
+										<% end %>
+									<% end %>
+								</td>
 								<td><%= @artifact.version_index + 1 %></td>
 								<td><%= @artifact.updated_at.to_date %></td>
 								<td><%= User.find(@artifact.paper_trail.originator).username %></td>
@@ -55,7 +61,7 @@
 										<td><%= a.artifact_type.name %></td>
 										<td><%= a.description %></td>
 										<td><%= a.priority%></td>
-										<td><%= a.file_file_name%></td>
+										<td><%= fa_icon "paperclip", title: a.file_file_name unless a.file_file_name.nil? %></td>
 										<td><%= v.index %></td>
 										<td><%= a.updated_at.to_date %></td>
 										<td><%= User.find(v.previous.whodunnit).username %></td>
@@ -64,16 +70,21 @@
 							<% end %>
 						</tbody>
 					</table>
-					<% if @show_import_button %>
-						<%= link_to "Import Artifact", import_path(@project, @demand, @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
-					<% else %>
-						<%= form.submit "Remove Artifact", class: "btn btn-primary", "data-confirm": "Are you sure?" %>
-						<%= form.submit "Revert Artifact", class: "btn btn-danger", "data-confirm": "Are you sure?" %>
-						<%= form.submit "Delete Artifact", class: "btn btn-danger", "data-confirm": "Are you sure?" %>
-					<% end %>
-					<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
-				<% end %>
-			</div>
+				</div>
+			<% if @show_import_button %>
+				<%= link_to "Import Artifact", url_for(action: :import, id: @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+			<% else %>
+				<div class="btn-group">
+	        <%= link_to "Delete Artifact", url_for(action: :destroy, id: @artifact), method: :delete, class: "btn btn-danger", role: "button", "data-confirm": "Are you sure?" %>
+	        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+	        <div class="dropdown-menu">
+	        	<%= form.submit "Remove Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" if @show_remove_button %>
+	          <%= form.submit "Revert Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" %>
+	        </div>
+	      </div>
+			<% end %>
+			<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
+		<% end %>
 		</main>
 	</div>
 </div>

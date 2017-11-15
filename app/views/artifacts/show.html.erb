@@ -11,7 +11,7 @@
 			<%= render "layouts/alerts" %>
 			<h2><%= @artifact.code_with_name %>
 				<% if @artifact.demands.size > 1 %>
-					<%= link_to artifact_demands_path(@project, @demand, @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
+					<%= link_to url_for(action: :demands, id: @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
 						<%= fa_icon "exclamation-circle" %>
 					<% end %>
 				<% end %>
@@ -35,8 +35,8 @@
 							<tr>
 								<th scope="row">Attachment</th>
 								<td>
-									<%= link_to @artifact.file_file_name, @artifact.file.url %>
-									<%= link_to delete_file_path(@project, @demand, @artifact), method: :post do %>
+									<%= link_to @artifact.file_file_name, @artifact.file.url, target: :_blank %>
+									<%= link_to url_for(action: :delete_file, id: @artifact), method: :post do %>
 										<%= fa_icon "trash" %>
 									<% end %>
 								</td>
@@ -57,12 +57,21 @@
 					</tbody>
 				</table>
 				<% if @show_import_button %>
-					<%= link_to "Import Artifact", import_path(@project, @demand, @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+					<%= link_to "Import Artifact", url_for(action: :import, id: @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+					<%= link_to "History", url_for(action: :history, id: @artifact), class: "btn btn-primary", role: "button" %>
 				<% else %>
-					<%= link_to "Edit Artifact", edit_project_demand_artifact_path(@project, @demand, @artifact), {class: "btn btn-primary", role: "button"} %>
-					<%= link_to "Delete Artifact", [@project, @demand, @artifact], {method: :delete, class: "btn btn-danger", role: "button"} %>
+					<%= link_to "Edit Artifact", url_for(action: :edit, id: @artifact), class: "btn btn-primary", role: "button" %>
+					<%= link_to "Artifact History", url_for(action: :history, id: @artifact), class: "btn btn-primary", role: "button" %>
+					<div class="btn-group">
+		        <%= link_to "Delete Artifact", url_for(action: :destroy, id: @artifact), method: :delete, class: "btn btn-danger", role: "button", "data-confirm": "Are you sure?" %>
+		        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+		        <div class="dropdown-menu">
+		        	<%= link_to "Remove Artifact", url_for(action: :history, id: @artifact), class: "btn btn-danger dropdown-item" if @show_remove_button %>
+		          <%= link_to "Revert Artifact", url_for(action: :history, id: @artifact), class: "btn btn-danger dropdown-item" %>
+		        </div>
+		      </div>
 				<% end %>
-				<%= link_to "History", artifact_history_path(@project, @demand, @artifact), class: "btn btn-primary", role: "button" %>
+				<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 			</div>
 			<br>
 			<div class="row">
@@ -70,7 +79,7 @@
 					<div class="list-group">
 						<strong>Backward</strong>
 						<% @artifact.backward_relationships.each do |r| %>
-							<%= link_to [@project, @demand, r.origin_artifact], class: "list-group-item" do%>
+							<%= link_to url_for(action: :show, id: r.origin_artifact), class: "list-group-item" do%>
 								<div class="d-flex justify-content-between">
 									<%= r.origin_artifact.code_with_name %>
 									<small><%= r.relationship_type.name %></small>
@@ -83,7 +92,7 @@
 					<div class="list-group">
 						<strong>Forward</strong>
 						<% @artifact.forward_relationships.each do |r| %>
-							<%= link_to [@project, @demand, r.end_artifact], class: "list-group-item" do%>
+							<%= link_to url_for(action: :show, id: r.end_artifact), class: "list-group-item" do%>
 								<div class="d-flex justify-content-between">
 									<small><%= r.relationship_type.name %></small>
 									<%= r.end_artifact.code_with_name %>

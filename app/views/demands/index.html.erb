@@ -24,7 +24,7 @@
                 <td><%= demand.responsible_user.username %></td>
                 <td><%= demand.created_at.to_date %></td>
                 <td><%= demand.updated_at.to_date %></td>
-                <td>
+                <td class="not-clikable">
                   <%= link_to [@project, demand], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
                     <%= fa_icon "trash" %>
                   <% end %>

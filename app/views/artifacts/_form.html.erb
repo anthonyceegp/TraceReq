@@ -1,10 +1,11 @@
-<%= form_with(model: [@project, @demand, artifact], local: true, multipart: true) do |form| %>
-  <% if artifact.errors.any? %>
+<% @artifact.new_record? ? action = 'create' : action = 'update' %>
+<%= form_with(model: @artifact, url: url_for(action: action, id: @artifact), local: true, multipart: true) do |form| %>
+  <% if @artifact.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(artifact.errors.count, "error") %> prohibited this artifact from being saved:</h2>
+      <h2><%= pluralize(@artifact.errors.count, "error") %> prohibited this artifact from being saved:</h2>
 
       <ul>
-      <% artifact.errors.full_messages.each do |message| %>
+      <% @artifact.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>

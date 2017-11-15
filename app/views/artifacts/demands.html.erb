@@ -17,7 +17,7 @@
           </thead>
           <tbody>
             <% @demands.each do |demand| %>
-              <tr class="clickable-row" data-href="<%= project_demand_path(@project, demand) %>">
+              <tr class="clickable-row" data-href="<%= url_for(controller: 'demands', action: :show, id: demand) %>">
                 <td><%= demand.name %></td>
                 <td><%= demand.description %></td>
                 <td><%= demand.responsible_user.username %></td>

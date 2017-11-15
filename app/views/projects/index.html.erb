@@ -23,7 +23,7 @@
                 <td><%= project.user.username %></td>
                 <td><%= project.created_at.to_date %></td>
                 <td><%= project.updated_at.to_date %></td>
-                <td>
+                <td class="not-clikable">
                   <%= link_to project, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
                     <%= fa_icon "trash" %>
                   <% end %>
