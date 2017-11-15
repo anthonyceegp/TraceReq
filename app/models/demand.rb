@@ -12,9 +12,6 @@ class Demand < ApplicationRecord
 	has_many :artifact_demands, dependent: :destroy
 	has_many :artifacts, through: :artifact_demands
 
-	has_many :relationship_demands
- 	has_many :relationships, through: :relationship_demands
-
  	def edited_artifacts
  		result = []
  		artifacts.each do |artifact|

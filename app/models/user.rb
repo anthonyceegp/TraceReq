@@ -8,7 +8,7 @@ class User < ApplicationRecord
 	has_many :created_artifacts, class_name: "Artifact"
 	has_many :created_relationships, class_name: "Relationship"
 	has_many :created_projects, class_name: "Project"
-	has_many :demands
+	has_many :created_demands, class_name: "Demand"
 	
 	has_and_belongs_to_many :projects
 

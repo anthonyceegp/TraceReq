@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113154753) do
+ActiveRecord::Schema.define(version: 20171115122715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,20 +90,6 @@ ActiveRecord::Schema.define(version: 20171113154753) do
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
-  create_table "relationship_demands", force: :cascade do |t|
-    t.bigint "relationship_id", null: false
-    t.bigint "demand_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "status", null: false
-    t.integer "version_index", null: false
-    t.index ["demand_id"], name: "index_relationship_demands_on_demand_id"
-    t.index ["relationship_id", "demand_id"], name: "index_relationship_demands_on_relationship_id_and_demand_id", unique: true
-    t.index ["relationship_id"], name: "index_relationship_demands_on_relationship_id"
-    t.index ["user_id"], name: "index_relationship_demands_on_user_id"
-  end
-
   create_table "relationship_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -121,9 +107,11 @@ ActiveRecord::Schema.define(version: 20171113154753) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
     t.index ["end_artifact_id"], name: "index_relationships_on_end_artifact_id"
     t.index ["origin_artifact_id", "end_artifact_id"], name: "index_relationships_on_origin_artifact_id_and_end_artifact_id", unique: true
     t.index ["origin_artifact_id"], name: "index_relationships_on_origin_artifact_id"
+    t.index ["project_id"], name: "index_relationships_on_project_id"
     t.index ["relationship_type_id"], name: "index_relationships_on_relationship_type_id"
     t.index ["user_id"], name: "index_relationships_on_user_id"
   end
@@ -187,12 +175,10 @@ ActiveRecord::Schema.define(version: 20171113154753) do
   add_foreign_key "projects", "users"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
-  add_foreign_key "relationship_demands", "demands"
-  add_foreign_key "relationship_demands", "relationships"
-  add_foreign_key "relationship_demands", "users"
   add_foreign_key "relationship_types", "projects"
   add_foreign_key "relationships", "artifacts", column: "end_artifact_id"
   add_foreign_key "relationships", "artifacts", column: "origin_artifact_id"
+  add_foreign_key "relationships", "projects"
   add_foreign_key "relationships", "relationship_types"
   add_foreign_key "relationships", "users"
 end

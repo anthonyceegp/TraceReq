@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
     resources :demands do
       resources :artifacts
-      resources :relationships      
+      resources :relationships    
     end
   end
   

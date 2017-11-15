@@ -23,9 +23,7 @@ class Relationship < ApplicationRecord
   belongs_to :end_artifact, class_name: 'Artifact'
   belongs_to :relationship_type
   belongs_to :user
-  
-  has_many :relationship_demands, dependent: :destroy
-  has_many :demands, through: :relationship_demands
+  belongs_to :project
 
   def equal_artifacts
   	if origin_artifact_id == end_artifact_id

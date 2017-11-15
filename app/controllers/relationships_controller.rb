@@ -31,12 +31,11 @@ class RelationshipsController < ApplicationController
   # POST /relationships
   # POST /relationships.json
   def create
-    @relationship = @demand.relationships.build(relationship_params)
+    @relationship = @project.relationships.build(relationship_params)
     @relationship.user = current_user
 
     respond_to do |format|
       if @relationship.save
-        @relationship.relationship_demands.create(demand: @demand, user: current_user, status: :created, version_index: 0)
         if request.format.html?
           format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully created.' }
         else
@@ -114,7 +113,7 @@ class RelationshipsController < ApplicationController
     def set_project_demand_relationship
       @project = Project.find(params[:project_id])
       @demand = @project.demands.find(params[:demand_id])
-      @relationship = @demand.relationships.find(params[:id])
+      @relationship = @project.relationships.find(params[:id])
     end
 
     def set_artifacts_collections
