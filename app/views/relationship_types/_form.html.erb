@@ -1,22 +1,10 @@
-<%= form_with(model: [@project, relationship_type], local: true) do |form| %>
-  <% if relationship_type.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(relationship_type.errors.count, "error") %> prohibited this relationship_type from being saved:</h2>
-
-      <ul>
-      <% relationship_type.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with(model: [@project, @relationship_type], local: true) do |form| %>
   <div class="form-group row">
     <%= form.label :name, class: "col-form-label col-sm-1"%>
     <div class="col-sm-3">
-      <%= form.text_field :name, id: :relationship_type_name, class: "form-control" %>
-    </div>
-    
+      <%= form.text_field :name, id: :relationship_type_name, class: "form-control #{is_invalid(@relationship_type, :name)}" %>
+      <%= error_massage_for(@relationship_type, :name) %>
+    </div>    
   </div>
 
   <div class="actions">

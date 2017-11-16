@@ -1,21 +1,9 @@
-<% if demand.errors.any? %>
-  <div class="row">
-    <h2><%= pluralize(demand.errors.count, "error") %> prohibited this demand from being saved:</h2>
-  </div>
-  <div class="row">
-    <ul>
-    <% demand.errors.full_messages.each do |message| %>
-      <li><%= message %></li>
-    <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with(model: [@project, demand], local: true) do |form| %>
+<%= form_with(model: [@project, @demand], local: true) do |form| %>
   <div class="form-group row">
     <%= form.label :name, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
-      <%= form.text_field :name, id: :demand_name, class: "form-control" %>
+      <%= form.text_field :name, id: :demand_name, class: "form-control #{is_invalid(@demand, :name)}" %>
+      <%= error_massage_for(@demand, :name) %>
     </div>
   </div>
 
@@ -29,7 +17,8 @@
   <div class="form-group row">
     <%= form.label :status, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
-      <%= form.collection_select :status, @statuses.map{ |s| [s.first, s.first.humanize] }, :first, :second, {}, {class: "form-control"} %>
+      <%= form.collection_select :status, @statuses.map{ |s| [s.first, s.first.humanize] }, :first, :second, {}, {class: "form-control #{is_invalid(@demand, :status)}"} %>
+      <%= error_massage_for(@demand, :status) %>
     </div>
   </div>
 
@@ -43,7 +32,8 @@
   <div class="form-group row">
     <%= form.label :responsible_user_id, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
-      <%= form.collection_select(:responsible_user_id, @users, :id, :username, {prompt: 'Select'}, {class: "form-control"}) %>
+      <%= form.collection_select(:responsible_user_id, @users, :id, :username, {prompt: 'Select'}, {class: "form-control #{is_invalid(@demand, :responsible_user)}"}) %>
+      <%= error_massage_for(@demand, :responsible_user) %>
     </div>
   </div>
 

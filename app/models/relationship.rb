@@ -5,18 +5,16 @@ class Relationship < ApplicationRecord
   before_update { touch_origin_artifact('update relationship') }
   before_destroy { touch_origin_artifact('destroy relationship') }
 
-  validates :origin_artifact_id, presence: true
-  validates :end_artifact_id, presence: true
-  validates :relationship_type_id, presence: true
+  validates :description, length: { maximum: 255}
 
-  validate :equal_artifacts
-  validate :uniqueness_in_both_ways
+  validate :uniqueness_in_both_ways, if: 'origin_artifact.present? and end_artifact.present?'
+  validate :equal_artifacts, if: 'origin_artifact.present? and end_artifact.present?'
 
   validates_uniqueness_of :origin_artifact, scope: [:end_artifact_id], 
-  						                    message: 'already related to end artifact.', 
+  						                    message: 'already related to end artifact.',
   						                    before: [:create, :update]
   validates_uniqueness_of :end_artifact, scope: [:origin_artifact_id],
-                                  message: 'already related to origin artifact.', 
+                                  message: 'already related to origin artifact.',
                                   before: [:create, :update]
 
   belongs_to :origin_artifact, class_name: 'Artifact'
@@ -27,7 +25,7 @@ class Relationship < ApplicationRecord
 
   def equal_artifacts
   	if origin_artifact_id == end_artifact_id
-      errors.add(:artifact, 'must be different from end artifact.')
+      errors.add(:origin_artifact, 'must be different from end artifact.')
       errors.add(:end_artifact, 'must be different from origin artifact.')
     end
   end

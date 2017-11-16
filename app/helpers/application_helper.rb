@@ -49,4 +49,12 @@ module ApplicationHelper
 
     active == 'active' ? true : false
   end
+
+  def is_invalid(object, symbol)
+    object.errors.include?(symbol) ? " is-invalid" : ""
+  end
+
+  def error_massage_for(object, symbol)
+    raw "<div class='invalid-feedback'>#{object.errors.full_messages_for(symbol).first}</div>" if object.errors[symbol].present?
+  end
 end

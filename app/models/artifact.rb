@@ -9,10 +9,9 @@ class Artifact < ApplicationRecord
 		PaperTrail::Version.where(origin_artifact_id: self.id).destroy_all
 	end
 
-	validates :code, presence: true, uniqueness: true, length: { maximum: 6}
+	validates :code, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 6}
 	validates :name, presence: true
 	validates :description, length: { maximum: 255}
-	validates :artifact_type_id, presence: true
 
 	belongs_to :artifact_type
 	belongs_to :user

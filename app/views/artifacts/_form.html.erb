@@ -1,35 +1,26 @@
 <% @artifact.new_record? ? action = 'create' : action = 'update' %>
 <%= form_with(model: @artifact, url: url_for(action: action, id: @artifact), local: true, multipart: true) do |form| %>
-  <% if @artifact.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@artifact.errors.count, "error") %> prohibited this artifact from being saved:</h2>
-
-      <ul>
-      <% @artifact.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="form-group row">
     <%= form.label :code, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
-      <%= form.text_field :code, id: :artifact_code, class: "form-control" %>
+      <%= form.text_field :code, id: :artifact_code, class: "form-control #{is_invalid(@artifact, :code)}" %>
+      <%= error_massage_for(@artifact, :code) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :name, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
-      <%= form.text_field :name, id: :artifact_name, class: "form-control" %>
+      <%= form.text_field :name, id: :artifact_name, class: "form-control #{is_invalid(@artifact, :name)}" %>
+      <%= error_massage_for(@artifact, :name) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :description, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
-      <%= form.text_area :description, id: :artifact_description, class: "form-control" %>
+      <%= form.text_area :description, id: :artifact_description, class: "form-control  #{is_invalid(@artifact, :description)}" %>
+      <%= error_massage_for(@artifact, :description) %>
     </div>
   </div>
 
@@ -43,7 +34,8 @@
   <div class="form-group row">
     <%= form.label :artifact_type_id, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
-      <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
+      <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@artifact, :artifact_type)}"}) %>
+      <%= error_massage_for(@artifact, :artifact_type) %>
     </div>
   </div>
 

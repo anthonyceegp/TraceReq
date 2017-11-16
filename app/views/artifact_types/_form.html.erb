@@ -1,20 +1,9 @@
-<%= form_with(model: [@project, artifact_type], local: true) do |form| %>
-  <% if artifact_type.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(artifact_type.errors.count, "error") %> prohibited this artifact_type from being saved:</h2>
-
-      <ul>
-      <% artifact_type.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with(model: [@project, @artifact_type], local: true) do |form| %>
   <div class="form-group row">
     <%= form.label :name, class: "col-form-label col-sm-1" %>
     <div class="col-sm-3">
-      <%= form.text_field :name, id: :artifact_type_name, class: "form-control" %> 
+      <%= form.text_field :name, id: :artifact_type_name, class: "form-control #{is_invalid(@artifact_type, :name)}" %>
+      <%= error_massage_for(@artifact_type, :name)%>
     </div>    
   </div>
 

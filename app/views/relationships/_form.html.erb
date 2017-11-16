@@ -1,41 +1,33 @@
-<%= form_with(model: [@project, @demand, relationship], local: true) do |form| %>
-  <% if relationship.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(relationship.errors.count, "error") %> prohibited this relationship from being saved:</h2>
-
-      <ul>
-      <% relationship.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with(model: [@project, @demand, @relationship], local: true) do |form| %>
   <div class="form-group row">
     <%= form.label :origin_artifact_id, class: "col-form-label col-sm-2" %>
-    <div class="col-sm-3">
-      <%= form.collection_select(:origin_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control"}) %>
+    <div class="col-sm-5">
+      <%= form.collection_select(:origin_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :origin_artifact)}"}) %>
+      <%= error_massage_for(@relationship, :origin_artifact) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :end_artifact_id, class: "col-form-label col-sm-2" %>
-    <div class="col-sm-3">
-      <%= form.collection_select(:end_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control"}) %>
+    <div class="col-sm-5">
+      <%= form.collection_select(:end_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :end_artifact)}"}) %>
+      <%= error_massage_for(@relationship, :end_artifact) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :relationship_type_id, class: "col-form-label col-sm-2" %>
-    <div class="col-sm-3">
-      <%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
+    <div class="col-sm-5">
+      <%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :relationship_type)}"}) %>
+      <%= error_massage_for(@relationship, :relationship_type) %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= form.label :description, class: "col-form-label col-sm-2" %>
-    <div class="col-sm-3">
-      <%= form.text_field :description, id: :relationship_description, class: "form-control" %>
+    <div class="col-sm-5">
+      <%= form.text_area :description, id: :relationship_description, class: "form-control #{is_invalid(@relationship, :description)}" %>
+      <%= error_massage_for(@relationship, :description) %>
     </div>
   </div>
 
