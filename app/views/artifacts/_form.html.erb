@@ -48,9 +48,9 @@
   </div>
 
   <div class="form-group row">
-    <%= form.label :file, class: "col-sm-2 col-form-label" %>
+    <%= label_tag :file, "Attachment", class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
-      <%= form.file_field :file, class: "form-control" %>
+      <%= file_field_tag :file, class: "form-control" %>
     </div>
   </div>
   <%= form.submit(class: "btn btn-primary") %>

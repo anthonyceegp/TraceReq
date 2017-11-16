@@ -41,8 +41,8 @@
 								<td><%= @artifact.description %></td>
 								<td><%= @artifact.priority %></td>
 								<td>
-									<% if @artifact.file? %>
-										<%= link_to @artifact.file.url, title: @artifact.file_file_name, target: :_blank do %>
+									<% if !@artifact.attachment.nil? %>
+										<%= link_to @artifact.attachment.file.url, title: @artifact.attachment.file_file_name, target: :_blank do %>
 											<%= fa_icon "paperclip" %>
 										<% end %>
 									<% end %>
@@ -61,7 +61,13 @@
 										<td><%= a.artifact_type.name %></td>
 										<td><%= a.description %></td>
 										<td><%= a.priority%></td>
-										<td><%= fa_icon "paperclip", title: a.file_file_name unless a.file_file_name.nil? %></td>
+										<td>
+											<% if !a.attachment.nil? %>
+												<%= link_to a.attachment.file.url, title: a.attachment.file_file_name, target: :_blank do %>
+													<%= fa_icon "paperclip" %>
+												<% end %>
+											<% end %>
+										</td>
 										<td><%= v.index %></td>
 										<td><%= a.updated_at.to_date %></td>
 										<td><%= User.find(v.previous.whodunnit).username %></td>

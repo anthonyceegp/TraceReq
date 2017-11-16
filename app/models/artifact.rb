@@ -6,14 +6,8 @@ class Artifact < ApplicationRecord
 	end
 
 	after_destroy do
-		Relationship.paper_trail.disable
 		PaperTrail::Version.where(origin_artifact_id: self.id).destroy_all
-		Relationship.paper_trail.enable
 	end
-
-	has_attached_file :file
-	validates_attachment :file, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png",
-															"application/pdf", "application/doc", "application/msword"] }
 
 	validates :code, presence: true, uniqueness: true, length: { maximum: 6}
 	validates :name, presence: true
@@ -24,6 +18,7 @@ class Artifact < ApplicationRecord
 	belongs_to :user
 	belongs_to :project
 
+	has_many :attachments, dependent: :destroy
 	has_many :artifact_demands, dependent: :destroy
 	has_many :demands, through: :artifact_demands
 
@@ -51,6 +46,9 @@ class Artifact < ApplicationRecord
 	    previous_version = version.previous
 	    artifact = version.reify(has_many: true, mark_for_destruction: true)
 	    artifact.save!
+	    # Delete files uploaded before restored version
+	    puts previous_version.index
+	    attachments.where('artifact_version_index > ?', previous_version.index).destroy_all
 	    # Destroy all versions of artifacts and relationships dated after the artifact version that has been reified
 	    PaperTrail::Version.where(item_type: "Relationship", origin_artifact_id: version.item_id)
 	                       .where("created_at > ?", previous_version.created_at).destroy_all
@@ -58,5 +56,9 @@ class Artifact < ApplicationRecord
 	    # Set all version_indexes higher than the last remaining version
 	    artifact_demands.where("version_index > ?", previous_version.index).update_all(version_index: previous_version.index)
 	  end
+	end
+
+	def attachment
+		attachments.find(attachment_id) unless attachment_id.nil?
 	end
 end

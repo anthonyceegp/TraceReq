@@ -31,11 +31,11 @@
 							<th scope="row">Priority</th>
 							<td><%= @artifact.priority %></td>
 						</tr>
-						<% if @artifact.file? %>
+						<% if !@artifact.attachment.nil? %>
 							<tr>
 								<th scope="row">Attachment</th>
 								<td>
-									<%= link_to @artifact.file_file_name, @artifact.file.url, target: :_blank %>
+									<%= link_to @artifact.attachment.file_file_name, @artifact.attachment.file.url, target: :_blank %>
 									<%= link_to url_for(action: :delete_file, id: @artifact), method: :post do %>
 										<%= fa_icon "trash" %>
 									<% end %>

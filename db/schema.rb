@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115122715) do
+ActiveRecord::Schema.define(version: 20171116030031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,10 +52,23 @@ ActiveRecord::Schema.define(version: 20171115122715) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
+    t.bigint "attachment_id"
     t.index ["artifact_type_id"], name: "index_artifacts_on_artifact_type_id"
     t.index ["code"], name: "index_artifacts_on_code", unique: true
     t.index ["project_id"], name: "index_artifacts_on_project_id"
     t.index ["user_id"], name: "index_artifacts_on_user_id"
+  end
+
+  create_table "attachments", force: :cascade do |t|
+    t.bigint "artifact_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
+    t.integer "artifact_version_index", null: false
+    t.index ["artifact_id"], name: "index_attachments_on_artifact_id"
   end
 
   create_table "demands", force: :cascade do |t|
@@ -170,6 +183,7 @@ ActiveRecord::Schema.define(version: 20171115122715) do
   add_foreign_key "artifacts", "artifact_types"
   add_foreign_key "artifacts", "projects"
   add_foreign_key "artifacts", "users"
+  add_foreign_key "attachments", "artifacts"
   add_foreign_key "demands", "projects"
   add_foreign_key "demands", "users", column: "responsible_user_id"
   add_foreign_key "projects", "users"

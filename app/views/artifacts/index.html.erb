@@ -27,8 +27,8 @@
                 <td><%= artifact.description %></td>
                 <td><%= artifact.priority %></td>
                 <td class="not-clikable">
-                  <% if artifact.file? %>
-                    <%= link_to artifact.file.url, title: artifact.file_file_name, target: :_blank do %>
+                  <% if !artifact.attachment.nil? %>
+                    <%= link_to artifact.attachment.file.url, title: artifact.attachment.file_file_name, target: :_blank do %>
                       <%= fa_icon "paperclip" %>
                     <% end %>
                   <% end %>

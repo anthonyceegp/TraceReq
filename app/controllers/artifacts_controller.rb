@@ -19,16 +19,18 @@ class ArtifactsController < ApplicationController
     end
   end
 
-  # GET /artifacts/1/edit
   def edit
   end
 
-  # POST /artifacts
-  # POST /artifacts.json
   def create
     respond_to do |format|
       if @artifact.save
         @artifact.artifact_demands.create(demand: @demand, user: current_user, status: :created, version_index: 0) if params.key?(:demand_id)
+        if params.key?(:file)
+          attachment = @artifact.attachments.create(file: params[:file], artifact_version_index: @artifact.version_index)
+          @artifact.attachment_id = attachment.id
+          @artifact.paper_trail.without_versioning :save
+        end
         format.html { redirect_to url_for(action: :show, id: @artifact), notice: 'Artifact was successfully created.' }
         format.json { render :show, status: :created, location: url_for(action: :show, id: @artifact) }
       else
@@ -38,11 +40,18 @@ class ArtifactsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /artifacts/1
-  # PATCH/PUT /artifacts/1.json
   def update
     respond_to do |format|
+      @artifact.assign_attributes(artifact_params)
+      changed = @artifact.changed?
+      puts changed
       if @artifact.update(artifact_params)
+        @artifact.paper_trail.touch_with_version unless changed
+        if params.key?(:file)
+          attachment = @artifact.attachments.create(file: params[:file], artifact_version_index: @artifact.version_index)
+          @artifact.attachment_id = attachment.id
+          @artifact.paper_trail.without_versioning :save
+        end
         format.html { redirect_to url_for(action: :show, id: @artifact), notice: 'Artifact was successfully updated.' }
         format.json { render :show, status: :ok, location: url_for(action: :show, id: @artifact) }
       else
@@ -52,8 +61,6 @@ class ArtifactsController < ApplicationController
     end
   end
 
-  # DELETE /artifacts/1
-  # DELETE /artifacts/1.json
   def destroy
     @artifact.destroy
     respond_to do |format|
@@ -63,7 +70,7 @@ class ArtifactsController < ApplicationController
   end
 
   def delete_file
-    @artifact.file.destroy
+    @artifact.attachment_id = nil
     @artifact.save
     respond_to do |format|
       format.html { redirect_to url_for(action: :show, id: @artifact), notice: 'File was successfully destroyed.' }
@@ -113,7 +120,7 @@ class ArtifactsController < ApplicationController
   end
 
   def demands
-    @demands = @artifact.demands.page(params[:page]).per(8)
+    @demands = @artifact.demands.order(:name).page(params[:page]).per(8)
   end
 
   private
@@ -168,6 +175,6 @@ class ArtifactsController < ApplicationController
     end
 
     def artifact_params
-      params.require(:artifact).permit(:code, :name, :description, :priority, :artifact_type_id, :file)
+      params.require(:artifact).permit(:code, :name, :description, :priority, :artifact_type_id)
     end
 end
