@@ -1,24 +1,16 @@
-<div class="container-fluid">
-  <div class="row">
-    <%= render "layouts/sidebar" %>
-    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-      <%= render 'layouts/alerts' %>
-      <h2><%= @artifact_type.name %></h2>
-  		<div class="table-responsive">
-				<table class="table table-bordered">
-					<tbody>
-							<th>Created at</th>
-							<td><%= @artifact_type.created_at.to_date %></td>
-						</tr>
-						<tr>
-							<th>Updated at</th>
-							<td><%= @artifact_type.updated_at.to_date %></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<%= link_to "Edit Artifact Type", edit_project_artifact_type_path(@project, @artifact_type), {class: "btn btn-primary", role: "button"} %>
-			<%= link_to "Delete Artifact Type", [@project, @artifact_type], {method: :delete, class: "btn btn-danger", role: "button"} %>
-		</main>
-	</div>
+<h2><%= @artifact_type.name %></h2>
+<div class="table-responsive">
+	<table class="table table-bordered">
+		<tbody>
+				<th>Created at</th>
+				<td><%= @artifact_type.created_at.to_date %></td>
+			</tr>
+			<tr>
+				<th>Updated at</th>
+				<td><%= @artifact_type.updated_at.to_date %></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
+<%= link_to "Edit Artifact Type", edit_project_artifact_type_path(@project, @artifact_type), {class: "btn btn-primary", role: "button"} %>
+<%= link_to "Delete Artifact Type", [@project, @artifact_type], {method: :delete, class: "btn btn-danger", role: "button"} %>

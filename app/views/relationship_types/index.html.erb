@@ -1,32 +1,24 @@
-<div class="container-fluid">
-  <div class="row">
-    <%= render "layouts/sidebar" %>
-    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-      <%= render "layouts/alerts" %>
-      <h2>Relationship Types <%= link_to new_project_relationship_type_path(@project), title: "New Relationship Type" do %><%= fa_icon "plus" %><% end %></h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th></th>
-            </tr>
-          </thead>
+<h2>Relationship Types <%= link_to new_project_relationship_type_path(@project), title: "New Relationship Type" do %><%= fa_icon "plus" %><% end %></h2>
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
 
-          <tbody>
-            <% @relationship_types.each do |relationship_type| %>
-              <tr class="clickable-row" data-href="<%= project_relationship_type_path(@project, relationship_type) %>">
-                <td><%= relationship_type.name %></td>
-                <td class="not-clikable">
-                  <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-                    <%= fa_icon "trash" %>
-                  <% end %>
-                </td>
-              </tr>
+    <tbody>
+      <% @relationship_types.each do |relationship_type| %>
+        <tr class="clickable-row" data-href="<%= project_relationship_type_path(@project, relationship_type) %>">
+          <td><%= relationship_type.name %></td>
+          <td class="not-clikable">
+            <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+              <%= fa_icon "trash" %>
             <% end %>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

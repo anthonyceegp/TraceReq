@@ -1,96 +1,88 @@
-<div class="container-fluid">
-	<div class="row">
-		<%= render "layouts/sidebar" %>
-		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-			<%= render 'layouts/alerts' %>
-			<h2>History</h2>
-			<% if @artifact.errors.any? %>
-		    <div id="error_explanation">
-		      <h2><%= pluralize(@artifact.errors.count, "error") %> prohibited this artifact from being reverted:</h2>
+<h2>History</h2>
+<% if @artifact.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@artifact.errors.count, "error") %> prohibited this artifact from being reverted:</h2>
 
-		      <ul>
-		      <% @artifact.errors.full_messages.each do |message| %>
-		        <li><%= message %></li>
-		      <% end %>
-		      </ul>
-		    </div>
-		  <% end %>
-		  <%= form_with url: url_for(action: :history), local: true do |form| %>
-				<div class="table-responsive">
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th></th>
-								<th>Code</th>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Description</th>
-								<th>Priority</th>
-								<th>Attachment</th>
-								<th>Version</th>
-								<th>Updated at</th>
-								<th>Upadated by</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th>Live</th>
-								<td><%= @artifact.code %></td>
-								<td><%= @artifact.name %></td>
-								<td><%= @artifact.artifact_type.name %></td>
-								<td><%= @artifact.description %></td>
-								<td><%= @artifact.priority %></td>
-								<td>
-									<% if !@artifact.attachment.nil? %>
-										<%= link_to @artifact.attachment.file.url, title: @artifact.attachment.file_file_name, target: :_blank do %>
-											<%= fa_icon "paperclip" %>
-										<% end %>
-									<% end %>
-								</td>
-								<td><%= @artifact.version_index + 1 %></td>
-								<td><%= @artifact.updated_at.to_date %></td>
-								<td><%= User.find(@artifact.paper_trail.originator).username %></td>
-							</tr>
-							<% if !@versions.nil? %>
-								<% @versions.each do |v| %>
-									<% a = v.reify %>
-									<tr>
-										<td><%= form.radio_button :index, v.index if !@show_import_button %></td>
-										<td><%= a.code %></td>
-										<td><%= a.name %></td>
-										<td><%= a.artifact_type.name %></td>
-										<td><%= a.description %></td>
-										<td><%= a.priority%></td>
-										<td>
-											<% if !a.attachment.nil? %>
-												<%= link_to a.attachment.file.url, title: a.attachment.file_file_name, target: :_blank do %>
-													<%= fa_icon "paperclip" %>
-												<% end %>
-											<% end %>
-										</td>
-										<td><%= v.index %></td>
-										<td><%= a.updated_at.to_date %></td>
-										<td><%= User.find(v.previous.whodunnit).username %></td>
-									</tr>
-								<% end %>
+    <ul>
+    <% @artifact.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+<%= form_with url: url_for(action: :history), local: true do |form| %>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Code</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Priority</th>
+					<th>Attachment</th>
+					<th>Version</th>
+					<th>Updated at</th>
+					<th>Upadated by</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>Live</th>
+					<td><%= @artifact.code %></td>
+					<td><%= @artifact.name %></td>
+					<td><%= @artifact.artifact_type.name %></td>
+					<td><%= @artifact.description %></td>
+					<td><%= @artifact.priority %></td>
+					<td>
+						<% if !@artifact.attachment.nil? %>
+							<%= link_to @artifact.attachment.file.url, title: @artifact.attachment.file_file_name, target: :_blank do %>
+								<%= fa_icon "paperclip" %>
 							<% end %>
-						</tbody>
-					</table>
-				</div>
-			<% if @show_import_button %>
-				<%= link_to "Import Artifact", url_for(action: :import, id: @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
-			<% else %>
-				<div class="btn-group">
-	        <%= link_to "Delete Artifact", url_for(action: :destroy, id: @artifact), method: :delete, class: "btn btn-danger", role: "button", "data-confirm": "Are you sure?" %>
-	        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-	        <div class="dropdown-menu">
-	        	<%= form.submit "Remove Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" if @show_remove_button %>
-	          <%= form.submit "Revert Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" %>
-	        </div>
-	      </div>
-			<% end %>
-			<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
-		<% end %>
-		</main>
+						<% end %>
+					</td>
+					<td><%= @artifact.version_index + 1 %></td>
+					<td><%= @artifact.updated_at.to_date %></td>
+					<td><%= User.find(@artifact.paper_trail.originator).username %></td>
+				</tr>
+				<% if !@versions.nil? %>
+					<% @versions.each do |v| %>
+						<% a = v.reify %>
+						<tr>
+							<td><%= form.radio_button :index, v.index if !@show_import_button %></td>
+							<td><%= a.code %></td>
+							<td><%= a.name %></td>
+							<td><%= a.artifact_type.name %></td>
+							<td><%= a.description %></td>
+							<td><%= a.priority%></td>
+							<td>
+								<% if !a.attachment.nil? %>
+									<%= link_to a.attachment.file.url, title: a.attachment.file_file_name, target: :_blank do %>
+										<%= fa_icon "paperclip" %>
+									<% end %>
+								<% end %>
+							</td>
+							<td><%= v.index %></td>
+							<td><%= a.updated_at.to_date %></td>
+							<td><%= User.find(v.previous.whodunnit).username %></td>
+						</tr>
+					<% end %>
+				<% end %>
+			</tbody>
+		</table>
 	</div>
-</div>
+	<% if @show_import_button %>
+		<%= link_to "Import Artifact", url_for(action: :import, id: @artifact), {method: :post, class: "btn btn-primary", role: "button"} %>
+	<% else %>
+		<div class="btn-group">
+	    <%= link_to "Delete Artifact", url_for(action: :destroy, id: @artifact), method: :delete, class: "btn btn-danger", role: "button", "data-confirm": "Are you sure?" %>
+	    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+	    <div class="dropdown-menu">
+	    	<%= form.submit "Remove Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" if @show_remove_button %>
+	      <%= form.submit "Revert Artifact", class: "btn btn-danger dropdown-item", "data-confirm": "Are you sure?" %>
+	    </div>
+	  </div>
+	<% end %>
+	<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
+<% end %>

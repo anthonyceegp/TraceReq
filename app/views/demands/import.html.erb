@@ -1,46 +1,38 @@
-<div class="container-fluid">
-	<div class="row">
-		<%= render "layouts/sidebar" %>
-		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-			<%= render "layouts/alerts" %>
-			<h2>Import Artifacts</h2>
-			<%= form_with(url: import_artifacts_path(@project, @demand), local: true) do |form| %>
-				<div class="table-responsive">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th><%= check_box_tag "check_all" %></th>
-								<th>Code</th>
-								<th>Name</th>
-								<th>Description</th>
-								<th>Priority</th>
-								<th>type</th>
-							</tr>
-						</thead>
+<h2>Import Artifacts</h2>
+<%= form_with(url: import_artifacts_path(@project, @demand), local: true) do |form| %>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th><%= check_box_tag "check_all" %></th>
+					<th>Code</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Priority</th>
+					<th>type</th>
+				</tr>
+			</thead>
 
-						<tbody>
-							<% @artifacts.each do |artifact| %>
-							<tr>
-								<td><%= form.check_box  :artifact_ids, {multiple: true}, artifact.id, nil %></td>
-								<td><%= artifact.code %></td>
-								<td><%= artifact.name %></td>
-								<td><%= artifact.description %></td>
-								<td><%= artifact.priority %></td>
-								<td><%= artifact.artifact_type.name %></td>
-							</tr>
-							<% end %>
-						</tbody>
-					</table>
-					<%= paginate(@artifacts) %>
+			<tbody>
+				<% @artifacts.each do |artifact| %>
+				<tr>
+					<td><%= form.check_box  :artifact_ids, {multiple: true}, artifact.id, nil %></td>
+					<td><%= artifact.code %></td>
+					<td><%= artifact.name %></td>
+					<td><%= artifact.description %></td>
+					<td><%= artifact.priority %></td>
+					<td><%= artifact.artifact_type.name %></td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+		<%= paginate(@artifacts) %>
 
-					<div class="actions">
-						<%= form.submit "Import", class: "btn btn-primary" %>
-					</div>
-				</div>
-			<% end %>
-		</main>
+		<div class="actions">
+			<%= form.submit "Import", class: "btn btn-primary" %>
+		</div>
 	</div>
-</div>
+<% end %>
 
 <script type="text/javascript">
 	$('#check_all').on("click", function(){

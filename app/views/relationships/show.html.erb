@@ -1,34 +1,25 @@
-
-<div class="container-fluid">
-	<div class="row">
-		<%= render "layouts/sidebar" %>
-		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-			<%= render 'layouts/alerts' %>
-			<h2>Relationship</h2>
-			<div class="table-responsive">
-				<table class="table table-bordered">
-					<tbody>
-						<tr>
-							<th scope="row">Type</th>
-							<td><%= @relationship.relationship_type.name %></td>
-						</tr>
-						<tr>
-							<th scope="row">From</th>
-							<td><%= @relationship.origin_artifact.code_with_name %></td>
-						</tr>
-						<tr>
-							<th scope="row">To</th>
-							<td><%= @relationship.end_artifact.code_with_name %></td>
-						</tr>
-						<tr>
-							<th scope="row">Description</th>
-							<td><%= @relationship.description %></td>
-						</tr>
-					</tbody>
-				</table>				
-			</div>
-			<%= link_to "Edit Relationship", edit_project_demand_relationship_path(@project, @demand, @relationship), class: "btn btn-primary", role: "button" %>
-			<%= link_to "Delete Relationship", [@project, @demand, @relationship], method: :delete, class: "btn btn-danger", role: "button" %>
-		</main>
-	</div>
+<h2>Relationship</h2>
+<div class="table-responsive">
+	<table class="table table-bordered">
+		<tbody>
+			<tr>
+				<th scope="row">Type</th>
+				<td><%= @relationship.relationship_type.name %></td>
+			</tr>
+			<tr>
+				<th scope="row">From</th>
+				<td><%= @relationship.origin_artifact.code_with_name %></td>
+			</tr>
+			<tr>
+				<th scope="row">To</th>
+				<td><%= @relationship.end_artifact.code_with_name %></td>
+			</tr>
+			<tr>
+				<th scope="row">Description</th>
+				<td><%= @relationship.description %></td>
+			</tr>
+		</tbody>
+	</table>				
 </div>
+<%= link_to "Edit Relationship", edit_project_demand_relationship_path(@project, @demand, @relationship), class: "btn btn-primary", role: "button" %>
+<%= link_to "Delete Relationship", [@project, @demand, @relationship], method: :delete, class: "btn btn-danger", role: "button" %>

@@ -1,53 +1,45 @@
-<div class="container-fluid">
-  <div class="row">
-    <%= render "layouts/sidebar" %>
-    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-      <%= render "layouts/alerts" %>
-      <h2><%= @demand.name %></h2>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <th scope="row">Description</th>
-              <td><%= @demand.description %></td>
-            </tr>
-            <tr>
-              <th scope="row">Status</th>
-              <td><%= @demand.status.humanize %></td>
-            </tr>
-            <tr>
-              <th scope="row">Release</th>
-              <td><%= @demand.release %></td>
-            </tr>
-            <tr>
-              <th scope="row">Resposible</th>
-              <td><%= @demand.responsible_user.username %></td>
-            </tr>
-            <tr>
-              <th scope="row">Project</th>
-              <td><%= @demand.project.name %></td>
-            </tr>
-            <tr>
-              <th scope="row">Created at</th>
-              <td><%= @demand.created_at.to_date %></td>
-            </tr>
-            <tr>
-              <th scope="row">Updated at</th>
-              <td><%= @demand.updated_at.to_date %></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <%= link_to "Edit Demand", edit_project_demand_path(@project, @demand), class: "btn btn-primary", role: "button" %>
-      <div class="btn-group">
-        <%= link_to "Delete Demand", [@project, @demand, keep: 0], method: :delete, class: "btn btn-danger", role: "button" %>
-        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <div class="dropdown-menu">
-          <%= link_to "Keep Changes", [@project, @demand, keep: 1], method: :delete, class: "dropdown-item" %>
-        </div>
-      </div>
-    </main>
+<h2><%= @demand.name %></h2>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <th scope="row">Description</th>
+        <td><%= @demand.description %></td>
+      </tr>
+      <tr>
+        <th scope="row">Status</th>
+        <td><%= @demand.status.humanize %></td>
+      </tr>
+      <tr>
+        <th scope="row">Release</th>
+        <td><%= @demand.release %></td>
+      </tr>
+      <tr>
+        <th scope="row">Resposible</th>
+        <td><%= @demand.responsible_user.username %></td>
+      </tr>
+      <tr>
+        <th scope="row">Project</th>
+        <td><%= @demand.project.name %></td>
+      </tr>
+      <tr>
+        <th scope="row">Created at</th>
+        <td><%= @demand.created_at.to_date %></td>
+      </tr>
+      <tr>
+        <th scope="row">Updated at</th>
+        <td><%= @demand.updated_at.to_date %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<%= link_to "Edit Demand", edit_project_demand_path(@project, @demand), class: "btn btn-primary", role: "button" %>
+<div class="btn-group">
+  <%= link_to "Delete Demand", [@project, @demand, keep: 0], method: :delete, class: "btn btn-danger", role: "button" %>
+  <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <div class="dropdown-menu">
+    <%= link_to "Keep Changes", [@project, @demand, keep: 1], method: :delete, class: "dropdown-item" %>
   </div>
 </div>

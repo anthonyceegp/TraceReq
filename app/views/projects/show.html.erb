@@ -1,33 +1,25 @@
-<div class="container-fluid">
-  <div class="row">
-    <%= render "layouts/sidebar" %>
-    <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-      <%= render "layouts/alerts" %>
-      <h2><%= @project.name %> <%= link_to project_artifact_types_path(@project), title: "Settings" do %><%= fa_icon "cog" %><% end %></h2>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <th scope="row">Description</th>
-              <td><%= @project.description %></td>
-            </tr>
-            <tr>
-              <th scope="row">Created by</th>
-              <td><%= @project.user.username %></td>
-            </tr>
-            <tr>
-              <th scope="row">Created at</th>
-              <td><%= @project.created_at.to_date %></td>
-            </tr>
-            <tr>
-              <th scope="row">Updated at</th>
-              <td><%= @project.updated_at.to_date %></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <%= link_to "Edit Project", edit_project_path(@project), class: "btn btn-primary", role: "button" %>
-      <%= link_to "Delete Project", @project, method: :delete, class: "btn btn-danger", role: "button" %>
-    </main>
-  </div>
+<h2><%= @project.name %> <%= link_to project_artifact_types_path(@project), title: "Settings" do %><%= fa_icon "cog" %><% end %></h2>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <th scope="row">Description</th>
+        <td><%= @project.description %></td>
+      </tr>
+      <tr>
+        <th scope="row">Created by</th>
+        <td><%= @project.user.username %></td>
+      </tr>
+      <tr>
+        <th scope="row">Created at</th>
+        <td><%= @project.created_at.to_date %></td>
+      </tr>
+      <tr>
+        <th scope="row">Updated at</th>
+        <td><%= @project.updated_at.to_date %></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+<%= link_to "Edit Project", edit_project_path(@project), class: "btn btn-primary", role: "button" %>
+<%= link_to "Delete Project", @project, method: :delete, class: "btn btn-danger", role: "button" %>

@@ -1,32 +1,24 @@
-<div class="container-fluid">
-	<div class="row">
-		<%= render "layouts/sidebar" %>
-		<main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-			<%= render "layouts/alerts" %>
-			<h2>Users <%= link_to project_add_users_path(@project), title: "Add Users" do %><%= fa_icon "plus" %><% end %></h2>
-			<div class="table-responsive">
-				<table class="table table-striped table-hover">
-					<thead>
-						<tr>
-							<th>E-mail</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<% @users.each do |user| %>
-							<tr>
-								<td><%= user.email %></td>
-								<td>
-									<%= link_to project_remove_user_path(@project, user), method: :post, class: "float-right" do %>
-										<%= fa_icon "trash" %>
-									<% end %>
-								</td>
-							</tr>
+<h2>Users <%= link_to project_add_users_path(@project), title: "Add Users" do %><%= fa_icon "plus" %><% end %></h2>
+<div class="table-responsive">
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>E-mail</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @users.each do |user| %>
+				<tr>
+					<td><%= user.email %></td>
+					<td>
+						<%= link_to project_remove_user_path(@project, user), method: :post, class: "float-right" do %>
+							<%= fa_icon "trash" %>
 						<% end %>
-					</tbody>
-				</table>
-				<%= paginate(@users) %>
-			</div>
-		</main>
-	</div>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+	<%= paginate(@users) %>
 </div>
