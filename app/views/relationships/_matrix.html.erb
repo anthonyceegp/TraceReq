@@ -4,7 +4,7 @@
 			<th scope="col"></th>
 			<% @end_artifacts.each do |end_artifact| %>
 				<th scope="col" data-id=<%="#{end_artifact.id}"%>>
-					<%= link_to end_artifact.code, [@project, @demand, end_artifact] %>
+					<%= link_to end_artifact.code, url_for(controller: :artifacts, action: :show, id: end_artifact), title: end_artifact.name %>
 				</th>
 			<% end %>
 		</tr>
@@ -13,22 +13,21 @@
 		<% @origin_artifacts.each do |origin_artifact| %>
 			<tr>
 				<th scope="row">
-						<%= link_to origin_artifact.code, [@project, @demand, origin_artifact] %>
+						<%= link_to origin_artifact.code, url_for(controller: :artifacts, action: :show, id: origin_artifact), title: origin_artifact.name %>
 				</th>
 				<% @end_artifacts.each do |end_artifact| %>
 					<% if origin_artifact.id == end_artifact.id %>
-						<td style="background-color: grey"></td>
+						<td class="bg-secondary"></td>
 					<% else %>
+						<td>
 							<%
 								r = @relationships.where("relationships.origin_artifact_id = ?", origin_artifact.id)
 								                  .where("relationships.end_artifact_id = ?", end_artifact.id).first
 							%>
-							<% if !r.nil? %>
-								<td style="background-color: #007bff">
-								<input class="checkbox" type="checkbox" name="" origin-artifact-id="<%= origin_artifact.id %>" end-artifact-id="<%= end_artifact.id %>" relationship-id="<%= r.id %>" checked="true">
+							<% if r.nil? %>
+								<%= render partial: "unchecked", locals: {origin_artifact_id: origin_artifact.id, end_artifact_id: end_artifact.id} %>
 							<% else %>
-								<td>
-								<input class="checkbox" type="checkbox" name="" origin-artifact-id="<%= origin_artifact.id %>" end-artifact-id="<%= end_artifact.id %>" relationship-id>
+								<%= render partial: "checked", locals: {origin_artifact_id: origin_artifact.id, end_artifact_id: end_artifact.id, relationship_id: r.id} %>
 							<% end %>
 						</td>
 					<% end %>

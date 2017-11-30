@@ -24,7 +24,14 @@ class RelationshipsController < ApplicationController
 
   # GET /relationships/new
   def new
-    @relationship = Relationship.new
+    if(params.key?(:origin_artifact_id) and params.key?(:end_artifact_id))
+      origin_artifact = @project.artifacts.find(params[:origin_artifact_id])
+      end_artifact = @project.artifacts.find(params[:end_artifact_id])
+
+      @relationship = @project.relationships.build(origin_artifact: origin_artifact, end_artifact: end_artifact)
+    else
+      @relationship = @project.relationships.build()
+    end
   end
 
   # GET /relationships/1/edit
@@ -42,7 +49,8 @@ class RelationshipsController < ApplicationController
         if request.format.html?
           format.html { redirect_to url_for(action: :show, id: @relationship), notice: 'Relationship was successfully created.' }
         else
-          format.json { render json: @relationship.id, status: :created }
+          html_content = render_to_string partial: 'checked', locals: {relationship_id: @relationship.id, origin_artifact_id: @relationship.origin_artifact.id, end_artifact_id: @relationship.end_artifact.id}, layout: false
+          format.json { render json: {data: html_content}, status: :created }
         end
       else
         if request.format.html?
@@ -72,13 +80,16 @@ class RelationshipsController < ApplicationController
   # DELETE /relationships/1
   # DELETE /relationships/1.json
   def destroy
+    origin_artifact_id = @relationship.origin_artifact.id
+    end_artifact_id = @relationship.end_artifact.id
+
     @relationship.destroy
     respond_to do |format|
       if request.format.html?
         format.html { redirect_to url_for(action: :index), notice: 'Relationship was successfully destroyed.' }
       else
-        response =  render_to_string partial: 'layouts/alerts',  locals: { notice: "Relationship was successfully destroyed." }
-        format.json { head :no_content }
+        html_content = render_to_string partial: 'unchecked', locals: {origin_artifact_id: origin_artifact_id, end_artifact_id: end_artifact_id}, layout: false
+        format.json { render json: {data: html_content}, status: :ok }
       end
     end
   end
@@ -107,7 +118,7 @@ class RelationshipsController < ApplicationController
       html_content = render_to_string partial: 'matrix', layout: false
     end
 
-    render json: {attachmentPartial: html_content }
+    render json: {data: html_content }
   end
 
   private

@@ -1,0 +1,14 @@
+<div class="btn-group btn-group-sm" role="group">
+  <button type="button" class="btn btn-primary checkbox checked" origin-artifact-id="<%= origin_artifact_id %>" end-artifact-id="<%= end_artifact_id %>" relationship-id="<%= relationship_id %>">
+  	<%= fa_icon "check-square" %>
+  </button>
+  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <div class="dropdown-menu">
+  	<% show_url = url_for(action: :show, id: relationship_id) %>
+		<% edit_url = url_for(action: :edit, id: relationship_id) %>
+		<a class="dropdown-item" href="<%= show_url %>">Show Relationship</a>
+		<a class="dropdown-item" href="<%= edit_url %>">Edit Relationship</a>
+  </div>
+</div>

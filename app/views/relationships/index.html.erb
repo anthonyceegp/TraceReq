@@ -2,8 +2,8 @@
 <% navigation_add 'Projects', projects_path %>
 <% navigation_add @project.name, project_path(@project) %>
 <% if active_demand? %>
-  <% navigation_add "Demands", project_demands_path(@project) %>
-  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% navigation_add "Demands", project_demands_path(@project) %>
+<% navigation_add @demand.name, project_demand_path(@project, @demand) %>
 <% end %>
 
 <h2>Relationships <a data-toggle="collapse" href="#filters" aria-expanded="false" aria-controls="filters"><%= fa_icon "filter" %></a></h2>
@@ -23,7 +23,6 @@
 	</div>
 </div>
 <div class="table-responsive dragscroll" id="matrix">
-
 	<%= render "matrix" if @has_artifacts %>
 	<%= raw "<p>Nothing to show.</p>" unless @has_artifacts %>
 </div>
@@ -31,85 +30,106 @@
 <script type="text/javascript">
 
 	function cloneColumn() {
-	  var $fixedColumn, $table;
-	  $table = $('#editableTable');
-	  $fixedColumn = $table.clone().insertBefore($table).addClass('fixed-column');
-	  $fixedColumn.attr('id', 'fixedColumn');
-	  $fixedColumn.find('th:not(:first-child),td:not(:first-child)').remove();
-	  $fixedColumn.find('th').each(function(i, elem) {
-	    $(this).height($table.find('th:eq(' + i + ')').height());
-	    $(this).width($table.find('th:eq(' + i + ')').width());
-	  });
+		var $fixedColumn, $table;
+		$table = $('#editableTable');
+		$fixedColumn = $table.clone().insertBefore($table).addClass('fixed-column');
+		$fixedColumn.attr('id', 'fixedColumn');
+		$fixedColumn.find('th:not(:first-child),td:not(:first-child)').remove();
+		$fixedColumn.find('tr').each(function(i, elem) {
+			$(elem).height($table.find('tr:eq(' + i + ')').height());
+		});
 	};
 
-	$("#matrix").on('click','#editableTable input:checkbox', function(event) {
- 		event.preventDefault();
+	$("#matrix").on("click","#editableTable .checkbox:not(.checked)", function(event) {
+		event.preventDefault();
 
- 		var checkbox = $(this);
+		var button = $(this);
 
- 		if(checkbox.data('requestRunning')) {
- 			return;
- 		}
+		if(button.data('requestRunning')) {
+			return;
+		}
 
-    var origin_artifact_id = checkbox.attr('origin-artifact-id');
-    var end_artifact_id = checkbox.attr('end-artifact-id');
-    var relationship_type_id = $('#relationship_type_id').val();
-    var description = $('#description').val();
+		var origin_artifact_id = button.attr('origin-artifact-id');
+		var end_artifact_id = button.attr('end-artifact-id');
 
-    var ischecked = $(this).is(':checked');
-    if (ischecked) {
-	    $.ajax({
-	    	type: "POST",
-	    	url: '<%= url_for(action: :create) %>',
-	    	data: {relationship: {origin_artifact_id: origin_artifact_id, end_artifact_id: end_artifact_id,
-	    		relationship_type_id: relationship_type_id, description: description}},
-	    	success: function(data) {
-	    		checkbox.attr("relationship-id", data);
-	    		checkbox.parent().css('background-color', '#007bff');
-	    		checkbox.prop('checked', true);
-	    	},
-	    	complete: function() {
-	    		checkbox.data('requestRunning', false);
-	    	},
-	    	error: function(data) {
-	    		checkbox.prop('checked', false);
-	    		checkbox.parent().css('background-color', '#fff');
-	    		$('#wraper').prepend(data.responseJSON.errors);
-	    		$("#alert").fadeTo(2000, 500).slideUp(500, function(){
-			      $("#alert").slideUp(500);
-			    }); 
-	    	}
-	    });
-	   } else {
-	   	$.ajax({
-	    	type: "DELETE",
-	    	url: '<%= url_for(action: :index) %>' + "/" + checkbox.attr('relationship-id'),
-	    	success: function(data) {
-	    		checkbox.attr("relationship-id", "");
-	    		checkbox.parent().css('background-color', '#ffffff');
-	    		checkbox.prop('checked', false);
-	    	},
-	    	complete: function() {
-	    		checkbox.data('requestRunning', false);
-	    	},
-	    	error: function(e, data, status, xhr) {
-	    		checkbox.prop('checked', true);
-	    	}
-	    });
-	  } 
+		var relationship_type_id = $('#relationship_type_id').val();
+		var description = $('#description').val();
+
+		$.ajax({
+			type: "POST",
+			url: '<%= url_for(action: :create) %>',
+			data: {
+				relationship: {
+					origin_artifact_id: origin_artifact_id,
+					end_artifact_id: end_artifact_id,
+					relationship_type_id: relationship_type_id,
+					description: description
+				}
+			},
+			complete: function() {
+				button.data('requestRunning', false);
+			},
+			success: function(data) {
+				button.parent().html(data.data);
+			},
+			error: function(data) {
+				$('#wraper').prepend(data.responseJSON.errors);
+				$("#alert").fadeTo(2000, 500).slideUp(500, function(){
+					$("#alert").slideUp(500);
+				}); 
+			}
+		});
+	});
+
+	$("#matrix").on("click","#editableTable .checkbox.checked", function(event) {
+		event.preventDefault();
+
+		var button = $(this);
+
+		if(button.data('requestRunning')) {
+			return;
+		}
+
+		var origin_artifact_id = button.attr('origin-artifact-id');
+		var end_artifact_id = button.attr('end-artifact-id');
+		var relationship_id = button.attr('relationship-id');
+
+		var relationship_type_id = $('#relationship_type_id').val();
+		var description = $('#description').val();
+
+		$.ajax({
+			type: "DELETE",
+			url: '<%= url_for(action: :index) %>' + "/" + relationship_id,
+			complete: function() {
+				button.data('requestRunning', false);
+			},
+			success: function(data) {
+				button.parent().html(data.data);
+			},
+			error: function(e, data, status, xhr) {
+				$('#wraper').prepend(data.responseJSON.errors);
+				$("#alert").fadeTo(2000, 500).slideUp(500, function(){
+					$("#alert").slideUp(500);
+				});
+			}
+		});
 	});
 
 	$(document).on('turbolinks:load', function() {
-	  $("#form-filter").on("ajax:success", function(e, data, status, xhr) {
-	    $("#matrix").html(data.attachmentPartial);
-	    cloneColumn();
-	  }).on("ajax:error", function(e, xhr, status, error) {
-	    $("#matrix").append("<p>ERROR</p>");
-	  });
+		$("#form-filter").on("ajax:success", function(e, data, status, xhr) {
+			$("#matrix").html(data.data);
+			cloneColumn();
+		}).on("ajax:error", function(e, xhr, status, error) {
+			$("#matrix").append("<p>ERROR</p>");
+		});
+	});
+
+	$(document).on("turbolinks:load turbolinks:visit", function() {
+		cloneColumn();
 	});
 
 	$(document).on("turbolinks:load", function() {
-		cloneColumn();
+		$('#matrix').dragscroll();
 	});
 
 	$("input[value='Filter']").click(function() {
@@ -119,14 +139,15 @@
 
 <style type="text/css">
 .table-responsive>.fixed-column {
-    position: absolute;
-    width: auto;
-    border-right: 1px solid #ddd;
-    background-color: white;
+	position: absolute;
+	width: auto;
+	border-right: 1px solid #ddd;
+	background-color: white;
+	z-index: 999;
 }
 
 td {
-  text-align: center;
+	text-align: center;
 }
 
 .table-fit {
@@ -134,8 +155,8 @@ td {
 }
 
 @media(min-width:991px) {
-    .table-responsive>.fixed-column {
-        display: none;
-    }
+	.table-responsive>.fixed-column {
+		display: none;
+	}
 }
 </style>
