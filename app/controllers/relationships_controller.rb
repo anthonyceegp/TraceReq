@@ -1,17 +1,20 @@
 class RelationshipsController < ApplicationController
-  before_action :set_project_demand, only: [:index, :new, :create, :matrix, :filter]
-  before_action :set_project_demand_relationship, only: [:show, :edit, :update, :destroy]
-  before_action :set_artifacts_collections, only: [:new, :edit, :create, :update]
+  before_action :set_relationship, only: [:show, :edit, :update, :destroy]
+  before_action :set_project_demand, only: [:index, :new, :create, :filter]
+  before_action :set_collections, only: [:new, :edit]
 
   # GET /relationships
   # GET /relationships.json
   def index
-    @origin_artifacts = @end_artifacts = @demand.artifacts.order(:code)
-    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id').
-                        pluck('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
+    @origin_artifacts = @end_artifacts = artifacts
+    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id')
+                                      .select('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
     
     @artifact_types = ArtifactType.all.order(:name)
     @relationship_types = RelationshipType.all.order(:name)
+    @demands = Demand.where(project: @project).order(:name)
+
+    @has_artifacts = @origin_artifacts.empty? || @end_artifacts.empty? ? false : true 
   end
 
   # GET /relationships/1
@@ -37,7 +40,7 @@ class RelationshipsController < ApplicationController
     respond_to do |format|
       if @relationship.save
         if request.format.html?
-          format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully created.' }
+          format.html { redirect_to url_for(action: :show, id: @relationship), notice: 'Relationship was successfully created.' }
         else
           format.json { render json: @relationship.id, status: :created }
         end
@@ -45,7 +48,8 @@ class RelationshipsController < ApplicationController
         if request.format.html?
           format.html { render :new }
         else
-          format.json { render json: @relationship.errors, status: :unprocessable_entity }
+          response =  render_to_string partial: 'layouts/alerts',  locals: { alert: @relationship.errors.full_messages.join('<br>').html_safe() }
+          format.json { render json: {errors: response}, status: :unprocessable_entity}
         end
       end
     end
@@ -56,11 +60,11 @@ class RelationshipsController < ApplicationController
   def update
     respond_to do |format|
       if @relationship.update(relationship_params)
-        format.html { redirect_to [@project, @demand, @relationship], notice: 'Relationship was successfully updated.' }
-        format.json { render :show, status: :ok, location: [@project, @demand, @relationship] }
+        format.html { redirect_to url_for(action: :show, id: @relationship), notice: 'Relationship was successfully updated.' }
+        format.json { render :show, status: :ok, location: url_for(action: :show, id: @relationship) }
       else
         format.html { render :edit }
-        format.json { render json: @relationship.errors, status: :unprocessable_entity }
+        format.json { render json: @relationship.errors.full_messages, status: :unprocessable_entity }
       end
     end
   end
@@ -71,16 +75,19 @@ class RelationshipsController < ApplicationController
     @relationship.destroy
     respond_to do |format|
       if request.format.html?
-        format.html { redirect_to project_demand_relationships_url, notice: 'Relationship was successfully destroyed.' }
+        format.html { redirect_to url_for(action: :index), notice: 'Relationship was successfully destroyed.' }
       else
+        response =  render_to_string partial: 'layouts/alerts',  locals: { notice: "Relationship was successfully destroyed." }
         format.json { head :no_content }
       end
     end
   end
 
   def filter
-    @origin_artifacts = @end_artifacts = Artifact.all unless params[:show_all] == "0"
-    @origin_artifacts = @end_artifacts = @demand.artifacts unless params[:show_all] == "1"
+    @origin_artifacts = @end_artifacts = Artifact.where(project: @project) if params[:show_all] == "1" or !params.key?(:demand_id)
+    @origin_artifacts = @end_artifacts = @demand.artifacts if params[:show_all] == "0" and params.key?(:demand_id)
+
+    @origin_artifacts = @end_artifacts = Demand.find(params[:demand_filter_id]).artifacts unless params[:demand_filter_id].blank?
 
     @origin_artifacts = @origin_artifacts.where(artifact_type_id: params[:origin_artifact_type_id]) unless params[:origin_artifact_type_id].blank?
     @end_artifacts = @end_artifacts.where(artifact_type_id: params[:end_artifact_type_id]) unless params[:end_artifact_type_id].blank?
@@ -88,11 +95,11 @@ class RelationshipsController < ApplicationController
     @origin_artifacts = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id')
                         .where('relationships.relationship_type_id = ?',params[:relationship_type_id]) unless params[:relationship_type_id].blank?
     
-    @origin_artifacts = @origin_artifacts.order(:code)
-    @end_artifacts = @end_artifacts.order(:code)
+    @origin_artifacts = @origin_artifacts.order(:artifact_type_id, :code)
+    @end_artifacts = @end_artifacts.order(:artifact_type_id, :code)
     
-    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id').
-                        pluck('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
+    @relationships = @origin_artifacts.joins('inner join relationships on relationships.origin_artifact_id = artifacts.id')
+                                      .select('relationships.origin_artifact_id','relationships.end_artifact_id', 'relationships.id')
     
     if @origin_artifacts.empty? or @end_artifacts.empty?
       html_content = '<p>No relationship matches the selected filters.</p>'
@@ -104,21 +111,30 @@ class RelationshipsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project_demand
+    def artifacts
       @project = Project.find(params[:project_id])
-      @demand = @project.demands.find(params[:demand_id])
+      if params.key?(:demand_id)
+        @demand = @project.demands.find(params[:demand_id])
+        @demand.artifacts.order(:artifact_type_id, :code)
+      else
+        @project.artifacts.order(:artifact_type_id, :code)
+      end
     end
 
-    def set_project_demand_relationship
+    def set_relationship
       @project = Project.find(params[:project_id])
-      @demand = @project.demands.find(params[:demand_id])
+      @demand = @project.demands.find(params[:demand_id]) if params.key?(:demand_id)
       @relationship = @project.relationships.find(params[:id])
     end
 
-    def set_artifacts_collections
-      @artifacts = Artifact.all
-      @relationship_types = RelationshipType.all
+    def set_project_demand
+      @project = Project.find(params[:project_id])
+      @demand = @project.demands.find(params[:demand_id]) if params.key?(:demand_id)
+    end
+
+    def set_collections
+      @artifacts = Artifact.where(project_id: params[:project_id])
+      @relationship_types = RelationshipType.where(project_id: params[:project_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

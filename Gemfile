@@ -34,9 +34,9 @@ gem 'bcrypt', '~> 3.1.11'
 # Use devise for athentication
 gem 'devise', '~> 4.3.0'
 # Use bootstrap for GUI
-gem 'bootstrap', '~> 4.0.0.beta'
+gem 'bootstrap', '~> 4.0.0.beta2.1'
 # Required for bootstrap
-gem 'popper_js', '~> 1.11', '>= 1.11.1'
+gem 'popper_js', '< 2', '>= 1.12.3'
 # Required for bootstrap
 gem 'jquery-rails'
 # Use Font Awsome for icon

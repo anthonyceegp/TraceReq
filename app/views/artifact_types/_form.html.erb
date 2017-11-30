@@ -3,7 +3,7 @@
     <%= form.label :name, class: "col-form-label col-sm-1" %>
     <div class="col-sm-3">
       <%= form.text_field :name, id: :artifact_type_name, class: "form-control #{is_invalid(@artifact_type, :name)}" %>
-      <%= error_massage_for(@artifact_type, :name)%>
+      <%= error_message_for(@artifact_type, :name)%>
     </div>    
   </div>
 

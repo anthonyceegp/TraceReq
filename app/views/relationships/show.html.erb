@@ -1,4 +1,12 @@
-<h2>Relationship</h2>
+<% content_for :title, [@relationship.origin_artifact.code, @relationship.end_artifact.code].join('-') %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+<% navigation_add "Relationships", url_for(action: :index) %>
+
 <div class="table-responsive">
 	<table class="table table-bordered">
 		<tbody>
@@ -21,5 +29,5 @@
 		</tbody>
 	</table>				
 </div>
-<%= link_to "Edit Relationship", edit_project_demand_relationship_path(@project, @demand, @relationship), class: "btn btn-primary", role: "button" %>
-<%= link_to "Delete Relationship", [@project, @demand, @relationship], method: :delete, class: "btn btn-danger", role: "button" %>
+<%= link_to "Edit Relationship", url_for(action: :edit, id: @relationship), class: "btn btn-primary", role: "button" %>
+<%= link_to "Delete Relationship", url_for(action: :destroy, id:@relationship), method: :delete, class: "btn btn-danger", role: "button" %>

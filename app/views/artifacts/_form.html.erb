@@ -4,7 +4,7 @@
     <%= form.label :code, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= form.text_field :code, id: :artifact_code, class: "form-control #{is_invalid(@artifact, :code)}" %>
-      <%= error_massage_for(@artifact, :code) %>
+      <%= error_message_for(@artifact, :code) %>
     </div>
   </div>
 
@@ -12,7 +12,7 @@
     <%= form.label :name, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= form.text_field :name, id: :artifact_name, class: "form-control #{is_invalid(@artifact, :name)}" %>
-      <%= error_massage_for(@artifact, :name) %>
+      <%= error_message_for(@artifact, :name) %>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
     <%= form.label :description, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= form.text_area :description, id: :artifact_description, class: "form-control  #{is_invalid(@artifact, :description)}" %>
-      <%= error_massage_for(@artifact, :description) %>
+      <%= error_message_for(@artifact, :description) %>
     </div>
   </div>
 
@@ -35,7 +35,7 @@
     <%= form.label :artifact_type_id, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@artifact, :artifact_type)}"}) %>
-      <%= error_massage_for(@artifact, :artifact_type) %>
+      <%= error_message_for(@artifact, :artifact_type) %>
     </div>
   </div>
 

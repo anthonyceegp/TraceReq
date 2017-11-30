@@ -1,4 +1,4 @@
-<table class="table table-bordered" id="editableTable">
+<table class="table table-bordered table-fit" id="editableTable">
 	<thead>
 		<tr>
 			<th scope="col"></th>
@@ -19,8 +19,17 @@
 					<% if origin_artifact.id == end_artifact.id %>
 						<td style="background-color: grey"></td>
 					<% else %>
-						<td>
-							<input class="checkbox" type="checkbox" name="" data-origin_artifact_id="<%= origin_artifact.id %>" data-end_artifact_id="<%= end_artifact.id %>">
+							<%
+								r = @relationships.where("relationships.origin_artifact_id = ?", origin_artifact.id)
+								                  .where("relationships.end_artifact_id = ?", end_artifact.id).first
+							%>
+							<% if !r.nil? %>
+								<td style="background-color: #007bff">
+								<input class="checkbox" type="checkbox" name="" origin-artifact-id="<%= origin_artifact.id %>" end-artifact-id="<%= end_artifact.id %>" relationship-id="<%= r.id %>" checked="true">
+							<% else %>
+								<td>
+								<input class="checkbox" type="checkbox" name="" origin-artifact-id="<%= origin_artifact.id %>" end-artifact-id="<%= end_artifact.id %>" relationship-id>
+							<% end %>
 						</td>
 					<% end %>
 				<% end %>

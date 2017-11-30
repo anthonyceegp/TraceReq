@@ -3,7 +3,7 @@
     <%= form.label :name, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
       <%= form.text_field :name, id: :demand_name, class: "form-control #{is_invalid(@demand, :name)}" %>
-      <%= error_massage_for(@demand, :name) %>
+      <%= error_message_for(@demand, :name) %>
     </div>
   </div>
 
@@ -18,7 +18,7 @@
     <%= form.label :status, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
       <%= form.collection_select :status, @statuses.map{ |s| [s.first, s.first.humanize] }, :first, :second, {}, {class: "form-control #{is_invalid(@demand, :status)}"} %>
-      <%= error_massage_for(@demand, :status) %>
+      <%= error_message_for(@demand, :status) %>
     </div>
   </div>
 
@@ -33,7 +33,7 @@
     <%= form.label :responsible_user_id, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
       <%= form.collection_select(:responsible_user_id, @users, :id, :username, {prompt: 'Select'}, {class: "form-control #{is_invalid(@demand, :responsible_user)}"}) %>
-      <%= error_massage_for(@demand, :responsible_user) %>
+      <%= error_message_for(@demand, :responsible_user) %>
     </div>
   </div>
 

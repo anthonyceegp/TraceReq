@@ -1,11 +1,15 @@
-<h2>Add Users</h2>
+<% content_for :title, "Add Users" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Users', project_users_path(@project) %>
+
 <%= form_with url: project_add_users_path(@project), local: true do |form|%>
-	<div class="table-responsive">
+	<div class="">
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th><%= check_box_tag "check_all" %></th>
-					<th>E-mail</th>
+					<th style="width: 20px;"><%= check_box_tag "check_all" %></th>
+					<th><span class="float-left">E-mail</span></th>
 				</tr>
 			</thead>
 			<tbody>

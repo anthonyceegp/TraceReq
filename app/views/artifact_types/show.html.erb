@@ -1,7 +1,16 @@
-<h2><%= @artifact_type.name %></h2>
+<% content_for :title, @artifact_type.name %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Artifact Types', project_artifact_types_path(@project) %>
+
 <div class="table-responsive">
 	<table class="table table-bordered">
 		<tbody>
+			<tr>
+				<th>Name</th>
+				<td><%= @artifact_type.name %></td>
+			</tr>
+			<tr>
 				<th>Created at</th>
 				<td><%= @artifact_type.created_at.to_date %></td>
 			</tr>

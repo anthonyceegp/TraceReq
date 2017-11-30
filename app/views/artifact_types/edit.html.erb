@@ -1,2 +1,8 @@
+<% content_for :title, "Edit" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Artifact Types', project_artifact_types_path(@project) %>
+<% navigation_add @artifact_type.name, project_artifact_type_path(@project, @artifact_type) %>
+
 <h2>Editing Artifact Type</h2>
 <%= render 'form' %>

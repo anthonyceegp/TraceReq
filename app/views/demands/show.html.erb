@@ -1,7 +1,15 @@
-<h2><%= @demand.name %></h2>
+<% content_for :title, @demand.name %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Demands', project_demands_path(@project) %>
+
 <div class="table-responsive">
   <table class="table table-bordered">
     <tbody>
+      <tr>
+        <th scope="row">Name</th>
+        <td><%= @demand.name %></td>
+      </tr>
       <tr>
         <th scope="row">Description</th>
         <td><%= @demand.description %></td>

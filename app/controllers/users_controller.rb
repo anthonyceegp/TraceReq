@@ -27,10 +27,10 @@ before_action :set_user, only: [:show, :edit, :update, :destroy]
   # POST /users.json
   def create
     @user = User.new(user_create_params)
-    @user.send_confirmation_instructions
 
     respond_to do |format|
       if @user.save
+        @user.send_confirmation_instructions
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else

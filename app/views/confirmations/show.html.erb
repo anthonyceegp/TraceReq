@@ -1,28 +1,24 @@
-<h2>You're almost done! Now create a password to securely access your account.</h2>
+<h2>Create a password to securely access your account.</h2>
 
 <%= form_for(resource, as: resource_name, url: confirm_path, html: { method: :patch }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, id: :password, autofocus: true %>
+  <div class="form-group row">
+    <%= f.label :password, class: "col-form-label col-sm-3" %>
+    <div class="col-sm-3">
+      <%= f.password_field :password, id: :password, autofocus: true, class: "form-control #{is_invalid(resource, :password)}" %>
+      <%= error_message_for(resource, :password) %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, id: :password_confirmation%>
+  <div class="form-group row">
+    <%= f.label :password_confirmation, class: "col-form-label col-sm-3" %><br />
+    <div class="col-sm-3">
+      <%= f.password_field :password_confirmation, id: :password_confirmation, class: "form-control #{is_invalid(resource, :password_confirmation)}" %>
+      <%= error_message_for(resource, :password_confirmation) %>
+    </div>
   </div>
+  <%= f.hidden_field :confirmation_token, id: :confirmation_token, value: @original_token %>
 
-  <div class="field">
-    <%= f.hidden_field :confirmation_token, id: :confirmation_token, value: @original_token %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Confirm Account" %>
-  </div>
+  <%= f.submit "Confirm Account", class: "btn btn-primary" %>
 <% end %>
 
 <%= render "devise/shared/links" %>

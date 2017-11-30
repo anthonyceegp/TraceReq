@@ -1,0 +1,10 @@
+<nav aria-label="breadcrumb" role="navigation">
+	<ol class="breadcrumb">
+    <% nav.each do |n| %>
+    	<li class="breadcrumb-item">
+        <%= link_to n[:title], n[:url] %>
+      </li>
+    <% end %>
+    <li class="breadcrumb-item active" aria-current="page"><%= yield(:title) %></li>
+  </ol>
+</nav>

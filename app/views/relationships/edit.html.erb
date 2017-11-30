@@ -1,2 +1,11 @@
-<h2>Editing Relationship</h2>
+<% content_for :title, "Edit" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+<% navigation_add "Relationships", url_for(action: :index) %>
+<% navigation_add [@relationship.origin_artifact.code, @relationship.end_artifact.code].join('-'), url_for(action: :show, id: @relationship) %>
+
 <%= render 'form' %>

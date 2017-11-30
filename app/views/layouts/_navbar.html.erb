@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <%= link_to root_path, class: "navbar-brand" do %>
-    <%= image_tag "reqTrace.svg", height:"36" %>
-  <% end %>
+<header class="navbar navbar-expand-md fixed-top">
+  <a class="btn btn-sm text-white bg-dark" id="sidebarCollapse">
+    <%= fa_icon "bars" %>
+  </a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -36,4 +36,4 @@
       <% end %>
     </ul>
   </div>
-</nav>
+</header>

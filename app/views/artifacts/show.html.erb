@@ -1,16 +1,25 @@
-<h2><%= @artifact.code_with_name %>
-	<% if @artifact.demands.size > 1 %>
-		<%= link_to url_for(action: :demands, id: @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
-			<%= fa_icon "exclamation-circle" %>
-		<% end %>
-	<% end %>
-</h2>
+<% content_for :title, @artifact.name %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+<% navigation_add "Artifacts", url_for(action: :index) %>
+
 <div class="table-responsive">
 	<table class="table table-bordered">
 		<tbody>
 			<tr>
-				<th scope="row">Type</th>
-				<td><%= @artifact.artifact_type.name %></td>
+				<th scope="row"><%= @artifact.artifact_type.name %></th>
+				<td>
+					<%= @artifact.code_with_name %>
+					<% if @artifact.demands.size > 1 %>
+						<%= link_to url_for(action: :demands, id: @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
+							<%= fa_icon "exclamation-circle" %>
+						<% end %>
+					<% end %>
+				</td>
 			</tr>
 			<tr>
 				<th scope="row">Description</th>

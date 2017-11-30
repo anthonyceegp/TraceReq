@@ -1,7 +1,16 @@
-<h2><%= @relationship_type.name %></h2>
+<% content_for :title, @relationship_type.name %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Relationship Types', project_relationship_types_path(@project) %>
+
 <div class="table-responsive">
 	<table class="table table-bordered">
 		<tbody>
+			<tr>
+				<th>Name</th>
+				<td><%= @relationship_type.name %></td>
+			</tr>
+			<tr>
 				<th>Created at</th>
 				<td><%= @relationship_type.created_at.to_date %></td>
 			</tr>

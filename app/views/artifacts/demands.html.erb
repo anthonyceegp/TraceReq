@@ -1,7 +1,16 @@
-<h2><%= [@artifact.code_with_name, "Demands"].join(" - ") %></h2>
+<% content_for :title, "Artifact Demands" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+<% navigation_add "Artifacts", url_for(action: :index) %>
+<% navigation_add @artifact.name, url_for(action: :show, id: @artifact) %>
+
 <div class="table-responsive">
   <table class="table table-striped table-hover">
-    <thead>
+    <thead class="text-nowrap">
       <tr>
         <th>Name</th>
         <th>Description</th>

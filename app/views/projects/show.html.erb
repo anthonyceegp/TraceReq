@@ -1,7 +1,13 @@
-<h2><%= @project.name %> <%= link_to project_artifact_types_path(@project), title: "Settings" do %><%= fa_icon "cog" %><% end %></h2>
+<% content_for :title, @project.name %>
+<% navigation_add 'Projects', projects_path %>
+
 <div class="table-responsive">
   <table class="table table-bordered">
     <tbody>
+      <tr>
+        <th scope="row">Name</th>
+        <td><%= @project.name %></td>
+      </tr>
       <tr>
         <th scope="row">Description</th>
         <td><%= @project.description %></td>

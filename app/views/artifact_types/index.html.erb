@@ -1,10 +1,13 @@
-<h2>Artifact Types <%= link_to new_project_artifact_type_path(@project), title: "New Artifact Type" do %><%= fa_icon "plus" %><% end %></h2>
+<% content_for :title, "Artifact Types" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+
 <div class="table-responsive">        
   <table class="table table-striped table-hover">
-    <thead>
+    <thead class="text-nowrap">
       <tr>
         <th>Name</th>
-        <th></th>
+        <th><%= link_to new_project_artifact_type_path(@project), title: "New Artifact Type", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
       </tr>
     </thead>
 

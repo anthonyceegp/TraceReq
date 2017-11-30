@@ -1,34 +1,30 @@
-<%= form_with(model: user, local: true) do |form| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul>
-      <% user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :email %>
-    <%= form.text_field(:email, id: :user_email) %>
+<%= form_with(model: @user, local: true) do |form| %>
+  <div class="form-group row">
+    <%= form.label :email, class: "col-form-label col-sm-2" %>
+    <div class="col-sm-5">
+      <%= form.text_field :email, id: :user_email, class: "form-control #{is_invalid(@user, :email)}" %>
+      <%= error_message_for(@user, :email) %>
+    </div>    
   </div>
 
   <% if @set_password %>
-    <div class="field">
-      <%= form.label :password %>
-      <%= form.password_field(:password, id: :user_password) %>
+    <div class="form-group row">
+      <%= form.label :password, class: "col-form-label col-sm-2" %>
+      <div class="col-sm-5">
+        <%= form.password_field :password, id: :user_password, class: "form-control #{is_invalid(@user, :password)}" %>
+        <%= error_message_for(@user, :password) %>
+      </div>
     </div>
 
-    <div class="field">
-      <%= form.label :password_confirmation %>
-      <%= form.password_field(:password_confirmation, id: :user_password_confirmation) %>
+    <div class="form-group row">
+      <%= form.label :password_confirmation, class: "col-form-label col-sm-2" %>
+      <div class="col-sm-5">
+        <%= form.password_field :password_confirmation, id: :user_password_confirmation, class: "form-control #{is_invalid(@user, :password_confirmation)}" %>
+        <%= error_message_for(@user, :password_confirmation) %>
+      </div>      
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+   <%= form.submit(class: "btn btn-primary") %>
+   <%= link_to "Cancel", :back, class: "btn btn-danger" %>
 <% end %>

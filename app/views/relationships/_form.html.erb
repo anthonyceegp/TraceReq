@@ -3,7 +3,7 @@
     <%= form.label :origin_artifact_id, class: "col-form-label col-sm-2" %>
     <div class="col-sm-5">
       <%= form.collection_select(:origin_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :origin_artifact)}"}) %>
-      <%= error_massage_for(@relationship, :origin_artifact) %>
+      <%= error_message_for(@relationship, :origin_artifact) %>
     </div>
   </div>
 
@@ -11,7 +11,7 @@
     <%= form.label :end_artifact_id, class: "col-form-label col-sm-2" %>
     <div class="col-sm-5">
       <%= form.collection_select(:end_artifact_id, @artifacts, :id, :code_with_name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :end_artifact)}"}) %>
-      <%= error_massage_for(@relationship, :end_artifact) %>
+      <%= error_message_for(@relationship, :end_artifact) %>
     </div>
   </div>
 
@@ -19,7 +19,7 @@
     <%= form.label :relationship_type_id, class: "col-form-label col-sm-2" %>
     <div class="col-sm-5">
       <%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@relationship, :relationship_type)}"}) %>
-      <%= error_massage_for(@relationship, :relationship_type) %>
+      <%= error_message_for(@relationship, :relationship_type) %>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
     <%= form.label :description, class: "col-form-label col-sm-2" %>
     <div class="col-sm-5">
       <%= form.text_area :description, id: :relationship_description, class: "form-control #{is_invalid(@relationship, :description)}" %>
-      <%= error_massage_for(@relationship, :description) %>
+      <%= error_message_for(@relationship, :description) %>
     </div>
   </div>
 

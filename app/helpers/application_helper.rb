@@ -33,18 +33,25 @@ module ApplicationHelper
       active = 'active' unless request.path.match(/\/projects\/\d+\/artifacts/).nil?
     end
 
+    if active_for(controller: "relationships") == 'active'
+      active = 'active' unless request.path.match(/\/projects\/\d+\/relationships/).nil?
+    end
+
     active == 'active' ? true : false
   end
 
   def active_demand?
-    active =  active_for(controller: "relationships") +
-              active_for(controller: "demands", action: "show") +
+    active =  active_for(controller: "demands", action: "show") +
               active_for(controller: "demands", action: "edit") +
               active_for(controller: "demands", action: "import") +
               active_for(controller: "demands", action: "conflict")
 
     if active_for(controller: "artifacts") == 'active'
       active = 'active' unless request.path.match(/\/projects\/\d+\/demands\/\d+\/artifacts/).nil?
+    end
+
+    if active_for(controller: "relationships") == 'active'
+      active = 'active' unless request.path.match(/\/projects\/\d+\/demands\/\d+\/relationships/).nil?
     end
 
     active == 'active' ? true : false
@@ -54,7 +61,7 @@ module ApplicationHelper
     object.errors.include?(symbol) ? " is-invalid" : ""
   end
 
-  def error_massage_for(object, symbol)
+  def error_message_for(object, symbol)
     raw "<div class='invalid-feedback'>#{object.errors.full_messages_for(symbol).first}</div>" if object.errors[symbol].present?
   end
 end

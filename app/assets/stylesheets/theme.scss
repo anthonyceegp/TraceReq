@@ -1,0 +1,115 @@
+.navbar {
+    color: white;
+    background-color: #ff9900;
+}
+.navbar a {
+    color: white;
+}
+#sidebar {
+    width: 220px;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+}
+#sidebar {
+    background: #333;
+    color: #fff;
+}
+#sidebar.active {
+    margin-left: -220px;
+}
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+#sidebar li {
+  border-bottom: 1px solid #000;
+}
+#sidebar li a {
+  color: #fff;
+}
+#sidebar .menu li a {
+    padding: 10px;
+    font-size: 1em;
+    display: block;
+}
+#sidebar .menu li a:hover {
+    background: #4d4d4d;
+}
+#sidebar .menu li.active > a {
+    background: #4d4d4d;
+}
+#sidebar .menu .submenu li a:hover {
+    background: #202020;
+}
+#sidebar .menu .submenu li.active > a {
+    color: #ff9900;
+    background: #202020;
+}
+#sidebar .menu .submenu a {
+    font-size: 0.8em !important;
+    padding-left: 30px !important;
+    background: #1a1a1a;
+}
+#sidebar a[data-toggle="collapse"] {
+    position: relative;
+}
+#sidebar a[aria-expanded="false"]::before, #sidebar a[aria-expanded="true"]::before {
+    content: '\f078';
+    display: block;
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    font-family: FontAwesome;
+    font-size: 0.6em;
+}
+#sidebar a[aria-expanded="true"]::before {
+    content: '\f077';
+}
+#content {
+    width: calc(100% - 220px);
+    height: calc(100% - 56px);
+    padding-top: 15px;
+    position: absolute;
+    top: 56px;
+    right: 0;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+}
+#content.active {
+    width: 100%;
+}
+@media (max-width: 768px) {
+  #sidebar {
+      margin-left: -220px;
+  }
+  #sidebar.active {
+      margin-left: 0;
+  }
+  #content {
+      width: 100%;
+  }
+  #content.active {
+      width: calc(100% - 220px);
+  }
+  #sidebarCollapse span {
+      display: none;
+  }
+}
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}

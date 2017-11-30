@@ -1,3 +1,11 @@
+<% content_for :title, "Relationships" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+
 <h2>Relationships <a data-toggle="collapse" href="#filters" aria-expanded="false" aria-controls="filters"><%= fa_icon "filter" %></a></h2>
 <div class="collapse" id="filters">
 	<div class="card card-body">
@@ -5,18 +13,24 @@
 	</div>    		
 </div>
 <div class="row mb-3 mt-3">
-	<label class="col-form-label col-sm-2">Relationship Type</label>
+	<label class="col-form-label col-auto">Relationship Type</label>
 	<div class="col-sm-3">
 		<%= select_tag(:relationship_type_id, options_from_collection_for_select(@relationship_types, :id, :name), {class: "form-control"}) %>
 	</div>
+	<label class="col-form-label col-auto">Description</label>
+	<div class="col-sm-3">
+		<%= text_area_tag :description, nil, { class: "form-control" } %>
+	</div>
 </div>
 <div class="table-responsive dragscroll" id="matrix">
-	<%= render "matrix" %>
+
+	<%= render "matrix" if @has_artifacts %>
+	<%= raw "<p>Nothing to show.</p>" unless @has_artifacts %>
 </div>
 
 <script type="text/javascript">
 
-	var cloneColumn = function() {
+	function cloneColumn() {
 	  var $fixedColumn, $table;
 	  $table = $('#editableTable');
 	  $fixedColumn = $table.clone().insertBefore($table).addClass('fixed-column');
@@ -28,68 +42,74 @@
 	  });
 	};
 
-	$(document).on('click', '#editableTable input:checkbox', function() {
+	$("#matrix").on('click','#editableTable input:checkbox', function(event) {
+ 		event.preventDefault();
+
  		var checkbox = $(this);
 
-    origin_artifact_id = checkbox.data('origin_artifact_id');
-    end_artifact_id = checkbox.data('end_artifact_id');
-    relationship_type_id = $('#relationship_type_id').val();
+ 		if(checkbox.data('requestRunning')) {
+ 			return;
+ 		}
+
+    var origin_artifact_id = checkbox.attr('origin-artifact-id');
+    var end_artifact_id = checkbox.attr('end-artifact-id');
+    var relationship_type_id = $('#relationship_type_id').val();
+    var description = $('#description').val();
 
     var ischecked = $(this).is(':checked');
     if (ischecked) {
 	    $.ajax({
 	    	type: "POST",
-	    	url: '<%= project_demand_relationships_path(@project, @demand) %>',
+	    	url: '<%= url_for(action: :create) %>',
 	    	data: {relationship: {origin_artifact_id: origin_artifact_id, end_artifact_id: end_artifact_id,
-	    		relationship_type_id: relationship_type_id, description: ""}},
+	    		relationship_type_id: relationship_type_id, description: description}},
 	    	success: function(data) {
-	    		checkbox.attr("id",data);
-	    		checkbox.parent().css('background-color', '#e6f7ff');
+	    		checkbox.attr("relationship-id", data);
+	    		checkbox.parent().css('background-color', '#007bff');
+	    		checkbox.prop('checked', true);
+	    	},
+	    	complete: function() {
+	    		checkbox.data('requestRunning', false);
 	    	},
 	    	error: function(data) {
 	    		checkbox.prop('checked', false);
+	    		checkbox.parent().css('background-color', '#fff');
+	    		$('#wraper').prepend(data.responseJSON.errors);
+	    		$("#alert").fadeTo(2000, 500).slideUp(500, function(){
+			      $("#alert").slideUp(500);
+			    }); 
 	    	}
 	    });
 	   } else {
 	   	$.ajax({
 	    	type: "DELETE",
-	    	url: '<%= project_demand_relationships_path(@project, @demand) %>' + "/" + $(this).attr("id"),
+	    	url: '<%= url_for(action: :index) %>' + "/" + checkbox.attr('relationship-id'),
 	    	success: function(data) {
-	    		checkbox.removeAttr("id");
+	    		checkbox.attr("relationship-id", "");
 	    		checkbox.parent().css('background-color', '#ffffff');
+	    		checkbox.prop('checked', false);
 	    	},
-	    	error: function(data) {
+	    	complete: function() {
+	    		checkbox.data('requestRunning', false);
+	    	},
+	    	error: function(e, data, status, xhr) {
 	    		checkbox.prop('checked', true);
 	    	}
 	    });
-	  }  
-	});
-
-	var checkRelationships = function() {
-		var relationships = <%= raw @relationships.to_json %>
-
-		for (var i = 0; i < relationships.length; i++) {
-			var checkbox = $("#editableTable input:checkbox[data-origin_artifact_id=" + 
-											relationships[i][0] + "][data-end_artifact_id=" + relationships[i][1] + "]"); 
-
-			checkbox.prop("checked", true);
-			checkbox.attr('id', relationships[i][2]);
-			checkbox.parent().css('background-color', '#e6f7ff')
-		}
-		cloneColumn();
-	}
-
-	$(document).ready(function () {
-		checkRelationships();
+	  } 
 	});
 
 	$(document).on('turbolinks:load', function() {
 	  $("#form-filter").on("ajax:success", function(e, data, status, xhr) {
 	    $("#matrix").html(data.attachmentPartial);
-	    checkRelationships();
+	    cloneColumn();
 	  }).on("ajax:error", function(e, xhr, status, error) {
 	    $("#matrix").append("<p>ERROR</p>");
 	  });
+	});
+
+	$(document).on("turbolinks:load", function() {
+		cloneColumn();
 	});
 
 	$("input[value='Filter']").click(function() {
@@ -107,6 +127,10 @@
 
 td {
   text-align: center;
+}
+
+.table-fit {
+	width: auto !important;
 }
 
 @media(min-width:991px) {

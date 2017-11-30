@@ -1,2 +1,5 @@
-<h2>Editing Project</h2>
+<% content_for :title, "Edit" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+
 <%= render 'form' %>

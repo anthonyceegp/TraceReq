@@ -1,14 +1,17 @@
-<h2>Demands <%= link_to new_project_demand_path(@project), title: "New Demand" do %><%= fa_icon "plus" %><% end %></h2>
+<% content_for :title, 'Demands' %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+
 <div class="table-responsive">
   <table class="table table-striped table-hover">
-    <thead>
+    <thead class="text-nowrap">
       <tr>
         <th>Name</th>
         <th>Description</th>
         <th>Reponsible</th>
         <th>Created at</th>
         <th>Updated at</th>
-        <th></th>
+        <th><%= link_to new_project_demand_path(@project), title: "New Demand", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
       </tr>
     </thead>
     <tbody>

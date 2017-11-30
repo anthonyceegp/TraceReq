@@ -3,89 +3,66 @@
   <head>
     <title>TraceReq</title>
     <%= csrf_meta_tags %>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'load' %>
     <script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
   </head>
 
   <body>
   	<%= render 'layouts/navbar' %>
-    <div class="container-fluid">
-      <div class="row">
-        <%= render "layouts/sidebar" %>
-        <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+    <div class="d-flex">
+      <%= render "layouts/sidebar" %>
+      <main id="content">
+        <div class="container-fluid" id="wraper">
           <%= render 'layouts/alerts' %>
+          <%= render_navigation %>
           <%= yield %>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   </body>
 </html>
 
-<style type="text/css">
-  body {
-    padding-top: 62px;
-  }
+<script type="text/javascript">
+  $(document).on('turbolinks:load', function () {
 
-  .sidebar {
-    position: fixed;
-    top: 63px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    border-right: 1px solid #eee;
-  }
+    if (sessionStorage.getItem("sidebar_state") == 'active' && $(window).width() > 768) {
+      $('#sidebar').addClass('notransition');
+      $('#content').addClass('notransition');
+      $('#sidebar').addClass('active');
+      $('#content').addClass('active');
+      $('#sidebar')[0].offsetHeight;
+      $('#content')[0].offsetHeight;
+      $('#sidebar').removeClass('notransition');
+      $('#content').removeClass('notransition');
+    }
+    
+    $("#sidebar").mCustomScrollbar({
+      theme: "minimal"
+    });
+  });
 
-  /* Sidebar navigation */
-  .sidebar {
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-  }
+  $('#sidebarCollapse').click('turbolinks:load', function (event) {
+    event.preventDefault();
+    
+    if ($('#sidebar').hasClass('active')) {
+      sessionStorage.setItem("sidebar_state", '');
+    } else {
+      sessionStorage.setItem("sidebar_state", 'active');
+    }
 
-  .sidebar li {
-    border-bottom: 1px solid #23282e;
-    -webkit-transition: all .5s ease;
-    -moz-transition: all .5s ease;
-    -ms-transition: all .5s ease;
-    -o-transition: all .5s ease;
-    transition: all .5s ease;
-  }
+    $('#sidebar').toggleClass('active');
+    $('#content').toggleClass('active');
+  });
 
-  .sidebar .nav-item {
-    border-left: 3px solid #343a40;
-  }
-
-  .sidebar .nav-item.active,
-  .sidebar .nav-item:hover {
-    background-color: #4f5b69;
-    border-left: 3px solid #d19b3d;
-  }
-
-  .sidebar a {
-    border-radius: 0;
-    color: white;
-  }
-
-  .sidebar .sub-menu {
-    background-color: #181c20;
-    list-style-type : none;
-    padding: 0;
-  }
-
-  .sidebar .sub-menu li:hover {
-    background-color: #020203;
-  }
-
-  .sidebar .sub-menu li.active a {
-    color: #d19b3d;
-  }
-
-  .clickable-row {
-    cursor: pointer;
-  }
-</style>
+  $(document).on('turbolinks:load', function () {
+      $("#alert").fadeTo(2000, 500).slideUp(500, function(){
+      $("#alert").slideUp(500);
+    });
+  });
+</script>
