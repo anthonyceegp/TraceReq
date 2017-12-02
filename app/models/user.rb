@@ -5,6 +5,12 @@ class User < ApplicationRecord
 					:rememberable, :trackable, :validatable,
 					:confirmable, :lockable, :timeoutable
 
+	has_attached_file :avatar, styles: {thumb: "32x32#", medium: "200x200"}, default_url: ":style/missing.png"
+	validates_attachment_content_type :avatar, content_type: /\Aimage/
+	validates_attachment_file_name :avatar, matches: [/png\z/, /jpe?g\z/]
+
+	validates_presence_of :username, on: :update
+
 	has_many :created_artifacts, class_name: "Artifact"
 	has_many :created_relationships, class_name: "Relationship"
 	has_many :created_projects, class_name: "Project"
@@ -21,9 +27,5 @@ class User < ApplicationRecord
 		errors.add(:password_confirmation, "can't be blank") if password_confirmation.blank?
 		errors.add(:password_confirmation, "does not match password") if password != password_confirmation
 		password == password_confirmation && !password.blank?
-	end
-
-	def username
-		self.email.split('@').first
 	end
 end

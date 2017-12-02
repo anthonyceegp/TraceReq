@@ -19,11 +19,19 @@ class ConfirmationsController < Devise::ConfirmationsController
 		self.resource = resource_class.find_by_confirmation_token(@original_token)
 		resource.assign_attributes(permitted_params) unless params[resource_name].nil?
 
-		if resource.valid? && resource.password_match?
+		valid = resource.valid?
+		matches = resource.password_match?
+
+		puts "valid:" + valid.to_s
+		puts "matches:" + matches.to_s
+
+		if valid && matches
 			self.resource.confirm
 			set_flash_message :notice, :confirmed
+			puts "no problem"
 			sign_in_and_redirect resource_name, resource
 		else
+			puts "with problem"
 			render action: 'show'
 		end
 	end
@@ -31,6 +39,6 @@ class ConfirmationsController < Devise::ConfirmationsController
 	private
 
 	def permitted_params
-		params.require(resource_name).permit(:confirmation_token, :password, :password_confirmation)
+		params.require(resource_name).permit(:confirmation_token, :username, :password, :password_confirmation)
 	end
 end

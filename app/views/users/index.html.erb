@@ -1,25 +1,28 @@
-<h1>Users</h1>
+<% content_for :title, "Users" %>
 
-<table class="table table-responsive table-striped table-hover">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Confirmed at</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @users.each do |user| %>
-      <tr class="clickable-row" data-href="<%= user_path(user) %>">
-        <td><%= user.email %></td>
-        <td><%= user.confirmed_at %></td>
-        <td><%= link_to user, method: :delete, "data-confirm": 'Are you sure?', class: "float-right" do %><%= fa_icon "trash" %><% end %></td>
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead class="text-nowrap">
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Confirmed at</th>
+        <th><%= link_to new_user_path, title: "New User", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New User', new_user_path %>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr class="clickable-row" data-href="<%= user_path(user) %>">
+          <td><%= user.username %></td>
+          <td><%= user.email %></td>
+          <td><%= user.confirmed_at.to_date unless user.confirmed_at.nil? %></td>
+          <td class="not-clikable"><%= link_to user, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+              <%= fa_icon "trash" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate(@users) %>
+</div>

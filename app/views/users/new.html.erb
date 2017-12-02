@@ -1,2 +1,52 @@
-<h2>New User</h2>
-<%= render 'form' %>
+<% content_for :title, "New" %>
+<% navigation_add 'Users', users_path %>
+
+<%= form_with(url: users_path, local: true) do |form| %>
+	<% @users.each do |user| %>
+		<div class="form-group row">
+			<%= form.label :email, class: "col-form-label col-sm-1" %>
+			<div class="d-flex col-sm-11">
+				<div class="col-sm-6">
+					<%= form.text_field :email, value: user.email, multiple: true, class: "form-control #{is_invalid(user, :email)}" %>
+					<%= error_message_for(user, :email) %>
+				</div>
+				<a class="text-danger ml-2 delete-email"><%= fa_icon "times" %></a><br>
+			</div>
+		</div>
+	<% end %>
+
+	<%= form.submit "Create Users", class: "btn btn-primary" %>
+	<a class="btn btn-primary" href="#" id="add-email">Add Email</a>
+<% end %>
+
+<script type="text/javascript">
+
+	var count = $(".delete-email").length;
+
+	$("#add-email").click(function(event) {
+		event.preventDefault();
+
+		var email = $(".form-group").first().clone();
+
+		email.find("input").removeClass("is-invalid");
+		email.find(".invalid-feedback").remove();
+
+		$(".form-group").last().after(email);
+
+		count = count + 1;
+
+	});
+
+	$(document).on("click", ".delete-email", function() {
+		event.preventDefault();
+
+		var formgroup = $(this).parent().parent();
+
+		if(count > 1) {
+			formgroup.remove();
+			count = count - 1;
+		} else {
+			alert("The last one can't be removed.");
+		}
+	});
+</script>

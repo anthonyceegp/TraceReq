@@ -1,14 +1,18 @@
 .navbar {
-    color: white;
     background-color: #ff9900;
 }
-.navbar a {
+.navbar .nav-link, .navbar .dropdown-toggle {
     color: white;
 }
+
+.navbar .dropdown-toggle:hover {
+    text-decoration: none;
+}
+
 #sidebar {
     width: 220px;
     position: fixed;
-    top: 56px;
+    top: 48px;
     left: 0;
     height: 100vh;
     z-index: 999;

@@ -6,11 +6,10 @@ class ApplicationController < ActionController::Base
   layout :layout
 
   def layout
-  	devise_controller? ? "devise" : "application"
+  	devise_controller? && controller_name != "registrations" ? "devise" : "application"
   end
 
   def after_sign_out_path_for(resource_or_scope)
     new_user_session_path
   end
-
 end

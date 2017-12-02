@@ -1,39 +1,17 @@
-<header class="navbar navbar-expand-md fixed-top">
+<header class="navbar navbar-expand fixed-top justify-content-between">
   <a class="btn btn-sm text-white bg-dark" id="sidebarCollapse">
     <%= fa_icon "bars" %>
   </a>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <% if user_signed_in? %>
-        <li class="nav-item">
-          <%= link_to "User Registration", new_user_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Projects", projects_path, class: "nav-link" %>
-        </li>
-      <% end %>
-    </ul>
-    <ul class="navbar-nav">
-      <% if !user_signed_in? %>
-        <li class="nav-item">
-          <%= link_to "Sign in", new_user_session_path, class: "nav-link" %>
-        </li>
-      <% else %>
-        <li class="nav-item">
-          <%= link_to "Sign out", destroy_user_session_path, class: "nav-link", method: :delete %>
-        </li>
-        <li class="nav-item">
-          <span class="navbar-text">|</spam>
-        </li>
-        <li class="nav-item">
-          <%= link_to current_user.email, user_path(current_user), class: "nav-link" %>
-        </li>
-      <% end %>
-    </ul>
+  <div class="dropdown">
+    <a class="dropdown-toggle" href="#" role="button" id="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <%= image_tag current_user.avatar.url(:thumb) %>
+      <span class="username"><%= current_user.username %></span>
+    </a>
+    <div class="dropdown-menu" style="z-index: 999">
+      <%= link_to "Profile", user_path(current_user), class: "dropdown-item" %>
+      <div class="dropdown-divider"></div>
+      <%= link_to "Sign out", destroy_user_session_path, class: "dropdown-item", method: :delete %>
+    </div>
   </div>
 </header>

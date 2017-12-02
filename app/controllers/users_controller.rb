@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
-before_action :set_user, only: [:show, :edit, :update, :destroy]
+before_action :set_user, only: [:show, :edit, :update, :destroy, :delete_user_avatar]
 
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.all.page(params[:page]).per(8)
   end
 
   # GET /users/1
@@ -14,28 +14,35 @@ before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users/new
   def new
-    @user = User.new
-    @set_password = false
+    @users = []
+    @users << User.new
   end
 
   # GET /users/1/edit
   def edit
-  	@set_password = true
   end
 
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_create_params)
+    @users = []
 
-    respond_to do |format|
-      if @user.save
-        @user.send_confirmation_instructions
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
+    user_create_params[:email].each do |email|
+      user = User.new(email: email)
+      if user.save
+        user.send_confirmation_instructions
       else
+        @users << user
+      end
+    end
+    respond_to do |format|
+      if @users.empty?
+        format.html { redirect_to :new, notice: 'Users were successfully created.' }
+        format.json { render :new, status: :created, location: :new }
+      else
+        flash.now[:alert] = "Some users couldn't be created."
         format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render json: @users, status: :unprocessable_entity }
       end
     end
   end
@@ -64,6 +71,15 @@ before_action :set_user, only: [:show, :edit, :update, :destroy]
     end
   end
 
+  def delete_user_avatar
+    @user.avatar = nil
+    @user.save
+    respond_to do |format|
+      format.html { redirect_to @user, notice: 'Avatar was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -72,10 +88,10 @@ before_action :set_user, only: [:show, :edit, :update, :destroy]
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_create_params
-      params.require(:user).permit(:email)
+      params.permit(email: [])
     end
 
     def user_update_params
-      params.require(:user).permit(:email, :password, :password_confirmation)
+      params.require(:user).permit(:username, :avatar)
     end
 end

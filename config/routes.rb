@@ -16,11 +16,15 @@ Rails.application.routes.draw do
 
   as :user do
     patch "/confirm" => "confirmations#confirm"
+    get 'users/:id/edit_password' => 'devise/registrations#edit', :as => 'edit_user_registration'    
+    put 'users/:id/edit_password' => 'devise/registrations#update', :as => 'update_user_registration'
   end
 
   resources :users
   
   root to: 'home#index'
+
+  post 'users/:id/delete_user_avatar', to: 'users#delete_user_avatar', as: :delete_user_avatar
 
   get  '/projects/:id/users', to: 'projects#users', as: :project_users
   get  '/projects/:id/add_users', to: 'projects#add_users', as: :project_add_users
