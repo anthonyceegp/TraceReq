@@ -15,6 +15,7 @@ class User < ApplicationRecord
 	has_many :created_relationships, class_name: "Relationship"
 	has_many :created_projects, class_name: "Project"
 	has_many :created_demands, class_name: "Demand"
+	has_many :created_templates, class_name: "Template"
 	
 	has_and_belongs_to_many :projects
 

@@ -1,0 +1,31 @@
+<h2>Templates</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>User</th>
+      <th>Model</th>
+      <th>Content</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @templates.each do |template| %>
+      <tr>
+        <td><%= template.project %></td>
+        <td><%= template.user %></td>
+        <td><%= template.model %></td>
+        <td><%= template.content %></td>
+        <td><%= link_to 'Show', [@project, template] %></td>
+        <td><%= link_to 'Edit', edit_project_template_path(@project, template) %></td>
+        <td><%= link_to 'Destroy', [@project, template], method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Template', new_project_template_path(@project) %>

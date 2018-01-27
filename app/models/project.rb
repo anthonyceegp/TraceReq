@@ -9,4 +9,5 @@ class Project < ApplicationRecord
 	has_many :relationship_types, dependent: :destroy
 	has_many :relationships, dependent: :destroy
 	has_many :demands, dependent: :destroy
+	has_many :templates, dependent: :destroy
 end

@@ -48,9 +48,11 @@ gem 'bundler', '~> 1.16.0.pre.3'
 # Use Kaminari for pagination
 gem 'kaminari'
 # Use paperclip to handle file upload
-gem "paperclip", "~> 5.0.0"
+gem 'paperclip', '> 5.0.0'
 # Use paperTrail for recording models' histories
 gem 'paper_trail'
+# use ckeditor to create templates for export files
+gem 'ckeditor'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

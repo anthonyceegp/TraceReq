@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
   
+  resources :tamplates
+  mount Ckeditor::Engine => '/ckeditor'
   resources :projects do
-    resources :artifact_types
-    resources :relationship_types
     resources :artifacts
+    resources :artifact_types
     resources :relationships
+    resources :relationship_types
+    resources :templates
 
     resources :demands do
       resources :artifacts

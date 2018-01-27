@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171201134352) do
+ActiveRecord::Schema.define(version: 20171210150906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,19 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.integer "file_file_size"
     t.datetime "file_updated_at"
     t.index ["artifact_id"], name: "index_attachments_on_artifact_id"
+  end
+
+  create_table "ckeditor_assets", force: :cascade do |t|
+    t.string "data_file_name", null: false
+    t.string "data_content_type"
+    t.integer "data_file_size"
+    t.string "data_fingerprint"
+    t.string "type", limit: 30
+    t.integer "width"
+    t.integer "height"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["type"], name: "index_ckeditor_assets_on_type"
   end
 
   create_table "demands", force: :cascade do |t|
@@ -123,6 +136,20 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.index ["project_id"], name: "index_relationships_on_project_id"
     t.index ["relationship_type_id"], name: "index_relationships_on_relationship_type_id"
     t.index ["user_id"], name: "index_relationships_on_user_id"
+  end
+
+  create_table "templates", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "model", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name", default: "teste", null: false
+    t.index ["project_id", "model"], name: "index_templates_on_project_id_and_model", unique: true
+    t.index ["project_id", "name"], name: "index_templates_on_project_id_and_name", unique: true
+    t.index ["project_id"], name: "index_templates_on_project_id"
+    t.index ["user_id"], name: "index_templates_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -196,4 +223,6 @@ ActiveRecord::Schema.define(version: 20171201134352) do
   add_foreign_key "relationships", "projects"
   add_foreign_key "relationships", "relationship_types"
   add_foreign_key "relationships", "users"
+  add_foreign_key "templates", "projects"
+  add_foreign_key "templates", "users"
 end
