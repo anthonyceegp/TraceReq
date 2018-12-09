@@ -50,7 +50,7 @@ gem 'bundler', '~> 1.16.0.pre.3'
 # Use Kaminari for pagination
 gem 'kaminari'
 # Use paperclip to handle file upload
-gem "paperclip", "~> 5.0.0"
+gem 'paperclip', '> 5.0.0'
 # Use paperTrail for recording models' histories
 gem 'paper_trail'
 # Use cancancan for authorizations

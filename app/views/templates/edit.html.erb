@@ -1,0 +1,10 @@
+<% content_for :title, "Edit" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Templates', project_templates_path(@project) %>
+<% navigation_add @template.name, project_template_path(@project, @template) %>
+
+<%= render 'form', template: @template %>
+
+<%= link_to 'Show', [@project, @template] %> |
+<%= link_to 'Back', project_templates_path(@project) %>

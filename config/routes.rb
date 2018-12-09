@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       resources :comments
     end
     resources :relationships
+    resources :relationship_types
+    resources :templates
 
     resources :demands do
       resources :artifacts do

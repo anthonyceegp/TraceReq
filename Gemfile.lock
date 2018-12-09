@@ -61,6 +61,9 @@ GEM
       xpath (~> 2.0)
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
+    ckeditor (4.2.4)
+      cocaine
+      orm_adapter (~> 0.5.0)
     climate_control (0.2.0)
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
@@ -134,7 +137,7 @@ GEM
     paper_trail (8.0.1)
       activerecord (>= 4.2, < 5.2)
       request_store (~> 1.1)
-    paperclip (5.0.0)
+    paperclip (5.1.0)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
       cocaine (~> 0.5.5)
@@ -236,6 +239,7 @@ DEPENDENCIES
   byebug
   cancancan (~> 2.0)
   capybara (~> 2.13)
+  ckeditor
   coffee-rails (~> 4.2)
   coffee-script-source (= 1.8.0)
   devise (~> 4.3.0)
@@ -247,7 +251,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari
   paper_trail
-  paperclip (~> 5.0.0)
+  paperclip (> 5.0.0)
   pg (~> 0.21.0)
   popper_js (>= 1.12.3, < 2)
   puma (~> 3.7)

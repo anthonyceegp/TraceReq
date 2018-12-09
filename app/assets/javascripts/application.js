@@ -15,7 +15,6 @@
 //= require popper
 //= require turbolinks
 //= require jquery_ujs
-//= require bootstrap
 //= require jquery.minicolors
 //= require echarts-en
 //= require_tree .

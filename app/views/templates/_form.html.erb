@@ -1,0 +1,32 @@
+<%= form_with(model: [@project, template], local: true) do |form| %>
+
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group row">
+        <%= form.label :name, class: "col-md-2 col-form-label" %>
+        <div class="col-md-10">
+          <%= form.text_field :name, id: :template_name, class: "form-control #{is_invalid(template, :name)}" %>
+          <%= error_message_for(template, :name) %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group row">
+        <%= form.label :model, class: "col-md-2 col-form-label" %>
+        <div class="col-md-10">
+          <%= form.collection_select :model, @models.map{ |s| [s.first, s.first.humanize] }, :first, :second, {}, {class: "form-control #{is_invalid(template, :model)}"} %>
+          <%= error_message_for(template, :model) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= form.cktext_area :content, id: :template_content, ckeditor: { language: 'en'} %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit(class: "btn btn-primary") %>
+  </div>
+<% end %>

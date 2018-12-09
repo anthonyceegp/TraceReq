@@ -1,0 +1,22 @@
+<p>
+  <strong>Project:</strong>
+  <%= @template.project.name %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @template.user.username %>
+</p>
+
+<p>
+  <strong>Model:</strong>
+  <%= @template.model %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @template.content %>
+</p>
+
+<%= link_to 'Edit', edit_project_template_path(@project, @template) %> |
+<%= link_to 'Back', project_templates_path(@project) %>
