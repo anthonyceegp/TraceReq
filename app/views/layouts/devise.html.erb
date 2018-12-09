@@ -4,12 +4,48 @@
     <title>TraceReq</title>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
   </head>
 
-  <body>
-    <%= yield %>
+  <body style="background: #333;">
+      <div id="wrap" class="col-sm-8 col-md-6 col-lg-4 offset-sm-2 offset-md-3 offset-lg-4 position-absolute">
+        <div class="content position-relative">
+          <%= yield %>
+        </div>
+      </div>  
   </body>
+
+  <script type="text/javascript">
+    $(function() {
+      $('.content').css({
+          'top' : '50%',
+          'margin-top' : -$('.content').outerHeight()/2
+      });
+    });
+  </script>
+
+  <style type="text/css">
+    html, body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    #wrap {
+      background-color: white;
+      height: 100%;
+    }
+
+    .btn {
+      background-color: #ff9900;
+      color: white;
+    }
+
+    .btn:hover {
+      background-color: #e58900;
+    }
+  </style>
 </html>

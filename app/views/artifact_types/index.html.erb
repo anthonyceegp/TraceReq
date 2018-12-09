@@ -7,7 +7,13 @@
     <thead class="text-nowrap">
       <tr>
         <th>Name</th>
-        <th><%= link_to new_project_artifact_type_path(@project), title: "New Artifact Type", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
+        <th>
+          <% if can? :create, ArtifactType %>
+            <%= link_to new_project_artifact_type_path(@project), title: "New Artifact Type", class: "float-right" do %>
+              <%= fa_icon "plus" %>
+            <% end %>
+          <% end %>
+        </th>
       </tr>
     </thead>
 
@@ -16,8 +22,10 @@
         <tr class="clickable-row" data-href="<%= project_artifact_type_path(@project, artifact_type) %>">
           <td><%= artifact_type.name %></td>
           <td class="not-clikable">
-            <%= link_to [@project, artifact_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-              <%= fa_icon "trash" %>
+            <% if can? :destroy, artifact_type %>
+              <%= link_to [@project, artifact_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+                <%= fa_icon "trash" %>
+              <% end %>
             <% end %>
           </td>
         </tr>

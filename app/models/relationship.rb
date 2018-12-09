@@ -1,10 +1,4 @@
 class Relationship < ApplicationRecord
-  has_paper_trail meta: { origin_artifact_id: :origin_artifact_id }
-
-  before_create { touch_origin_artifact('create relationship') }
-  before_update { touch_origin_artifact('update relationship') }
-  before_destroy { touch_origin_artifact('destroy relationship') }
-
   validates :description, length: { maximum: 255}
 
   validate :uniqueness_in_both_ways, if: 'origin_artifact.present? and end_artifact.present?'
@@ -23,8 +17,18 @@ class Relationship < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  def type
+    relationship_type.name
+  end
+
+  def self.matrix(project, demand, filter)
+    Matrix.new(project, demand, filter)
+  end
+
+  private
+
   def equal_artifacts
-  	if origin_artifact_id == end_artifact_id
+    if origin_artifact_id == end_artifact_id
       errors.add(:origin_artifact, 'must be different from end artifact.')
       errors.add(:end_artifact, 'must be different from origin artifact.')
     end
@@ -35,11 +39,5 @@ class Relationship < ApplicationRecord
       errors.add(:origin_artifact, 'already related to end artifact.')
       errors.add(:end_artifact, 'already related to origin artifact.')
     end
-  end
-
-  def touch_origin_artifact(event)
-    origin_artifact.paper_trail_event = event
-    origin_artifact.paper_trail.touch_with_version
-    origin_artifact.paper_trail_event = nil
   end
 end

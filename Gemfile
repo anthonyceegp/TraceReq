@@ -39,6 +39,8 @@ gem 'bootstrap', '~> 4.0.0.beta2.1'
 gem 'popper_js', '< 2', '>= 1.12.3'
 # Required for bootstrap
 gem 'jquery-rails'
+# Required for color animations
+gem 'jquery-ui-rails'
 # Use Font Awsome for icon
 gem "font-awesome-rails"
 # Use Capistrano for deployment
@@ -51,13 +53,20 @@ gem 'kaminari'
 gem "paperclip", "~> 5.0.0"
 # Use paperTrail for recording models' histories
 gem 'paper_trail'
+# Use cancancan for authorizations
+gem 'cancancan', '~> 2.0'
+
+gem 'jquery-minicolors-rails'
+
+gem 'echarts-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver'		
+  gem 'railroady'
 end
 
 group :development do

@@ -21,5 +21,9 @@
 		</tbody>
 	</table>
 </div>
-<%= link_to "Edit Artifact Type", edit_project_artifact_type_path(@project, @artifact_type), {class: "btn btn-primary", role: "button"} %>
-<%= link_to "Delete Artifact Type", [@project, @artifact_type], {method: :delete, class: "btn btn-danger", role: "button"} %>
+<% if can? :edit, @artifact_type %>
+	<%= link_to "Edit Artifact Type", edit_project_artifact_type_path(@project, @artifact_type), class: "btn btn-primary", role: "button" %>
+<% end %>
+<% if can? :destroy, @artifact_type %>
+	<%= link_to "Delete Artifact Type", [@project, @artifact_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", role: "button" %>
+<% end %>

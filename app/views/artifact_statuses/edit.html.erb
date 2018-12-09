@@ -1,0 +1,7 @@
+<% content_for :title, "Edit" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Artifact Statuses', project_artifact_statuses_path(@project) %>
+<% navigation_add @artifact_status.name, project_artifact_status_path(@project, @artifact_status) %>
+
+<%= render 'form' %>

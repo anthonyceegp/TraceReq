@@ -1,11 +1,14 @@
 class ArtifactTypesController < ApplicationController
+  load_and_authorize_resource :project
+  load_and_authorize_resource :artifact_type, through: :project
+
   before_action :set_project, only: [:index, :new, :create]
   before_action :set_project_artifact_type, except: [:index, :new, :create]
 
   # GET /artifact_types
   # GET /artifact_types.json
   def index
-    @artifact_types = ArtifactType.where(project: @project)
+    @artifact_types = ArtifactType.where(project: @project).order(:name)
   end
 
   # GET /artifact_types/1

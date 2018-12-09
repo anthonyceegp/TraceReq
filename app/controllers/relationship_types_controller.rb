@@ -1,4 +1,7 @@
 class RelationshipTypesController < ApplicationController
+  load_and_authorize_resource :project
+  load_and_authorize_resource :relationship_type, through: :project
+
   before_action :set_project, only: [:index, :new, :create]
   before_action :set_project_relationship_type, except: [:index, :new, :create]
 
@@ -75,6 +78,6 @@ class RelationshipTypesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def relationship_type_params
-      params.require(:relationship_type).permit(:name)
+      params.require(:relationship_type).permit(:name, :color)
     end
 end

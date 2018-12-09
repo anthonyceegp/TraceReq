@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171201134352) do
+ActiveRecord::Schema.define(version: 20180628025408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,12 +29,21 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.index ["user_id"], name: "index_artifact_demands_on_user_id"
   end
 
+  create_table "artifact_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "project_id"], name: "index_artifact_statuses_on_name_and_project_id", unique: true
+    t.index ["project_id"], name: "index_artifact_statuses_on_project_id"
+  end
+
   create_table "artifact_types", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "project_id", null: false
-    t.index ["name"], name: "index_artifact_types_on_name", unique: true
+    t.index ["name", "project_id"], name: "index_artifact_types_on_name_and_project_id"
     t.index ["project_id"], name: "index_artifact_types_on_project_id"
   end
 
@@ -49,8 +58,10 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.bigint "attachment_id"
+    t.bigint "artifact_status_id", null: false
+    t.index ["artifact_status_id"], name: "index_artifacts_on_artifact_status_id"
     t.index ["artifact_type_id"], name: "index_artifacts_on_artifact_type_id"
-    t.index ["code"], name: "index_artifacts_on_code", unique: true
+    t.index ["code", "project_id"], name: "index_artifacts_on_code_and_project_id"
     t.index ["project_id"], name: "index_artifacts_on_project_id"
     t.index ["user_id"], name: "index_artifacts_on_user_id"
   end
@@ -67,10 +78,28 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.index ["artifact_id"], name: "index_attachments_on_artifact_id"
   end
 
+  create_table "chart_data", force: :cascade do |t|
+    t.bigint "artifact_status_id", null: false
+    t.bigint "artifact_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artifact_id"], name: "index_chart_data_on_artifact_id"
+    t.index ["artifact_status_id"], name: "index_chart_data_on_artifact_status_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "artifact_id", null: false
+    t.bigint "user_id", null: false
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artifact_id"], name: "index_comments_on_artifact_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "demands", force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
-    t.integer "status", default: 0, null: false
     t.string "release"
     t.bigint "responsible_user_id", null: false
     t.bigint "project_id", null: false
@@ -104,7 +133,9 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "project_id", null: false
-    t.index ["name"], name: "index_relationship_types_on_name", unique: true
+    t.string "color", null: false
+    t.index ["color", "project_id"], name: "index_relationship_types_on_color_and_project_id"
+    t.index ["name", "project_id"], name: "index_relationship_types_on_name_and_project_id"
     t.index ["project_id"], name: "index_relationship_types_on_project_id"
   end
 
@@ -150,18 +181,12 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.integer "avatar_file_size"
     t.datetime "avatar_updated_at"
     t.string "username"
+    t.integer "roles_mask"
+    t.datetime "deleted_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
-  end
-
-  create_table "version_associations", force: :cascade do |t|
-    t.integer "version_id"
-    t.string "foreign_key_name", null: false
-    t.integer "foreign_key_id"
-    t.index ["foreign_key_name", "foreign_key_id"], name: "index_version_associations_on_foreign_key"
-    t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
   create_table "versions", force: :cascade do |t|
@@ -171,20 +196,23 @@ ActiveRecord::Schema.define(version: 20171201134352) do
     t.string "whodunnit"
     t.text "object"
     t.datetime "created_at"
-    t.integer "transaction_id"
-    t.integer "origin_artifact_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
-    t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
   add_foreign_key "artifact_demands", "artifacts"
   add_foreign_key "artifact_demands", "demands"
   add_foreign_key "artifact_demands", "users"
+  add_foreign_key "artifact_statuses", "projects"
   add_foreign_key "artifact_types", "projects"
+  add_foreign_key "artifacts", "artifact_statuses"
   add_foreign_key "artifacts", "artifact_types"
   add_foreign_key "artifacts", "projects"
   add_foreign_key "artifacts", "users"
   add_foreign_key "attachments", "artifacts"
+  add_foreign_key "chart_data", "artifact_statuses"
+  add_foreign_key "chart_data", "artifacts"
+  add_foreign_key "comments", "artifacts"
+  add_foreign_key "comments", "users"
   add_foreign_key "demands", "projects"
   add_foreign_key "demands", "users", column: "responsible_user_id"
   add_foreign_key "projects", "users"

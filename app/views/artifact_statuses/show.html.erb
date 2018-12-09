@@ -1,0 +1,29 @@
+<% content_for :title, @artifact_status.name %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% navigation_add 'Artifact Satuses', project_artifact_statuses_path(@project) %>
+
+<div class="table-responsive">
+	<table class="table table-bordered">
+		<tbody>
+			<tr>
+				<th>Name</th>
+				<td><%= @artifact_status.name %></td>
+			</tr>
+			<tr>
+				<th>Created at</th>
+				<td><%= @artifact_status.created_at.to_date %></td>
+			</tr>
+			<tr>
+				<th>Updated at</th>
+				<td><%= @artifact_status.updated_at.to_date %></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<% if can? :edit, @artifact_status %>
+	<%= link_to "Edit Artifact Status", edit_project_artifact_status_path(@project, @artifact_status), class: "btn btn-primary", role: "button" %>
+<% end %>
+<% if can? :destroy, @artifact_status %>
+	<%= link_to "Delete Artifact Status", [@project, @artifact_status], method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", role: "button" %>
+<% end %>

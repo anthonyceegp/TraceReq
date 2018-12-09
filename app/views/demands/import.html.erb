@@ -2,7 +2,9 @@
 <% navigation_add 'Projects', projects_path %>
 <% navigation_add @project.name, project_path(@project) %>
 <% navigation_add 'Demands', project_demands_path(@project) %>
-<% navigation_add @demand.name, project_demand_path(@demand) %>
+<% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+
+<%= render partial: "layouts/search_form", locals: { path: import_artifacts_path(@project, @demand) } %>
 
 <%= form_with(url: import_artifacts_path(@project, @demand), local: true) do |form| %>
 	<div class="table-responsive">
@@ -26,7 +28,7 @@
 					<td><%= artifact.name %></td>
 					<td><%= artifact.description %></td>
 					<td><%= artifact.priority %></td>
-					<td><%= artifact.artifact_type.name %></td>
+					<td><%= artifact.type %></td>
 				</tr>
 				<% end %>
 			</tbody>
@@ -40,9 +42,22 @@
 <% end %>
 
 <script type="text/javascript">
-	$('#check_all').on("click", function(){
-		var cbxs = $('input[type="checkbox"]');
-		var status = cbxs.slice(0,1).is(':checked'); 
-		cbxs.prop("checked", status);
-	});
+	$('#check_all').on("change", function (event) {
+      event.preventDefault();
+
+      var cbxs = $("input[type=checkbox]:not(#check_all)");
+      var status = $(this).is(":checked");
+      cbxs.prop("checked", status);
+    });
+
+		$("input[type=checkbox]").on("change", function (event) {
+      event.preventDefault();
+
+      var checkedNumber = $("input:checked").length;
+      var checkNumber = $("input[type=checkbox]").length;
+
+      if (checkNumber > checkedNumber) {
+        $("#check_all").prop("checked", false);
+      }
+    });
 </script>

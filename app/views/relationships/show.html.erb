@@ -12,7 +12,7 @@
 		<tbody>
 			<tr>
 				<th scope="row">Type</th>
-				<td><%= @relationship.relationship_type.name %></td>
+				<td><%= @relationship.type %></td>
 			</tr>
 			<tr>
 				<th scope="row">From</th>
@@ -29,5 +29,9 @@
 		</tbody>
 	</table>				
 </div>
-<%= link_to "Edit Relationship", url_for(action: :edit, id: @relationship), class: "btn btn-primary", role: "button" %>
-<%= link_to "Delete Relationship", url_for(action: :destroy, id:@relationship), method: :delete, class: "btn btn-danger", role: "button" %>
+<% if can? :edit, @relationship %>
+	<%= link_to "Edit Relationship", url_for(action: :edit, id: @relationship), class: "btn btn-primary", role: "button" %>
+<% end %>
+<% if can? :destroy, @relationship %>
+	<%= link_to "Delete Relationship", url_for(action: :destroy, id:@relationship), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", role: "button" %>
+<% end %>

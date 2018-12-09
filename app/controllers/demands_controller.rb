@@ -1,13 +1,15 @@
 class DemandsController < ApplicationController
+  load_and_authorize_resource :project
+  load_and_authorize_resource :demand, through: :project
+
   before_action :set_project, only: [:index, :new, :create]
   before_action :set_project_demand, except: [:index, :new, :create]
-  before_action :set_statuses_collection, only: [:new, :edit, :create, :update]
   before_action :set_users_collection, only: [:new, :edit, :create, :update]
 
   # GET /demands
   # GET /demands.json
   def index
-    @demands = Demand.where(project: @project).page(params[:page]).per(8)
+    @demands = @project.demands.search(params[:term]).page(params[:page]).per(7)
   end
 
   # GET /demands/1
@@ -64,29 +66,20 @@ class DemandsController < ApplicationController
         format.html { redirect_to project_demands_url(@project), notice: 'Demand was successfully destroyed. All changes were kept.' }
         format.json { head :no_content }
       else # User may choose to revert all changes made
-        conflicted_artifacts = Artifact.joins(:artifact_demands)
-                                    .where(id: @demand.edited_artifacts)
-                                    .where.not('artifact_demands.demand_id = ?', @demand)
-        # If there are conflicts, artifact belongs to more then one demand and was edited, users must choose
-        # if they want to revert the artifact to a previous version or keep it as it is.
-        if conflicted_artifacts.any?
+        # If there are conflicts, that is a artifact belongs to more then one demand or it was edited, user must analyze these before deleting demand
+        if @demand.conflicted_artifacts.any?
           format.html { redirect_to conflict_demand_url(@project, @demand), alert: "Conflicts were found. To delete this demand, you may want to select an artifact version to keep it. Case you don't select any, it will be left as it is." }
           format.json { render json: conflicted_artifacts, status: :confict }
         else
-          # If there are no conflicts, all chegens can be reverted
-          ArtifactDemand.where(demand: @demand).each do |r|
-            if r.artifact.version_index > r.version_index and r.status == "imported"
-              # If the artifact was imported to the demand, it must be reverted and removed from demand
-              version_index = r.version_index + 1
-              r.artifact.revert_to(version_index)
-            elsif r.status == "created"
-              # If the artifact was created in the demand, it can be safely destroyed.
-              r.artifact.destroy
+          # Case there are no conflict, created artifacts can be safely destroyed.
+          @demand.artifact_demands.each do |artifact_demand|
+            if artifact_demand.status == "created"
+              artifact_demand.artifact.destroy
             end
           end
-          # If the artifact was imported, but not changed, it will be simply removed when demand destroyed.
+          # Case there are no conflict, imported artifacts will be just removed.
           @demand.destroy
-          format.html { redirect_to project_demands_url(@project), notice: 'Demand was successfully destroyed. All changes were reverted.' }
+          format.html { redirect_to project_demands_url(@project), notice: 'Demand was successfully destroyed. All changes were undone.' }
           format.json { head :no_content }
         end
       end
@@ -103,43 +96,75 @@ class DemandsController < ApplicationController
   end
 
   def import
-     ids = ArtifactDemand.where(demand: @demand).select(:artifact_id)
-    @artifacts = Artifact.all.where.not(id: ids).order(:artifact_type_id, :code).page(params[:page]).per(7)
+    @artifacts = @demand.search_artifact_to_import(params[:term]).page(params[:page]).per(7)
   end
 
   def save_import
-    artifacts = Artifact.find(import_params[:artifact_ids])
-    artifacts.each do |artifact|
-      verison = artifact.versions.last
-      artifact.artifact_demands.create(demand: @demand, user: current_user, status: :imported, version_index: verison.index)
-    end
+    artifacts = @project.artifacts.where(id: import_params[:artifact_ids])
 
     respond_to do |format|
-      format.html { redirect_to import_artifacts_url(@project, @demand), notice: 'Artifacts was successfully imported.' }
-      format.json { render :import, status: :ok, location: import_artifacts_url(@project, @demand)}
+      if artifacts.any?
+        artifacts.each do |artifact|
+          verison = artifact.versions.last
+          artifact.artifact_demands.create(demand: @demand, user: current_user, status: :imported, version_index: verison.index)
+        end
+        format.html { redirect_to import_artifacts_url(@project, @demand), notice: 'Artifacts was successfully imported.' }
+        format.json { render :import, status: :ok, location: import_artifacts_url(@project, @demand)}
+      else
+        format.html { redirect_to import_artifacts_url(@project, @demand), alert: 'Select at least one artifact to import.' }
+        format.json { render :import, status: :unprocessable_entity , location: import_artifacts_url(@project, @demand)}
+      end
     end
   end
 
   def conflict
-    @conflicted_artifacts = Artifact.joins(:artifact_demands)
-                                    .where(id: @demand.edited_artifacts)
-                                    .where.not('artifact_demands.demand_id = ?', @demand)
+    @conflicted_artifacts = @demand.conflicted_artifacts
   end
 
   def resolve_conflicts
-    ArtifactDemand.where(demand: @demand).each do |r|
-      if params.has_key?(:versions) and !params[:versions][r.artifact.id.to_s].blank?
-        version_index = params[:versions][r.artifact.id.to_s].to_i
-        puts version_index
-        r.artifact.revert_to(version_index)
-      elsif r.status == :created
-        r.artifact.destroy
-      end 
+    @demand.artifact_demands.each do |artifact_demand|
+      artifact = artifact_demand.artifact
+      artifact_id = artifact_demand.artifact.id.to_s
+
+      if artifact_demand.edited? or artifact.conflict?
+        artifact.revert_to(params[:versions][artifact_id].to_i) if params.has_key?(:versions) and !params[:versions][artifact_id].blank?
+      else artifact_demand.status == "created"
+        artifact.destroy
+      end
     end
     @demand.destroy
     respond_to do |format|
       format.html { redirect_to project_demands_url(@project), notice: 'Demand was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def status
+    statuses = @project.artifact_statuses 
+    i=0
+    statusMap = statuses.map{|s| {(i+=1)-1=>s.id}}.reduce(:merge)
+    @legends = statuses.pluck(:name)
+    @days = (@demand.created_at.to_date..Date.current()).map{ |date| date }
+    @series = []
+    data = Array.new(statuses.size) { Array.new(@days.size, 0.0) }
+    @days.each_with_index do |day, index|
+      temp = []
+      ChartDatum.where(artifact: @demand.artifacts).where("DATE(created_at) <= ?", day).order(created_at: :desc).each do |chart_datum|
+        temp << chart_datum unless temp.any? { |c| c.artifact_id == chart_datum.artifact_id }
+      end
+
+      aritfact_num = @demand.artifacts.where('DATE(artifacts.created_at) <= ?', @days[index]).size
+      temp.each do |d|
+        if aritfact_num == 0
+          data[statusMap.key(d.artifact_status.id)][index] = 0.0
+        else
+          data[statusMap.key(d.artifact_status.id)][index] += 100.0 / aritfact_num
+        end
+      end
+    end
+
+    statuses.each_with_index do |s, index|
+      @series << {name: s.name, type: "line", data: data[index].map {|c| c = c.to_i}}
     end
   end
 
@@ -153,25 +178,17 @@ class DemandsController < ApplicationController
       @demand = @project.demands.find(params[:id])
     end
 
-    def set_statuses_collection
-      @statuses = Demand.statuses
-    end
-
     def set_users_collection
       @users = Project.find(params[:project_id]).users
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def demand_params
-      params.require(:demand).permit(:name, :description, :status, :release, :responsible_user_id)
+      params.require(:demand).permit(:name, :description, :release, :responsible_user_id)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def import_params
       params.permit(artifact_ids: [])
-    end
-
-    def add_users_params
-      params.permit(user_ids: [])
     end
 end

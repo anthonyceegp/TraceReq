@@ -1,8 +1,14 @@
 <table class="table table-bordered table-fit" id="editableTable">
 	<thead>
 		<tr>
-			<th scope="col"></th>
-			<% @end_artifacts.each do |end_artifact| %>
+			<th class="text-center" scope="col">
+				<% if can? :create, Relationship %>
+					<a data-toggle="collapse" href="#options" role="button" aria-expanded="false" aria-controls="options">
+						<%=  fa_icon "bars" %>
+					</a>
+				<% end %>
+			</th>
+			<% @matrix.columns.each do |end_artifact| %>
 				<th scope="col" data-id=<%="#{end_artifact.id}"%>>
 					<%= link_to end_artifact.code, url_for(controller: :artifacts, action: :show, id: end_artifact), title: end_artifact.name %>
 				</th>
@@ -10,24 +16,23 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% @origin_artifacts.each do |origin_artifact| %>
+		<% @matrix.rows.each do |origin_artifact| %>
 			<tr>
 				<th scope="row">
 						<%= link_to origin_artifact.code, url_for(controller: :artifacts, action: :show, id: origin_artifact), title: origin_artifact.name %>
 				</th>
-				<% @end_artifacts.each do |end_artifact| %>
+				<% @matrix.columns.each do |end_artifact| %>
 					<% if origin_artifact.id == end_artifact.id %>
 						<td class="bg-secondary"></td>
 					<% else %>
 						<td>
 							<%
-								r = @relationships.where("relationships.origin_artifact_id = ?", origin_artifact.id)
-								                  .where("relationships.end_artifact_id = ?", end_artifact.id).first
+								relationship = @matrix.relationships.where(origin_artifact: origin_artifact, end_artifact: end_artifact).first
 							%>
-							<% if r.nil? %>
+							<% if relationship.nil? %>
 								<%= render partial: "unchecked", locals: {origin_artifact_id: origin_artifact.id, end_artifact_id: end_artifact.id} %>
 							<% else %>
-								<%= render partial: "checked", locals: {origin_artifact_id: origin_artifact.id, end_artifact_id: end_artifact.id, relationship_id: r.id} %>
+								<%= render partial: "checked", locals: {relationship: relationship} %>
 							<% end %>
 						</td>
 					<% end %>

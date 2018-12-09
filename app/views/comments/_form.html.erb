@@ -1,0 +1,13 @@
+<% @comment.new_record? ? action = 'create' : action = 'update' %>
+<%= form_with(model: @comment, url: url_for(action: action, id: @comment), local: true) do |form| %>
+  
+  <div class="form-group row">
+    <%= form.label :content, class: "col-sm-auto col-form-label" %>
+    <div class="col-sm-5">
+      <%= form.text_area :content, id: :comment_content, class: "form-control #{is_invalid(@comment, :content)}" %>
+      <%= error_message_for(@comment, :content) %>
+    </div>    
+  </div>
+
+  <%= form.submit(class: "btn btn-primary") %>
+<% end %>

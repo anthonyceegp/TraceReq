@@ -2,47 +2,81 @@
 <% navigation_add 'Users', users_path %>
 <% navigation_add @user.username, user_path(@user) %>
 
-<%= form_for(resource, as: resource_name, url: update_user_registration_path(resource_name), html: { method: :put }) do |f| %>
-
-  <div class="form-group row">
-    <%= f.label :email, class: "col-form-label col-sm-3" %>
-    <div class="col-sm-4">
-      <%= f.email_field :email, autofocus: true, class: "form-control #{is_invalid(resource, :email)}" %>
-      <%= error_message_for(resource, :email) %>
+<%= form_for(resource, as: resource_name, url: update_user_registration_path(resource), html: { method: :put }) do |f| %>
+  <% if @current_user.has_role?(:admin) and @current_user != resource %>
+    <div class="form-group row">
+      <%= f.label :email, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.email_field :email, autofocus: true, class: "form-control #{is_invalid(resource, :email)}" %>
+        <%= error_message_for(resource, :email) %>
+      </div>
     </div>
-  </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <div class="form-group row">
+      <%= f.label :roles, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.collection_select :roles, User::ROLES.map{ |s| [s, s.to_s.humanize] }, :first, :second, {selected: resource.roles}, {class: "form-control #{is_invalid(resource, :roles)}", multiple: true} %>
+        <%= error_message_for(resource, :roles) %>
+      </div>
+    </div>
+  <% else %>
+    <div class="form-group row">
+      <%= f.label :username, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.text_field :username, id: :username, class: "form-control #{is_invalid(@user, :username)}" %>
+        <%= error_message_for(@user, :username) %>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <%= f.label :avatar, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.file_field :avatar, id: :avatar, class: "form-control #{is_invalid(@user, :avatar)}" %>
+        <%= error_message_for(@user, :avatar) %>
+      </div>      
+    </div>
+    <% if resource.avatar? %>
+      <div class="form-group row">
+        <div class="col-sm-4 offset-sm-3">
+          <div class="form-check">        
+            <%= image_tag resource.avatar.url(:thumb) %>   
+            <%= f.check_box :remove_avatar, class: "form-check-input", style: "margin-left: 0; margin-top: 8px;" %>
+            <%= f.label :remove_avatar, class: "form-check-label" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <% end %>
+
+    <div class="form-group row">
+      <%= f.label :password , class: "col-form-label col-sm-3"%>
+      <div class="col-sm-4">
+        <%= f.password_field :password, autocomplete: "off", class: "form-control #{is_invalid(resource, :password)}" %>
+        <small class="form-text text-muted">Leave blank if you don't want to change it</small>
+        <%= error_message_for(resource, :password) %>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <%= f.label :password_confirmation, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control #{is_invalid(resource, :password_confirmation)}" %>
+        <%= error_message_for(resource, :password_confirmation) %>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <%= f.label :current_password, class: "col-form-label col-sm-3" %>
+      <div class="col-sm-4">
+        <%= f.password_field :current_password, autocomplete: "off", class: "form-control #{is_invalid(resource, :current_password)}" %>
+        <small class="form-text text-muted">We need your current password to confirm your changes</small>
+        <%= error_message_for(resource, :current_password) %>
+      </div>
+    </div>
   <% end %>
 
-  <div class="form-group row">
-    <%= f.label :password , class: "col-form-label col-sm-3"%>
-    <div class="col-sm-4">
-      <%= f.password_field :password, autocomplete: "off", class: "form-control #{is_invalid(resource, :password)}" %>
-      <small class="form-text text-muted">Leave blank if you don't want to change it</small>
-      <%= error_message_for(resource, :password) %>
-    </div>
-  </div>
-
-  <div class="form-group row">
-    <%= f.label :password_confirmation, class: "col-form-label col-sm-3" %>
-    <div class="col-sm-4">
-      <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control #{is_invalid(resource, :password_confirmation)}" %>
-      <%= error_message_for(resource, :password_confirmation) %>
-    </div>
-  </div>
-
-  <div class="form-group row">
-    <%= f.label :current_password, class: "col-form-label col-sm-3" %>
-    <div class="col-sm-4">
-      <%= f.password_field :current_password, autocomplete: "off", class: "form-control #{is_invalid(resource, :current_password)}" %>
-      <small class="form-text text-muted">We need your current password to confirm your changes</small>
-      <%= error_message_for(resource, :current_password) %>
-    </div>
-  </div>
-
-  <div class="actions">
-    <%= f.submit(class: "btn btn-primary") %>
-  </div>
+  <%= f.submit(class: "btn btn-primary") %>
 <% end %>

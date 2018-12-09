@@ -6,25 +6,51 @@
 <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
 <% end %>
 
-<h2>Relationships <a data-toggle="collapse" href="#filters" aria-expanded="false" aria-controls="filters"><%= fa_icon "filter" %></a></h2>
-<div class="collapse" id="filters">
+<% if can? :create, Relationship %>
+	<%= link_to url_for(action: :new), class: "btn btn-dark", role: "button" do %><%= fa_icon 'plus' %> New<% end %>
+<% end %>
+<%= link_to "#filters", data: {toggle: "collapse"}, aria: { expanded: "false", controls: "filters"}, class: "btn btn-dark", role: "button" do %>
+	<%= fa_icon "filter" %> Filter
+<% end %>
+
+<div class="collapse mt-3" id="filters">
 	<div class="card card-body">
 		<%= render 'filters' %>
 	</div>    		
 </div>
-<div class="row mb-3 mt-3">
-	<label class="col-form-label col-auto">Relationship Type</label>
-	<div class="col-sm-3">
-		<%= select_tag(:relationship_type_id, options_from_collection_for_select(@relationship_types, :id, :name), {class: "form-control"}) %>
-	</div>
-	<label class="col-form-label col-auto">Description</label>
-	<div class="col-sm-3">
-		<%= text_area_tag :description, nil, { class: "form-control" } %>
-	</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <% @relationship_types.each do |relationship_type| %>
+    	<%= fa_icon "square", class: "mr-1", style: "color: #{relationship_type.color}" %>
+    	<span class="mr-3"><%= relationship_type.name %></span>
+    <% end %>
+  </div>
 </div>
-<div class="table-responsive dragscroll" id="matrix">
-	<%= render "matrix" if @has_artifacts %>
-	<%= raw "<p>Nothing to show.</p>" unless @has_artifacts %>
+
+<div class="collapse mt-3" id="options">
+  <div class=" card card-body">
+    <% if can? :create, Relationship %>
+			<div class="row">
+				<label class="col-form-label col-auto">Relationship Type</label>
+				<div class="col-md-3">
+					<%= select_tag(:relationship_type_id, options_from_collection_for_select(@relationship_types, :id, :name), {class: "form-control"}) %>
+				</div>
+				<label class="col-form-label col-auto">Description</label>
+				<div class="col-md">
+					<%= text_area_tag :description, nil, { class: "form-control", rows: 1 } %>
+				</div>
+			</div>
+		<% end %>
+  </div>
+</div>
+
+<div class="table-responsive dragscroll mt-3" id="matrix">
+	<% if @matrix.rows.any?%>
+		<%= render "matrix" %>
+	<% else %>
+		<%= raw "<p>Nothing to show.</p>" %>
+	<% end %>
 </div>
 
 <script type="text/javascript">
@@ -37,6 +63,7 @@
 		$fixedColumn.find('th:not(:first-child),td:not(:first-child)').remove();
 		$fixedColumn.find('tr').each(function(i, elem) {
 			$(elem).height($table.find('tr:eq(' + i + ')').height());
+			$(elem).width($table.find('tr:eq(' + i + ')').width());
 		});
 	};
 
@@ -135,28 +162,37 @@
 	$("input[value='Filter']").click(function() {
 		$("#filters").collapse("hide");
 	});
+
+  $(".checkbox").on('mouseover', function () {
+    $(this).css("background-color", "darkercolor")
+  });
+
+  $(".checkbox").on('mouseover', function () {
+    $(this).css("background-color", $(this).data("color"))
+  });
 </script>
 
 <style type="text/css">
-.table-responsive>.fixed-column {
-	position: absolute;
-	width: auto;
-	border-right: 1px solid #ddd;
-	background-color: white;
-	z-index: 999;
-}
-
-td {
-	text-align: center;
-}
-
-.table-fit {
-	width: auto !important;
-}
-
-@media(min-width:991px) {
 	.table-responsive>.fixed-column {
-		display: none;
+		position: absolute;
+		width: auto;
+		border-right: 1px solid #ddd;
+		background-color: white;
+		z-index: 999;
 	}
-}
+
+	td {
+		text-align: center;
+	}
+
+	.table-fit {
+		width: auto !important;
+	}
+
+	
+
+	.checked:hover,
+  .dropdown-toggle:hover {
+    filter: brightness(80%);
+  }
 </style>

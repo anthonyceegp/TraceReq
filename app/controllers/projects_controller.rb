@@ -1,10 +1,19 @@
 class ProjectsController < ApplicationController
+  load_and_authorize_resource
+  
   before_action :set_project, except: [:index, :new, :create]
+
 
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all.page(params[:page]).per(8)
+    if @current_user.roles.include?(:admin)
+      @projects = Project.search(params[:term])
+    else
+      @projects = @current_user.projects.search(params[:term])
+    end
+
+    @projects = @projects.page(params[:page]).per(7)
   end
 
   # GET /projects/1
@@ -64,12 +73,11 @@ class ProjectsController < ApplicationController
   end
 
   def users
-    @users = @project.users.page(params[:page]).per(7)
+    @users = @project.users.search(params[:term]).page(params[:page]).per(7)
   end
 
   def add_users
-    @users = User.where.not(id: @project.users.ids).where('confirmed_at IS NOT NULL').
-              select(:id, :email).page(params[:page]).per(7)
+    @users = User.where(deleted_at: nil).where.not(id: @project.users.ids).where('confirmed_at IS NOT NULL').search(params[:term]).page(params[:page]).per(6)
   end
 
   def save_add_users
@@ -93,8 +101,32 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def artifacts
-    @artifacts = @project.artifacts.page(params[:page]).per(8)
+  def status
+    statuses = @project.artifact_statuses 
+    i=0
+    statusMap = statuses.map{|s| {(i+=1)-1=>s.id}}.reduce(:merge)
+    @legends = statuses.pluck(:name)
+    @days = (@project.created_at.to_date..Date.current()).map{ |date| date }
+    @series = []
+    data = Array.new(statuses.size) { Array.new(@days.size, 0.0) }
+    @days.each_with_index do |day, index|
+      temp = []
+      ChartDatum.where(artifact: @project.artifacts).where("DATE(created_at) <= ?", day).order(created_at: :desc).each do |chart_datum|
+        temp << chart_datum unless temp.any? { |c| c.artifact_id == chart_datum.artifact_id }
+      end
+      aritfact_num = @project.artifacts.where('DATE(created_at) <= ?', @days[index]).size
+      temp.each do |d|
+        if aritfact_num == 0
+          data[statusMap.key(d.artifact_status.id)][index] = 0.0
+        else
+          data[statusMap.key(d.artifact_status.id)][index] += 100.0 / aritfact_num
+        end
+      end
+    end
+
+    statuses.each_with_index do |s, index|
+      @series << {name: s.name, type: "line", data: data[index].map {|c| c = c.round}}
+    end
   end
 
   private

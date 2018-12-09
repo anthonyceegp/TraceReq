@@ -8,4 +8,8 @@ class ArtifactDemand < ApplicationRecord
 	def version
 		artifact.versions[version_index]
 	end
+
+	def edited?
+		artifact.version_index > version_index
+	end
 end

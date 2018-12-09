@@ -1,10 +1,10 @@
-<%= form_with(url: url_for(action: :filter), id:"form-filter") do |form| %>
+<%= form_with(model: @filter, url: url_for(action: :index), method: "get", id: "form-filter", local: true) do |form| %>
 	<div class="form-group row">
-		<div class="col-sm-2">Artifacts</div>
-		<div class="col-sm-3">
+		<div class="col-md-2">Artifacts</div>
+		<div class="col-md-3">
 			<div class="form-check">
   			<%= form.label :show_all, class: "form-check-label" do %>
-					<%= form.check_box(:show_all, {class: "form-check-input"}, 1, 0) %> Show all
+					<%= form.check_box :show_all, id: "show_all_filter", class: "form-check-input" %> Show all
 				<% end %>
 				<small class="form-text text-muted">
 					Displays all artifacts from project <%= @project.name %>.
@@ -13,30 +13,45 @@
 		</div>
 	</div>
 	<div class="form-group row">
-		<%= form.label "Demand", class: "col-form-label col-sm-2" %>
-		<div class="col-sm-3">
-			<%= form.collection_select(:demand_filter_id, @demands, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
+		<%= form.label "Demand", class: "col-form-label col-md-2" %>
+		<div class="col-md-3">
+			<%= form.collection_select(:demand_id, @demands, :id, :name, {include_blank: "Select"}, {class: "form-control", id: "demand_id_filter"}) %>
 		</div>
 	</div>
 	<fieldset class="form-group">
 		<div class="row">
-			<legend class="col-form-legend col-sm-2">Artifact Types</legend>
-			<div class="col-sm-3 pb-2">
-				<%= form.collection_select(:origin_artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
-				<small class="form-text text-muted">Origin artifact type.</small>
+			<legend class="col-form-legend col-md-2">Artifact Types</legend>
+			<div class="col-md-3 pb-2">
+				<%= form.collection_select(:row_artifact_type_id, @artifact_types, :id, :name, {include_blank: "Select"}, {class: "form-control", id: "row_artifact_type_id_filter"}) %>
+				<small class="form-text text-muted">Rows.</small>
 			</div>
-			<div class="col-sm-3">
-				<%= form.collection_select(:end_artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
-				<small class="form-text text-muted">End artifact type.</small>
+			<div class="col-md-3">
+				<%= form.collection_select(:column_artifact_type_id, @artifact_types, :id, :name, {include_blank: "Select"}, {class: "form-control", id: "column_artifact_type_id_filter"}) %>
+				<small class="form-text text-muted">Columns.</small>
 			</div>
 		</div>
 	</fieldset>
 	<div class="form-group row">
-		<%= form.label :relationship_type_id, class: "col-sm-2 col-form-label" %>
-		<div class="col-sm-3">
-			<%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, {prompt: 'Select'}, {class: "form-control"}) %>
+		<%= form.label :relationship_type_id, class: "col-md-2 col-form-label" %>
+		<div class="col-md-3">
+			<%= form.collection_select(:relationship_type_id, @relationship_types, :id, :name, {include_blank: "Select"}, {class: "form-control", id: "relationship_type_id_filter"}) %>
 		</div>
 	</div>
 
 	<%= form.submit "Filter", class: "btn btn-outline-dark" %>
+	<%= form.submit "Clear", name: "reset", id: "reset_button", type: "reset", class: "btn btn-outline-dark" %>
 <% end %>
+
+<script type="text/javascript">
+	$("#reset_button").on("click", function (event) {
+		event.preventDefault();
+
+		$("#show_all_filter").val("");
+		$("#demand_id_filter").val("");
+		$("#row_artifact_type_id_filter").val("");
+		$("#column_artifact_type_id_filter").val("");
+		$("#relationship_type_id_filter").val("");
+
+		$("#form-filter").submit();
+	});
+</script>

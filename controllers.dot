@@ -1,0 +1,14 @@
+digraph controllers_diagram {
+	graph[overlap=false, splines=true, bgcolor="none"]
+	"ApplicationController" [shape=Mrecord, label="{ApplicationController|layout\lafter_sign_out_path_for\l|configure_permitted_parameters\l|_layout\l}"]
+	"ArtifactsController" [shape=Mrecord, label="{ArtifactsController|create\ldelete_file\ldemands\ldestroy\ldestroy_artifacts\ledit\lhistory\limport\lindex\lnew\lremove_artifacts\lremove_revert\lshow\lshow_previous_version\lupdate\l|\l|_layout\lartifact_params\lartifact_type_collections\lartifacts\lbuild_artifact\lset_artifact\lset_project_demand\lset_project_demand_artifact\lset_statuses_collection\l}"]
+	"ArtifactTypesController" [shape=Mrecord, label="{ArtifactTypesController|destroy\ledit\lindex\lnew\lshow\lupdate\lcreate\l|\l|artifact_type_params\lset_project\lset_project_artifact_type\l_layout\l}"]
+	"CommentsController" [shape=Mrecord, label="{CommentsController|destroy\ledit\lnew\lupdate\lcreate\l|\l|build_comment\lcomment_params\lset_comment\l_layout\l}"]
+	"ConfirmationsController" [shape=Mrecord, label="{ConfirmationsController|show\lconfirm\l|\l|permitted_params\l_layout\l}"]
+	"DemandsController" [shape=Mrecord, label="{DemandsController|conflict\lcreate\ldestroy\ledit\limport\lindex\lnew\lremove_artifact\lresolve_conflicts\lsave_import\lshow\lupdate\l|\l|add_users_params\ldemand_params\limport_params\lset_project\lset_project_demand\lset_statuses_collection\lset_users_collection\l_layout\l}"]
+	"ProjectsController" [shape=Mrecord, label="{ProjectsController|add_users\lcreate\ldestroy\ledit\lindex\lnew\lremove_user\lsave_add_users\lshow\lupdate\lusers\l|\l|add_users_params\lproject_params\lset_project\l_layout\l}"]
+	"RegistrationsController" [shape=Mrecord, label="{RegistrationsController|update\ledit\l|user_params_to_admin\l|_layout\l}"]
+	"RelationshipsController" [shape=Mrecord, label="{RelationshipsController|destroy\ledit\lindex\lnew\lshow\lupdate\lcreate\l|\l|_layout\lfilter_params\lrelationship_params\lset_artifact_collection\lset_artifact_type_collection\lset_artifacts\lset_demand_collection\lset_project_demand\lset_relationship\lset_relationship_type_collection\l}"]
+	"RelationshipTypesController" [shape=Mrecord, label="{RelationshipTypesController|destroy\ledit\lindex\lnew\lshow\lupdate\lcreate\l|\l|relationship_type_params\lset_project\lset_project_relationship_type\l_layout\l}"]
+	"UsersController" [shape=Mrecord, label="{UsersController|destroy\lindex\lnew\lrestore\lshow\lcreate\l|\l|set_user\luser_params\l_layout\l}"]
+}

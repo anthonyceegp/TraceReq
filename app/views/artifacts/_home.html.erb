@@ -1,0 +1,79 @@
+<div class="table-responsive">
+	<table class="table table-bordered">
+		<tbody>
+			<tr>
+				<th scope="row"><%= @artifact.type %></th>
+				<td>
+					<%= @artifact.code_with_name %>
+					<% if @artifact.conflict? %>
+						<%= link_to url_for(action: :demands, id: @artifact), class: "badge badge-warning", title: "Artifact related to other demands" do %>
+							<%= fa_icon "exclamation-circle" %>
+						<% end %>
+					<% end %>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">Description</th>
+				<td><%= @artifact.description %></td>
+			</tr>
+			<tr>
+				<th scope="row">Status</th>
+				<td><%= @artifact.status %></td>
+			</tr>
+			<tr>
+				<th scope="row">Priority</th>
+				<td><%= @artifact.priority %></td>
+			</tr>
+			<% if !@artifact.attachment.nil? %>
+				<tr>
+					<th scope="row">Attachment</th>
+					<td>
+						<%= link_to @artifact.attachment.file_file_name, @artifact.attachment.file.url, target: :_blank %>
+						<% if can? :edit, @artifact %>
+							<%= link_to url_for(action: :delete_file, id: @artifact), method: :post, data: { confirm: 'Are you sure?' } do %>
+								<%= fa_icon "trash" %>
+							<% end %>
+						<% end %>
+					</td>
+				</tr>
+			<% end %>
+			<tr>
+				<th>Created by</th>
+				<td><%= @artifact.user.username %></td>
+			</tr>
+			<tr>
+				<th>Created at</th>
+				<td><%= @artifact.created_at.to_date %></td>
+			</tr>
+			<tr>
+				<th>Updated at</th>
+				<td><%= @artifact.updated_at.to_date %></td>
+			</tr>
+		</tbody>
+	</table>
+	<% if @show_import_button %>
+		<% if can?(:import, @artifact) && can?(:manage, @demand) %>
+			<%= link_to "Import Artifact", url_for(action: :import, id: @artifact), method: :post, class: "btn btn-primary", role: "button" %>
+		<% end %>
+		<% if can? :history, @artifact %>
+			<%= link_to "Artifact History", url_for(action: :history, id: @artifact), class: "btn btn-primary", role: "button" %>
+		<% end %>
+	<% else %>
+		<% if can? :edit, @artifact %>
+			<%= link_to "Edit Artifact", url_for(action: :edit, id: @artifact), class: "btn btn-primary", role: "button" %>
+		<% end %>
+		<% if can? :history, @artifact %>
+			<%= link_to "Artifact History", url_for(action: :history, id: @artifact), class: "btn btn-primary", role: "button" %>
+		<% end %>
+		<% if can? :destroy, @artifact %>
+			<div class="btn-group">
+	      <%= link_to "Delete Artifact", url_for(action: :destroy, id: @artifact), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", role: "button" %>
+	      <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+	      <div class="dropdown-menu">
+	      	<%= link_to "Remove Artifact", url_for(action: :history, id: @artifact), class: "btn btn-danger dropdown-item" if @show_remove_button %>
+	        <%= link_to "Revert Artifact", url_for(action: :history, id: @artifact), class: "btn btn-danger dropdown-item" %>
+	      </div>
+	    </div>
+	  <% end %>
+	<% end %>
+</div>

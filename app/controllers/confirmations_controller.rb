@@ -22,16 +22,11 @@ class ConfirmationsController < Devise::ConfirmationsController
 		valid = resource.valid?
 		matches = resource.password_match?
 
-		puts "valid:" + valid.to_s
-		puts "matches:" + matches.to_s
-
 		if valid && matches
 			self.resource.confirm
 			set_flash_message :notice, :confirmed
-			puts "no problem"
 			sign_in_and_redirect resource_name, resource
 		else
-			puts "with problem"
 			render action: 'show'
 		end
 	end

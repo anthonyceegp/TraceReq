@@ -1,23 +1,40 @@
 <% content_for :title, "Users" %>
 
+<%= render partial: "layouts/search_form", locals: { path: users_path } %>
+
 <div class="table-responsive">
   <table class="table table-striped table-hover">
     <thead class="text-nowrap">
       <tr>
         <th>Username</th>
+        <th>Role</th>
         <th>Email</th>
         <th>Confirmed at</th>
-        <th><%= link_to new_user_path, title: "New User", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
+        <th>
+          <% if can? :create, User %>
+            <%= link_to new_user_path, title: "New User", class: "float-right" do %><%= fa_icon "plus" %><% end %>
+          <% end %>
+        </th>
       </tr>
     </thead>
     <tbody>
       <% @users.each do |user| %>
         <tr class="clickable-row" data-href="<%= user_path(user) %>">
           <td><%= user.username %></td>
+          <td><%= user.roles.map { |r| r.to_s.humanize }.join(", ") %></td>
           <td><%= user.email %></td>
           <td><%= user.confirmed_at.to_date unless user.confirmed_at.nil? %></td>
-          <td class="not-clikable"><%= link_to user, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-              <%= fa_icon "trash" %>
+          <td class="not-clikable">
+            <% if can? :destroy, user %>
+              <% if user.deleted_at.nil? %>
+                <%= link_to user, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+                  <%= fa_icon "trash" %>
+                <% end %>
+              <% else %>
+                <%= link_to restore_user_path(user), method: :post, data: { confirm: 'Are you sure?'}, class: "float-right" do %>
+                  <%= fa_icon "undo" %>
+                <% end %>
+              <% end %>
             <% end %>
           </td>
         </tr>

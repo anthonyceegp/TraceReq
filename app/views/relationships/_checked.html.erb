@@ -1,14 +1,41 @@
 <div class="btn-group btn-group-sm" role="group">
-  <button type="button" class="btn btn-primary checkbox checked" origin-artifact-id="<%= origin_artifact_id %>" end-artifact-id="<%= end_artifact_id %>" relationship-id="<%= relationship_id %>">
-  	<%= fa_icon "check-square" %>
-  </button>
-  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <div class="dropdown-menu">
-  	<% show_url = url_for(action: :show, id: relationship_id) %>
-		<% edit_url = url_for(action: :edit, id: relationship_id) %>
-		<a class="dropdown-item" href="<%= show_url %>">Show Relationship</a>
-		<a class="dropdown-item" href="<%= edit_url %>">Edit Relationship</a>
-  </div>
+  <%
+    color = relationship.relationship_type.color
+    darkerColor = relationship.relationship_type.LightenDarkenColor
+    fontColor = relationship.relationship_type.font_color
+
+    style = "background-color: #{color}; color: #{fontColor}"
+  %>  
+
+  <%= button_tag(type: "button",
+                 class: "btn checkbox checked",
+                 style: style,
+                 "end-artifact-id": relationship.end_artifact_id,
+                 "relationship-id": relationship.id,
+                 disabled: cannot?(:destroy, relationship),
+                 title: 'Type: ' + relationship.type + "&#10;" + 'Description: ' + relationship.description) do %>
+    <%= fa_icon "check-square" %>
+  <% end %>
+
+  <% if can?(:read, relationship) || can?(:edit, relationship) %>
+    <%= button_tag(ype: "button",
+                   class: "btn dropdown-toggle dropdown-toggle-split",
+                   style: style,
+                   "data-toggle": "dropdown",
+                   "aria-haspopup": true,
+                   "aria-expanded": false) do %>
+      <span class="sr-only">Dropdown Toggle</span>
+    <% end %>
+
+    <div class="dropdown-menu">
+    	<% show_url = url_for(action: :show, id: relationship.id) %>
+  		<% edit_url = url_for(action: :edit, id: relationship.id) %>
+      <% if can? :read, relationship %>
+  		  <a class="dropdown-item" href="<%= show_url %>">Show Relationship</a>
+      <% end %>
+      <% if can? :edit, relationship %>
+  		  <a class="dropdown-item" href="<%= edit_url %>">Edit Relationship</a>
+      <% end %>
+    </div>
+  <% end %>
 </div>

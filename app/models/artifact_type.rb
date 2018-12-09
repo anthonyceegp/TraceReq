@@ -1,5 +1,5 @@
 class ArtifactType < ApplicationRecord
-	validates :name, presence: true, uniqueness: { case_sensitive: false }
+	validates :name, presence: true, uniqueness: { case_sensitive: false, scope: :project_id }
 
 	belongs_to :project
 	

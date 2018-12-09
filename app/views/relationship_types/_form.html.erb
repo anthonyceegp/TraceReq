@@ -7,8 +7,23 @@
     </div>    
   </div>
 
+  <div class="form-group row">
+    <%= form.label :color, class: "col-form-label col-sm-1"%>
+    <div class="col-sm-3">
+      <%= form.text_field :color, id: :relationship_type_color, class: "form-control #{is_invalid(@relationship_type, :color)}" %>
+      <%= error_message_for(@relationship_type, :color) %>
+    </div>    
+  </div>
+
   <div class="actions">
     <%= form.submit(class: "btn btn-primary") %>
-    <%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  $(document).on('turbolinks:load', function() {
+    $('#relationship_type_color').minicolors({
+      theme: 'bootstrap'
+    });
+  });
+</script>

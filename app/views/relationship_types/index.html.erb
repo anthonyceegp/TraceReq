@@ -7,7 +7,13 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th><%= link_to new_project_relationship_type_path(@project), title: "New Relationship Type", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
+        <th>
+          <% if can? :create, RelationshipType %>
+            <%= link_to new_project_relationship_type_path(@project), title: "New Relationship Type", class: "float-right" do %>
+              <%= fa_icon "plus" %>
+            <% end %>
+          <% end %>        
+        </th>
       </tr>
     </thead>
 
@@ -16,8 +22,10 @@
         <tr class="clickable-row" data-href="<%= project_relationship_type_path(@project, relationship_type) %>">
           <td><%= relationship_type.name %></td>
           <td class="not-clikable">
-            <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-              <%= fa_icon "trash" %>
+            <% if can? :destroy, relationship_type %>
+              <%= link_to [@project, relationship_type], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+                <%= fa_icon "trash" %>
+              <% end %>
             <% end %>
           </td>
         </tr>

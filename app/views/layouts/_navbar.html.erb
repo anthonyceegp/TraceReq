@@ -9,7 +9,7 @@
       <span class="username"><%= current_user.username %></span>
     </a>
     <div class="dropdown-menu" style="z-index: 999">
-      <%= link_to "Profile", user_path(current_user), class: "dropdown-item" %>
+      <%= link_to "Profile", current_user, class: "dropdown-item" %>
       <div class="dropdown-divider"></div>
       <%= link_to "Sign out", destroy_user_session_path, class: "dropdown-item", method: :delete %>
     </div>

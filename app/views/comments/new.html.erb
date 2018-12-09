@@ -1,0 +1,13 @@
+<% content_for :title, "New" %>
+<% navigation_add 'Projects', projects_path %>
+<% navigation_add @project.name, project_path(@project) %>
+<% if active_demand? %>
+  <% navigation_add "Demands", project_demands_path(@project) %>
+  <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
+<% end %>
+<% navigation_add "Artifacts", url_for(action: :index) %>
+<% navigation_add @artifact.name, url_for(controller: :artifacts, action: :show, id: @artifact) %>
+<% navigation_add "Comments", url_for(controller: :artifacts, action: :show, id: @artifact, active_tab: :comments) %>
+
+
+<%= render 'form' %>

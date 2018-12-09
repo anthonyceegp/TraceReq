@@ -17,10 +17,26 @@
   </div>
 
   <div class="form-group row">
+    <%= form.label :artifact_type_id, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-5">
+      <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@artifact, :artifact_type)}"}) %>
+      <%= error_message_for(@artifact, :artifact_type) %>
+    </div>
+  </div>
+
+  <div class="form-group row">
     <%= form.label :description, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= form.text_area :description, id: :artifact_description, class: "form-control  #{is_invalid(@artifact, :description)}" %>
       <%= error_message_for(@artifact, :description) %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= form.label :artifact_status_id, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-5">
+      <%= form.collection_select :artifact_status_id, @artifact_statuses, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@artifact, :artifact_status_id)}"} %>
+      <%= error_message_for(@artifact, :artifact_status_id) %>
     </div>
   </div>
 
@@ -32,19 +48,10 @@
   </div>
 
   <div class="form-group row">
-    <%= form.label :artifact_type_id, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-5">
-      <%= form.collection_select(:artifact_type_id, @artifact_types, :id, :name, {prompt: 'Select'}, {class: "form-control #{is_invalid(@artifact, :artifact_type)}"}) %>
-      <%= error_message_for(@artifact, :artifact_type) %>
-    </div>
-  </div>
-
-  <div class="form-group row">
     <%= label_tag :file, "Attachment", class: "col-sm-2 col-form-label" %>
     <div class="col-sm-5">
       <%= file_field_tag :file, class: "form-control" %>
     </div>
   </div>
   <%= form.submit(class: "btn btn-primary") %>
-  <%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 <% end %>

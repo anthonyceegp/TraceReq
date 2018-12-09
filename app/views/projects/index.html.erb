@@ -1,5 +1,7 @@
 <% content_for :title, 'Projects' %>
 
+<%= render partial: "layouts/search_form", locals: { path: projects_path } %>
+
 <div class="table-responsive table-hover">
   <table class="table table-striped">
     <thead class="text-nowrap">
@@ -9,20 +11,26 @@
         <th>Created by</th>
         <th>Created at</th>
         <th>Updated at</th>
-        <th><%= link_to new_project_path, title: "New Project", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
+        <th>
+          <% if can? :create, Project %>
+            <%= link_to new_project_path, title: "New Project", class: "float-right" do %><%= fa_icon "plus" %><% end %>
+          <% end %>
+        </th>
       </tr>
     </thead>
     <tbody>
       <% @projects.each do |project| %>
-        <tr class="clickable-row" data-href="<%= project_path(project) %>">
+        <tr class="clickable-row" data-href="<%= project_demands_path(project) %>">
           <td><%= project.name %></td>
           <td><%= project.description %></td>
           <td><%= project.user.username %></td>
           <td><%= project.created_at.to_date %></td>
           <td><%= project.updated_at.to_date %></td>
           <td class="not-clikable">
-            <%= link_to project, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-              <%= fa_icon "trash" %>
+            <% if can? :destroy, project %>
+              <%= link_to project, method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
+                <%= fa_icon "trash" %>
+              <% end %>
             <% end %>
           </td>
         </tr>

@@ -40,13 +40,13 @@
 											<th>Live</th>
 											<td><%= artifact.code %></td>
 											<td><%= artifact.name %></td>
-											<td><%= artifact.artifact_type.name %></td>
+											<td><%= artifact.type %></td>
 											<td><%= artifact.description %></td>
 											<td><%= artifact.priority%></td>
 											<td>
 												<% if !artifact.attachment.nil? %>
 													<%= link_to artifact.attachment.file.url, title: artifact.attachment.file_file_name, target: :_blank do %>
-														<%= fa_icon "paperclip" %>
+														<%= artifact.attachment.file_file_name %>
 													<% end %>
 												<% end %>
 											</td>
@@ -65,13 +65,13 @@
 												<td><%= form.radio_button "versions[#{artifact.id}]", v.index %></td>
 												<td><%= a.code %></td>
 												<td><%= a.name %></td>
-												<td><%= a.artifact_type.name %></td>
+												<td><%= a.type %></td>
 												<td><%= a.description %></td>
 												<td><%= a.priority%></td>
 												<td>
 													<% if !a.attachment.nil? %>
 														<%= link_to a.attachment.file.url, title: a.attachment.file_file_name, target: :_blank do %>
-															<%= fa_icon "paperclip" %>
+															<%= artifact.attachment.file_file_name %>
 														<% end %>
 													<% end %>
 												</td>
@@ -88,7 +88,7 @@
 			  </div>
 		 	<% end %>
 		</div>
-		<%= form.submit "Delete Demand", class: "btn btn-danger mt-3", "data-confirm": "Are you sure?"  %>
+		<%= form.submit "Delete Demand", class: "btn btn-danger mt-3", data: { confirm: 'Are you sure?' }  %>
 	<% end %>
 <% else %>
 	<p>No conflict was found.</p>

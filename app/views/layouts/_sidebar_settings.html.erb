@@ -6,6 +6,9 @@
     <li class="nav-item <%= active_for(controller: 'artifact_types') %>">
       <%= link_to "Artifact Types", project_artifact_types_path(@project), class: "nav-link" %>
     </li>
+    <li class="nav-item <%= active_for(controller: 'artifact_statuses') %>">
+      <%= link_to "Artifact Statuses", project_artifact_statuses_path(@project), class: "nav-link" %>
+    </li>
     <li class="nav-item <%= active_for(controller: 'relationship_types')%>">
       <%= link_to "Relationship Types", project_relationship_types_path(@project), class: "nav-link" %>
     </li>

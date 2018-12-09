@@ -15,14 +15,6 @@
   </div>
 
   <div class="form-group row">
-    <%= form.label :status, class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-3">
-      <%= form.collection_select :status, @statuses.map{ |s| [s.first, s.first.humanize] }, :first, :second, {}, {class: "form-control #{is_invalid(@demand, :status)}"} %>
-      <%= error_message_for(@demand, :status) %>
-    </div>
-  </div>
-
-  <div class="form-group row">
     <%= form.label :release, class: "col-sm-2 col-form-label" %>
     <div class="col-sm-3">
       <%= form.text_field :release, id: :demand_release, class: "form-control" %>
@@ -38,5 +30,4 @@
   </div>
 
   <%= form.submit class: "btn btn-primary" %>
-  <%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 <% end %>

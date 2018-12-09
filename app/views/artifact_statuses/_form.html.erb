@@ -1,0 +1,11 @@
+<%= form_with(model: [@project, @artifact_status], local: true) do |form| %>
+  <div class="form-group row">
+    <%= form.label :name, class: "col-form-label col-sm-1" %>
+    <div class="col-sm-3">
+      <%= form.text_field :name, id: :artifact_status_name, class: "form-control #{is_invalid(@artifact_status, :name)}" %>
+      <%= error_message_for(@artifact_status, :name)%>
+    </div>    
+  </div>
+
+  <%= form.submit(class: "btn btn-primary") %>
+<% end %>

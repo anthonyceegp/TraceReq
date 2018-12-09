@@ -2,6 +2,8 @@
 <% navigation_add 'Projects', projects_path %>
 <% navigation_add @project.name, project_path(@project) %>
 
+<%= render partial: "layouts/search_form", locals: { path: project_demands_path(@project) } %>
+
 <div class="table-responsive">
   <table class="table table-striped table-hover">
     <thead class="text-nowrap">
@@ -11,20 +13,32 @@
         <th>Reponsible</th>
         <th>Created at</th>
         <th>Updated at</th>
-        <th><%= link_to new_project_demand_path(@project), title: "New Demand", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
+        <th>
+          <% if can? :create, Demand %>
+            <%= link_to new_project_demand_path(@project), title: "New Demand", class: "float-right" do %><%= fa_icon "plus" %><% end %>
+          <% end %>
+        </th>
       </tr>
     </thead>
     <tbody>
-      <% @project.demands.each do |demand| %>
-        <tr class="clickable-row" data-href="<%= project_demand_path(@project, demand) %>">
-          <td><%= demand.name %></td>
-          <td><%= demand.description %></td>
-          <td><%= demand.responsible_user.username %></td>
-          <td><%= demand.created_at.to_date %></td>
-          <td><%= demand.updated_at.to_date %></td>
-          <td class="not-clikable">
-            <%= link_to [@project, demand], method: :delete, data: { confirm: 'Are you sure?' }, class: "float-right" do %>
-              <%= fa_icon "trash" %>
+      <% @demands.each do |demand| %>
+        <tr class="clickable-row" data-href="<%= project_demand_artifacts_path(@project, demand) %>">
+          <td class="align-middle"><%= demand.name %></td>
+          <td class="align-middle"><%= demand.description %></td>
+          <td class="align-middle"><%= demand.responsible_user.username %></td>
+          <td class="align-middle"><%= demand.created_at.to_date %></td>
+          <td class="align-middle"><%= demand.updated_at.to_date %></td>
+          <td class="not-clikable align-middle">
+            <% if can? :destroy, demand %>
+              <div class="dropdown show float-right">
+                <%= link_to "#", class: "text-dark mr-1", role: "menu", data: { toggle: "dropdown" }, aria: { haspopup: "true", expanded: "false" } do %>
+                  <%= fa_icon "ellipsis-v" %>
+                <% end %>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <%= link_to "Delete Demand", [@project, demand, keep: 0], method: :delete, data: { confirm: 'Are you sure?' }, class: "dropdown-item" %>
+                  <%= link_to "Delete and Keep Artifacts", [@project, demand, keep: 1], method: :delete, data: { confirm: 'Are you sure?' }, class: "dropdown-item" %>
+                </div>
+              </div>
             <% end %>
           </td>
         </tr>

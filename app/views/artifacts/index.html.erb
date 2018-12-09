@@ -6,46 +6,214 @@
   <% navigation_add @demand.name, project_demand_path(@project, @demand) %>
 <% end %>
 
+<div class="d-flex d-flex-nowrap mb-3" role="toolbar">
+  <div class="input-group" role="group">
+    <% if can? :create, Artifact %>
+      <div class="input-group-btn">
+        <%= link_to url_for(action: :new), class: "btn btn-dark", role:"button" do %>
+          <%= fa_icon "plus", class: "icon" %>
+          <span class="text">New</span>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="input-group-addon"><%= fa_icon "search" %></div>
+    <%= form_with url: url_for(action: :index), method: :get, local: true do |form| %>
+      <%= form.text_field :term, id: :search, placeholder: "Search", value: params[:term], class: "form-control" %>
+    <% end %>
+  </div>
+  <div class="btn-group hidable hidden ml-2" role="group">
+    <% if can? :destroy, Artifact %>
+      <%= button_tag type: "button", class: "btn btn-dark", id: "delete" do %>
+        <%= fa_icon "trash", class: "icon" %>
+        <span class="text">Delete</span>
+      <% end %>
+    <% end %>
+    <% if can?(:remove_revert, Artifact) and !request.path.match(/\/projects\/\d+\/demands\/\d+\/artifacts/).nil? %>
+      <%= button_tag type: "button", class: "btn btn-dark", id: "remove" do %>
+        <%= fa_icon "minus", class: "icon" %>
+        <span class="text">Remove</span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<%= form_with id: "main-form", method: :post, local: true do |form| %>
 <div class="table-responsive">
   <table class="table table-striped table-hover">
     <thead class="text-nowrap">
       <tr>
+        <th class="text-center" style="width: 1px;">
+          <%= check_box_tag "check_all" %>
+        </th>
         <th>Code</th>
         <th>Name</th>
         <th>Type</th>
         <th>Description</th>
+        <th>Status</th>
         <th>Priority</th>
         <th>Attachment</th>
         <th>Created by</th>
-        <th><%= link_to url_for(action: :new), title: "New Artifact", class: "float-right" do %><%= fa_icon "plus" %><% end %></th>
       </tr>
     </thead>
     <tbody>
       <% @artifacts.each do |artifact| %>
-        <tr class="clickable-row" data-href="<%= url_for(action: :show, id: artifact.id) %>">
-          <td><%= artifact.code %></td>
-          <td><%= artifact.name %></td>
-          <td><%= artifact.artifact_type.name %></td>
-          <td><%= artifact.description %></td>
-          <td><%= artifact.priority %></td>
-          <td class="not-clikable">
+        <tr class="clickable-row <%= 'table-warning' if artifact.conflict? %>" data-href="<%= url_for(action: :show, id: artifact.id) %>">
+          <td class="not-clikable align-middle text-center">
+            <%= form.check_box  :artifacts, {multiple: true, class: "check"}, artifact.id, nil %>
+          </td>
+          <td class="align-middle"><%= artifact.code %></td>
+          <td class="align-middle"><%= artifact.name %></td>
+          <td class="align-middle"><%= artifact.type %></td>
+          <td class="align-middle"><%= artifact.description %></td>
+          <td class="align-middle"><%= artifact.status %></td>
+          <td class="align-middle"><%= artifact.priority %></td>
+          <td class="not-clikable align-middle">
             <% if !artifact.attachment.nil? %>
               <%= link_to artifact.attachment.file.url, title: artifact.attachment.file_file_name, target: :_blank do %>
-                <%= fa_icon "paperclip" %>
+                <%= artifact.attachment.file_file_name %>
               <% end %>
             <% end %>
           </td>
-          <td><%= artifact.user.email.split('@').first %></td>
-          <td class="not-clikable">
-            <% if artifact.demands.size > 1 %>
-              <%= link_to url_for(action: :demands, id: artifact), class: "badge badge-warning float-right", title: "Artifact related to other demands" do %>
-                <%= fa_icon "exclamation-circle" %>
-              <% end %>
-            <% end %>
-          </td>
+          <td class="align-middle"><%= artifact.user.username %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
   <%= paginate(@artifacts) %>
 </div>
+<% end %>
+
+<script type="text/javascript">
+  $(document).on('show.bs.dropdown', '.table-responsive', function(e) {
+        var dropdown = $(e.target).find('.dropdown-menu');
+
+            dropdown.appendTo('body');
+        $(this).on('hidden.bs.dropdown', function () {
+            dropdown.appendTo(e.target);
+        })
+    });
+
+    $('#check_all').on("change", function (event) {
+      event.preventDefault();
+
+      var cbxs = $("input[type=checkbox]:not(#check_all)");
+      var status = $(this).is(":checked");
+      cbxs.prop("checked", status);
+    });
+
+    $("input[type=checkbox]").on("change", function (event) {
+      event.preventDefault();
+
+      var checkedNumber = $(".check:checked").length;
+      var checkNumber = $(".check").length;
+
+      if (checkedNumber > 0) {
+        $(".hidable").removeClass("hidden");
+      } else {
+        $(".hidable").addClass("hidden");
+      }
+
+      if (checkNumber > checkedNumber) {
+        $("#check_all").prop("checked", false);
+      }
+    });
+
+    $(".input-group-addon").on("click", function (event) {
+      event.preventDefault();
+
+      $("#search").focus();
+    })
+
+    $("#search").on("focus", function () {
+      $(this).animate({
+        backgroundColor: "#fff",
+        color: "#495057"
+      }, 200, "linear");
+
+      $(".input-group-addon").animate({
+        backgroundColor: "#fff",
+        color: "#495057"
+      }, 200, "linear");
+    });
+
+    $("#search").on("focusout", function () {
+      if(!$(this).val()) {
+        $(this).animate({
+          backgroundColor: "#343a40",
+          color: "#fff"
+        }, 200, "linear");
+
+        $(".input-group-addon").animate({
+          backgroundColor: "#343a40",
+          color: "#fff"
+        }, 200, "linear");
+      }
+    });
+
+    $("#delete").on("click", function (event) {
+      event.preventDefault();
+
+      var form = $("#main-form");
+      form.attr("action","<%= url_for(action: :destroy_artifacts) %>");
+
+      form.submit();
+    });
+
+    $("#remove").on("click", function (event) {
+      event.preventDefault();
+
+      var form = $("#main-form");
+      form.attr("action","<%= url_for(action: :remove_artifacts) %>");
+
+      form.submit();
+    });
+</script>
+
+<style type="text/css">
+  .hidden {
+    display: none;
+  }
+
+  #search {
+    background-color: #343a40;
+    border-color: #343a40;
+    border-left: 0px;
+    color: white;
+    box-shadow: none;
+    padding-left: 4px;
+    width: 100%;
+  }
+
+  #search::-webkit-input-placeholder {
+    color: white;
+  }
+
+  #search::-moz-placeholder{
+    color: white;
+  }
+
+  #search:-ms-input-placeholder{
+    color: white;
+  }
+
+  #search:-moz-placeholder {
+    color: white;
+  }
+
+  .input-group-addon {
+    background-color: #343a40;
+    border-color: #343a40;
+    border-right: 0px;
+    color: white;
+    padding-right: 0px !important;
+  }
+
+  form {
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    span.icon {display:inline-block;width:100%;text-align:center}
+    span.text {display:none}
+  }
+</style>

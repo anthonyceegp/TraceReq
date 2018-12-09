@@ -1,36 +1,73 @@
 <% content_for :title, @user.username %>
 <% navigation_add 'Users', users_path %>
 
-<table class="table table-reponsive table-bordered">
-	<tbody>
-		<tr>
-			<th scope="row">Email</th>
-			<td><%= @user.email %></td>
-		</tr>
-		<tr>
-			<th scope="row">Username</th>
-			<td><%= @user.username %></td>
-		</tr>
-		<tr>
-			<th scope="row">Password</th>
-			<td>
-				<span>******</span>
-				<%= link_to edit_user_registration_path(current_user) do %><%= fa_icon "pencil" %><% end %>
-			</td>
-		</tr>	
-		<tr>
-			<th scope="row">Avatar</th>
-			<td>
-				<% if @user.avatar.present? %>
-					<%= link_to @user.avatar_file_name, @user.avatar.url, target: :_blank %>
-					<%= link_to  delete_user_avatar_path(@user), method: :post do %><%= fa_icon "trash" %><% end %>
-				<% else %>
-					<%= link_to edit_user_path(@user) do %>Click here to load a picture <%= fa_icon "upload" %><% end %>
-				<% end %>
-			</td>
-		</tr>	
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-bordered">
+		<tbody>
+			<tr>
+				<th scope="row">
+					<span class="text">Email</span>
+					<span class="icon"><%= fa_icon "envelope" %></span>
+				</th>
+				<td><%= @user.email %></td>
+			</tr>
+			<tr>
+				<th scope="row">
+					<span class="text">Username</span>
+					<span class="icon"><%= fa_icon "user" %></span>
+				</th>
+				<td><%= @user.username %></td>
+			</tr>
+			<tr>
+				<th scope="row">
+					<span class="text">Roles</span>
+					<span class="icon"><%= fa_icon "address-card" %></span>
+				</th>
+				<td><%= @user.roles.map { |r| r.to_s.humanize }.join(", ") %></td>
+			</tr>
+			<tr>
+				<th scope="row">
+					<span class="text">Password</span>
+					<span class="icon"><%= fa_icon "unlock-alt" %></span>
+				</th>
+				<td>******</td>
+			</tr>	
+			<tr>
+				<th scope="row">
+					<span class="text">Avatar</span>
+					<span class="icon"><%= fa_icon "camera" %></span>
+				</th>
+				<td>
+					<% if @user.avatar? %>
+						<%= link_to @user.avatar_file_name, @user.avatar.url, target: :_blank %>
+					<% else %>
+						No picture
+					<% end %>
+				</td>
+			</tr>	
+		</tbody>
+	</table>
+</div>
 
-<%= link_to 'Edit User', edit_user_path(@user), class: "btn btn-primary", role: "button" %>
-<%= link_to 'Delete User', user_path(@user), method: :delete, class: "btn btn-danger", 'data-confirm': "Are you sure?" %>
+<% if can? :edit, @user %>
+	<%= link_to 'Edit User', edit_user_registration_path(@user), class: "btn btn-primary", role: "button" %>
+<% end %>
+<% if can? :destroy, @user %>
+	<% if @user.deleted_at.nil? %>
+		<%= link_to 'Delete User', @user, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", 'data-confirm': "Are you sure?" %>
+	<% else %>
+		<%= link_to 'Restore User', restore_user_path(@user), method: :post, data: { confirm: 'Are you sure?' }, class: "btn btn-danger", 'data-confirm': "Are you sure?" %>
+	<% end %>
+<% end %>
+
+<style type="text/css">
+	@media (min-width: 641px) {
+    span.icon {display:none}
+    span.text {display:inline-block}
+	}
+
+	@media (max-width: 640px) {
+    span.icon {display:inline-block;width:100%;text-align:center}
+    span.text {display:none}
+	}
+</style>

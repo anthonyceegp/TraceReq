@@ -1,11 +1,16 @@
 class ArtifactsController < ApplicationController
-  before_action :set_artifact, except: [:index, :new, :create]
+  load_and_authorize_resource :project
+  load_and_authorize_resource :artifact, through: :project
+
+  before_action :set_artifact, except: [:index, :new, :create, :destroy_artifacts, :remove_artifacts]
   before_action :build_artifact, only: [:create]
+  before_action :set_project_demand, only: [:destroy_artifacts, :remove_artifacts]
   before_action :set_project_demand_artifact, only: [:import]
-  before_action :artifact_type_collections, only: [:edit, :update, :new, :create]
+  before_action :artifact_type_collections, only: [:new, :edit, :create, :update]
+  before_action :set_statuses_collection, only: [:new, :edit, :create, :update]
 
   def index
-    @artifacts = artifacts.page(params[:page]).per(8)
+    @artifacts = artifacts.search(params[:term]).page(params[:page]).per(7)
   end
 
   def show
@@ -69,6 +74,18 @@ class ArtifactsController < ApplicationController
     end
   end
 
+  def destroy_artifacts
+    respond_to do |format|
+      if(@demand.nil?)
+        @project.artifacts.where(id: params[:artifacts]).destroy_all()
+      else
+        @demand.artifacts.where(id: params[:artifacts]).destroy_all()
+      end
+      format.html { redirect_to url_for(action: :index), notice: 'Artifacts were successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
   def delete_file
     @artifact.attachment_id = nil
     @artifact.save
@@ -104,19 +121,35 @@ class ArtifactsController < ApplicationController
       elsif params[:commit] == "Revert Artifact"
         if params[:index]
           @artifact.revert_to(params[:index].to_i)
-          format.html { redirect_to url_for(action: :index), notice: 'Artifact was successfully reverted.' }
+          format.html { redirect_to url_for(action: :show), notice: 'Artifact was successfully reverted.' }
           format.json { head :no_content }
         else
-          @artifact.errors[:base] << "You must select one version to revert."
-          format.html { render :history }
-          format.json { render json: @artifact.errors, status: :unprocessable_entity }
+          format.html { redirect_to url_for(action: :history), alert: 'You must select one version to revert into.' }
+          format.json { head :no_content }
         end
       end
     end
   end
 
+  def remove_artifacts
+    respond_to do |format|
+      @demand.artifacts.find(params[:artifacts])
+      format.html { redirect_to url_for(action: :index), notice: 'Artifacts were successfully removed.' }
+      format.json { head :no_content }
+    end
+  end
+
   def history
-    @versions = @artifact.versions[1..@artifact.version_index].sort_by{ |e| -e[:id] }
+    @versions = @artifact.history()
+  end
+
+  def show_previous_version
+    @artifact = @artifact.versions[params[:index].to_i].reify
+
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :show, status: :ok, location: url_for(action: :show, id: @artifact) }
+    end
   end
 
   def demands
@@ -164,6 +197,11 @@ class ArtifactsController < ApplicationController
       @artifact.user = current_user
     end
 
+    def set_project_demand
+      @project = Project.find(params[:project_id])
+      @demand = @project.demands.find(params[:demand_id]) if params.has_key?(:demand_id)
+    end
+
     def set_project_demand_artifact
       @project = Project.find(params[:project_id])
       @demand = @project.demands.find(params[:demand_id])
@@ -171,10 +209,14 @@ class ArtifactsController < ApplicationController
     end
 
     def artifact_type_collections
-      @artifact_types = ArtifactType.all
+      @artifact_types = Project.find(params[:project_id]).artifact_types
+    end
+
+    def set_statuses_collection
+      @artifact_statuses = Project.find(params[:project_id]).artifact_statuses
     end
 
     def artifact_params
-      params.require(:artifact).permit(:code, :name, :description, :priority, :artifact_type_id)
+      params.require(:artifact).permit(:code, :name, :description, :priority, :artifact_type_id, :artifact_status_id)
     end
 end

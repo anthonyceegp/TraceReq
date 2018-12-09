@@ -3,19 +3,23 @@
 <% navigation_add @project.name, project_path(@project) %>
 <% navigation_add 'Users', project_users_path(@project) %>
 
+<%= render partial: "layouts/search_form", locals: { path: project_add_users_path(@project) } %>
+
 <%= form_with url: project_add_users_path(@project), local: true do |form|%>
 	<div class="">
 		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th style="width: 20px;"><%= check_box_tag "check_all" %></th>
-					<th><span class="float-left">E-mail</span></th>
+					<th>Username</th>
+					<th>E-mail</th>
 				</tr>
 			</thead>
 			<tbody>
 				<% @users.each do |user| %>
 					<tr>
 						<td><%= form.check_box  :user_ids, {multiple: true}, user.id, nil %></td>
+						<td><%= user.username %></td>
 						<td><%= user.email %></td>
 					</tr>
 				<% end %>
@@ -24,7 +28,6 @@
 		<%= paginate(@users) %>
 	</div>
 	<%= form.submit "Add Users", class: "btn btn-primary" %>
-	<%= link_to "Cancel", :back, class: "btn btn-danger", role: "button" %>
 <% end %>
 
 <script type="text/javascript">
